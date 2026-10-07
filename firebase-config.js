@@ -15,4 +15,11 @@
      appId: "1:1234567890:web:abc123"
    };
 */
-window.VIANA_FIREBASE_CONFIG = null;
+window.VIANA_FIREBASE_CONFIG = {
+apiKey: "AIza....",
+authDomain: "viana-xxxx.firebaseapp.com",
+projectId: "viana-xxxx",
+storageBucket: "viana-xxxx.firebasestorage.app",
+messagingSenderId: "123456789",
+appId: "1:123456789:web:abc123"
+};
