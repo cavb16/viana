@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Viana — how I want to spend my time</title>
+<meta name="description" content="Viana: a personal space to decide how I want to spend my time.">
+<meta name="theme-color" content="#5b7f6a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%235b7f6a'/%3E%3Cpath d='M20 22l12 22 12-22' stroke='%23fff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/* ============ Theme ============ */
+:root{
+  --bg:#f6f4ef; --surface:#ffffff; --surface-2:#fbfaf7; --text:#2b2d2a; --muted:#767870; --border:#e6e2d8;
+  --accent:#5b7f6a; --accent-ink:#ffffff; --accent-soft:#e7efe9; --accent-2:#8a6f9e; --accent-2-soft:#f0eaf4;
+  --good:#5b7f6a; --mid:#b88a3e; --mid-soft:#f6eedf; --low:#9a8f86; --info:#4f7896; --info-soft:#e4edf3; --danger:#b4574c;
+  --radius:14px; --shadow:0 1px 2px rgba(40,40,30,.05),0 4px 16px rgba(40,40,30,.05);
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1a1c1a; --surface:#232623; --surface-2:#1f221f; --text:#e7e5df; --muted:#9b9e95; --border:#353a34;
+    --accent:#8db89b; --accent-ink:#152018; --accent-soft:#2a372e; --accent-2:#b79bcb; --accent-2-soft:#342c3a;
+    --good:#8db89b; --mid:#d6aa5e; --mid-soft:#3a3122; --low:#8d857e; --info:#86a9c4; --info-soft:#24313b; --danger:#d98479;
+    --shadow:none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1a1c1a; --surface:#232623; --surface-2:#1f221f; --text:#e7e5df; --muted:#9b9e95; --border:#353a34;
+  --accent:#8db89b; --accent-ink:#152018; --accent-soft:#2a372e; --accent-2:#b79bcb; --accent-2-soft:#342c3a;
+  --good:#8db89b; --mid:#d6aa5e; --mid-soft:#3a3122; --low:#8d857e; --info:#86a9c4; --info-soft:#24313b; --danger:#d98479;
+  --shadow:none; color-scheme: dark;
+}
+
+/* ============ Base ============ */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body.modal-open{overflow:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
+h1{font-size:1.9rem;line-height:1.2}
+h2{font-size:1.25rem}
+h3{font-size:1.05rem}
+input,select,textarea,button{font:inherit;color:inherit}
+input[type=text],input[type=date],input[type=number],input[type=password],input[type=search],select,textarea{
+  width:100%;padding:.55rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:2.6rem}
+.invalid{border-color:var(--danger)!important}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+.hidden{display:none!important}
+.spacer{flex:1}
+
+/* ============ Layout ============ */
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.topbar-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.7rem 1.2rem}
+.brand{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.brand-dot{width:22px;height:22px;border-radius:50%;background:var(--accent);display:inline-grid;place-items:center}
+.brand-dot svg{width:12px;height:12px;stroke:var(--accent-ink);stroke-width:3;fill:none}
+nav#nav{margin-left:auto;display:flex;gap:.25rem}
+nav#nav a{display:flex;align-items:center;gap:.4rem;padding:.45rem .75rem;border-radius:999px;color:var(--muted);font-weight:500}
+nav#nav a:hover{text-decoration:none;color:var(--text);background:var(--surface)}
+nav#nav a.active{color:var(--accent);background:var(--accent-soft)}
+nav#nav svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+main{max-width:980px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
+@media (max-width:720px){
+  .topbar{backdrop-filter:none;background:var(--bg)}
+  .topbar-in{padding:.6rem 1rem}
+  nav#nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--border);justify-content:space-around;padding:.3rem .2rem calc(.3rem + env(safe-area-inset-bottom))}
+  nav#nav a{flex-direction:column;gap:.1rem;font-size:.7rem;padding:.35rem .5rem;border-radius:10px}
+  main{padding:1.1rem .9rem 6.5rem}
+  h1{font-size:1.55rem}
+}
+
+/* ============ Components ============ */
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.eyebrow{text-transform:uppercase;letter-spacing:.09em;font-size:.72rem;font-weight:600;color:var(--accent)}
+.lede{color:var(--muted);margin:.3rem 0 0}
+.head-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.1rem 1.2rem;margin-bottom:1rem}
+.card.soft{background:var(--surface-2);box-shadow:none}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.7rem;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;padding:.55rem 1rem;border-radius:999px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-weight:500;white-space:nowrap;transition:background .15s,border-color .15s;color:var(--text)}
+.btn:hover{border-color:var(--accent);text-decoration:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger)}
+.btn.danger:hover{border-color:var(--danger)}
+.btn.sm{padding:.3rem .7rem;font-size:.85rem}
+.btn:disabled{opacity:.45;cursor:default}
+.icon-btn{border:1px solid transparent;background:transparent;width:32px;height:32px;border-radius:50%;cursor:pointer;display:inline-grid;place-items:center;color:var(--muted);font-size:1rem}
+.icon-btn:hover:not(:disabled){background:var(--accent-soft);color:var(--accent)}
+.icon-btn:disabled{opacity:.3;cursor:default}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1rem}
+@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1rem}
+.stat .label{font-size:.78rem;color:var(--muted)}
+.stat .value{font-family:var(--serif);font-size:1.45rem;font-weight:600;line-height:1.3}
+.stat .sub{font-size:.78rem;color:var(--muted)}
+.empty{text-align:center;padding:2rem 1rem;color:var(--muted)}
+.empty .big{font-family:var(--serif);font-size:1.15rem;color:var(--text);margin-bottom:.3rem}
+.empty .btn{margin:.8rem .25rem 0}
+.pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.12rem .55rem;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.pill.good{background:var(--accent-soft);color:var(--good);border-color:transparent}
+.pill.mid{background:var(--mid-soft);color:var(--mid);border-color:transparent}
+.pill.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.pill.low{color:var(--low)}
+.tag-unpl{display:inline-block;font-size:.7rem;font-weight:600;padding:.08rem .5rem;border-radius:999px;background:var(--accent-2-soft);color:var(--accent-2);vertical-align:middle;margin-left:.3rem;font-family:var(--sans)}
+.mini{display:inline-block;font-size:.72rem;padding:.08rem .5rem;border-radius:999px;margin:.15rem .25rem 0 0}
+.mini.m{background:var(--accent-soft);color:var(--accent)}
+.mini.o{background:var(--accent-2-soft);color:var(--accent-2)}
+.badge{display:inline-flex;align-items:center;gap:.15rem;font-size:.72rem;padding:.05rem .4rem;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted);font-variant-numeric:tabular-nums}
+.badge b{color:var(--text);font-weight:600}
+
+/* Task rows (today) */
+.tlist{display:flex;flex-direction:column}
+.trow{display:flex;align-items:center;gap:.8rem;padding:.75rem .2rem;border-bottom:1px solid var(--border)}
+.trow:last-child{border-bottom:none}
+.trow .dot{width:10px;height:10px;border-radius:50%;flex:none;border:2px solid var(--border)}
+.trow.s-good .dot{background:var(--good);border-color:var(--good)}
+.trow.s-mid .dot{background:var(--mid);border-color:var(--mid)}
+.trow.s-info .dot{background:var(--info);border-color:var(--info)}
+.trow.s-low .dot{background:var(--low);border-color:var(--low)}
+.tmain{flex:1;min-width:0;cursor:pointer}
+.tname{font-weight:600}
+.tsub{color:var(--muted);font-size:.9rem;overflow:hidden;text-overflow:ellipsis}
+.tmeta{font-size:.8rem;color:var(--muted);margin-top:.15rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.tactions{display:flex;gap:.35rem;flex:none;flex-wrap:wrap;justify-content:flex-end}
+
+/* Plan rows */
+.prow{display:grid;grid-template-columns:22px 1fr auto auto;gap:.7rem;align-items:center;padding:.75rem .2rem;border-bottom:1px solid var(--border);background:var(--surface)}
+.prow:last-child{border-bottom:none}
+.prow.dragging{opacity:.5}
+.handle{cursor:grab;color:var(--muted);user-select:none;text-align:center;letter-spacing:-2px}
+.pmain{cursor:pointer;min-width:0}
+.pnums{text-align:right}
+.ptime{font-family:var(--serif);font-weight:600;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.badges{display:flex;gap:.25rem;justify-content:flex-end;margin-top:.15rem}
+.pact{display:flex;gap:0}
+@media (max-width:720px){
+  .prow{grid-template-columns:1fr auto;}
+  .prow .handle{display:none}
+  .prow .pact{grid-column:1 / -1;justify-content:flex-end;margin-top:-.3rem}
+}
+.tally{font-variant-numeric:tabular-nums}
+.tally .line{display:flex;justify-content:space-between;gap:1rem;padding:.2rem 0;color:var(--muted)}
+.tally .line span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tally .total{border-top:1px solid var(--border);margin-top:.4rem;padding-top:.5rem;color:var(--text);font-weight:600;font-size:1.05rem}
+.quickadd{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
+.datenav{display:flex;align-items:center;gap:.35rem}
+.datenav input[type=date]{width:auto}
+
+/* Chips / scales / durations */
+.field{display:block;margin-bottom:1rem}
+.field>span,.field-label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.35rem}
+.field em{font-weight:400;font-style:normal;opacity:.8}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+@media (max-width:600px){.grid2{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.3rem .7rem;font-size:.83rem;cursor:pointer;transition:all .12s;color:var(--text)}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chips[data-group*="out"] .chip.on{background:var(--accent-2);border-color:var(--accent-2);color:#fff}
+.chip.inactive{border-style:dashed;opacity:.75}
+.scale{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.scale button{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-weight:600;font-variant-numeric:tabular-nums}
+.scale button:hover{border-color:var(--accent)}
+.scale button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.scale-label{font-size:.8rem;color:var(--muted);margin-left:.3rem}
+.dur{display:flex;flex-direction:column;gap:.35rem}
+.dur input{max-width:220px}
+.dur .quick{display:flex;gap:.25rem;flex-wrap:wrap}
+.dur .quick button{border:1px solid var(--border);background:transparent;border-radius:7px;padding:.12rem .45rem;font-size:.75rem;cursor:pointer;color:var(--muted)}
+.dur .quick button:hover{border-color:var(--accent);color:var(--accent)}
+.hint{font-size:.85rem;color:var(--muted);background:var(--surface-2);border:1px dashed var(--border);border-radius:10px;padding:.5rem .7rem;margin:0 0 1rem}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(20,22,20,.45);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:4vh 1rem;overflow-y:auto;animation:fade .15s}
+.modal{background:var(--bg);border-radius:18px;width:100%;max-width:640px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:rise .18s}
+.modal.wide{max-width:780px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem .4rem}
+.modal-body{padding:.6rem 1.2rem 1rem}
+.modal-foot{display:flex;gap:.5rem;align-items:center;padding:.8rem 1.2rem 1.1rem;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--bg);border-radius:0 0 18px 18px}
+@media (max-width:600px){.overlay{padding:0}.modal{border-radius:0;min-height:100%}.modal-foot{border-radius:0}}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{transform:translateY(12px);opacity:0}}
+.tabs{display:flex;gap:.3rem;background:var(--surface-2);border:1px solid var(--border);padding:.25rem;border-radius:12px;margin-bottom:1rem}
+.tabs button{flex:1;border:none;background:transparent;padding:.5rem;border-radius:9px;cursor:pointer;font-weight:600}
+.tabs button small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.tabs button.on{background:var(--surface);box-shadow:var(--shadow);color:var(--accent)}
+.te-activity{margin-bottom:.9rem}
+.te-aname{font-family:var(--serif);font-size:1.35rem;font-weight:600}
+.picker-list{display:flex;flex-direction:column;max-height:55vh;overflow-y:auto;margin-top:.6rem}
+.picker-item{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.65rem .5rem;border-radius:10px;cursor:pointer;border:none;background:transparent;text-align:left;width:100%}
+.picker-item:hover{background:var(--accent-soft)}
+
+/* Review */
+.review-card header{display:flex;justify-content:space-between;gap:.6rem;align-items:flex-start;margin-bottom:.6rem}
+.plan-line{font-size:.82rem;color:var(--muted);margin-top:.2rem}
+.status-row{display:flex;gap:.35rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem}
+.status-row .sbtn{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.3rem .75rem;font-size:.83rem;cursor:pointer}
+.status-row .sbtn:hover{border-color:var(--accent)}
+.status-row .sbtn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.status-row select{width:auto;padding:.3rem .5rem;font-size:.83rem;border-radius:999px}
+.actual-grid{display:grid;grid-template-columns:1fr 1fr;gap:.2rem 1rem}
+.actual-grid .full{grid-column:1/-1}
+@media (max-width:600px){.actual-grid{grid-template-columns:1fr}}
+details summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--accent);margin-bottom:.6rem}
+.postpone{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;background:var(--mid-soft);padding:.55rem .7rem;border-radius:10px;font-size:.88rem;margin-bottom:.8rem}
+.postpone input{width:auto}
+
+/* Library */
+.toolbar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:.5rem;margin-bottom:1rem}
+@media (max-width:720px){.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.8rem}
+.acard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;gap:.45rem;cursor:pointer;transition:border-color .15s,transform .15s}
+.acard:hover{border-color:var(--accent);transform:translateY(-1px)}
+.acard.inactive{opacity:.6}
+.acard h3{display:flex;justify-content:space-between;gap:.5rem}
+.acard .desc{font-size:.85rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.acard .row{font-size:.8rem;color:var(--muted)}
+.acard .row b{color:var(--text);font-weight:600}
+.acard .foot{margin-top:auto;display:flex;gap:.4rem;padding-top:.3rem}
+.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+@media (max-width:720px){.kv{grid-template-columns:repeat(2,1fr)}}
+.kv div{background:var(--surface-2);border-radius:10px;padding:.6rem .75rem}
+.kv .k{font-size:.75rem;color:var(--muted)}
+.kv .v{font-weight:600}
+table.simple{width:100%;border-collapse:collapse;font-size:.88rem}
+table.simple th{text-align:left;font-weight:600;color:var(--muted);font-size:.78rem;padding:.4rem .5rem;border-bottom:1px solid var(--border)}
+table.simple td{padding:.5rem;border-bottom:1px solid var(--border);vertical-align:top}
+table.simple tr:last-child td{border-bottom:none}
+.table-wrap{overflow-x:auto}
+.hist-group{border-left:2px solid var(--accent-soft);padding:.1rem 0 .1rem .9rem;margin-bottom:.9rem}
+.hist-when{font-size:.78rem;color:var(--muted)}
+.hist-line{font-size:.88rem}
+.hist-line s{color:var(--muted)}
+.hist-note{font-size:.85rem;font-style:italic;color:var(--muted)}
+
+/* Settings */
+.mrow{display:grid;grid-template-columns:1.3fr 1.6fr auto auto auto;gap:.4rem;align-items:center;padding:.35rem 0;border-bottom:1px solid var(--border)}
+.mrow.off .m-name{opacity:.55;text-decoration:line-through}
+.mrow input[type=text]{padding:.35rem .55rem;font-size:.88rem}
+.mrow .usage{font-size:.75rem;color:var(--muted);white-space:nowrap;min-width:58px;text-align:right}
+.mrow label{display:flex;align-items:center;gap:.25rem;font-size:.8rem;color:var(--muted)}
+.mrow .ord{display:flex}
+@media (max-width:720px){.mrow{grid-template-columns:1fr auto auto}.mrow .m-desc{grid-column:1/-1;order:5}.mrow .usage{display:none}}
+.addrow{display:flex;gap:.5rem;margin-top:.7rem}
+.scale-edit{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem}
+@media (max-width:720px){.scale-edit{grid-template-columns:1fr}}
+.scale-edit label{font-size:.75rem;color:var(--muted)}
+.setting-row{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:.5rem 0}
+.setting-row select,.setting-row input{width:auto;min-width:140px}
+
+/* Toast & lock */
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--text);color:var(--bg);padding:.55rem 1rem;border-radius:999px;font-size:.88rem;opacity:0;pointer-events:none;transition:all .2s;z-index:100}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:720px){#toast{bottom:84px}}
+#lock[hidden]{display:none}
+#lock{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+#lock .box{max-width:320px;width:100%;text-align:center}
+#lock h1{margin-bottom:.3rem}
+#lock input{text-align:center;font-size:1.2rem;letter-spacing:.3em;margin:1rem 0 .6rem}
+</style>
+</head>
+<body>
+<noscript><p style="padding:2rem">Viana needs JavaScript enabled to run.</p></noscript>
+
+<div id="lock" hidden>
+  <div class="box">
+    <h1>Viana</h1>
+    <p class="muted">Enter your PIN to continue</p>
+    <input type="password" id="lock-pin" inputmode="numeric" autocomplete="current-password" aria-label="PIN">
+    <button class="btn primary" id="lock-go" style="width:100%">Unlock</button>
+    <p class="muted small" id="lock-msg"></p>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#/today"><span class="brand-dot"><svg viewBox="0 0 24 24"><path d="M6 7l6 11 6-11" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Viana</a>
+    <nav id="nav" aria-label="Main"></nav>
+  </div>
+</header>
+<main id="main"></main>
+<div id="modal-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+
+<script>
+'use strict';
+/* =====================================================================
+   Viana — personal activity & time planning
+   Single-file app. Data lives in this browser's localStorage as a small
+   relational store (tables of rows linked by ids). See README.md.
+   ===================================================================== */
+
+const APP_VERSION = '1.0.0';
+const DB_KEY = 'viana.db.v1';
+const SCHEMA_VERSION = 1;
+const TABLES = ['motives','outcomes','activities','activityMotives','activityOutcomes','activityHistory','tasks','taskMotives','taskOutcomes'];
+
+const STATUSES = [
+  ['planned','Planned','neutral'],
+  ['in_progress','In progress','info'],
+  ['done','Completed as planned','good'],
+  ['done_diff','Completed differently','good'],
+  ['partial','Partially completed','mid'],
+  ['postponed','Postponed','mid'],
+  ['abandoned','Abandoned','low'],
+  ['replaced','Replaced','low'],
+  ['still_in_progress','Still in progress','info'],
+];
+const STATUS = Object.fromEntries(STATUSES.map(([k,l,t]) => [k,{label:l,tone:t}]));
+const DONE = new Set(['done','done_diff']);
+const PERFORMED = new Set(['done','done_diff','partial','in_progress','still_in_progress']);
+const REMAINING = new Set(['planned','in_progress','still_in_progress']);
+const CARRYABLE = new Set(['planned','postponed','in_progress','still_in_progress','partial']);
+
+/* ---------- Seed data (editable defaults) ---------- */
+const SEED_MOTIVES = ['Resolve / remove something bothering me','Maintain / take care of something','Enjoyment','Fun / entertainment','Relaxation / restoration','Personal growth','Career development','Learning / knowledge','Creativity / creating something','Relationships / connection','Experience','Travel','Exploration','Culture / understanding','Financial benefit','Health / wellbeing','Luxury / indulgence','Contribution / helping others','Because I want to'];
+const SEED_OUTCOMES = ['Fun','Entertainment','Relaxation','Mental clarity','Emotional wellbeing','Stress reduction','Knowledge','Understanding','Personal growth','Career benefit','Skill development','Confidence','Sense of accomplishment','Creativity','Connection','Physical wellbeing','Financial benefit','New experience','Cultural understanding','Reduced mental clutter','Problem solved','Something created','Because I enjoy the experience itself'];
+// [name, description, priority, minutes, mental, resistance, motives, outcomes]
+const SEED_ACTIVITIES = [
+  ['Watch Movies','Films of any kind — entertainment, documentaries, classics.',2,120,1,1,['Enjoyment','Fun / entertainment','Culture / understanding','Exploration','Because I want to'],['Entertainment','Relaxation','Cultural understanding','Because I enjoy the experience itself']],
+  ['Watch Series','An episode or a few of a show I am following.',2,60,1,1,['Fun / entertainment','Relaxation / restoration','Because I want to'],['Entertainment','Relaxation']],
+  ['Read Books','Fiction or non-fiction, paper or screen.',4,45,3,2,['Learning / knowledge','Personal growth','Enjoyment'],['Knowledge','Understanding','Personal growth']],
+  ['Exercise','Walk, workout, yoga, sport.',4,45,2,3,['Health / wellbeing','Maintain / take care of something'],['Physical wellbeing','Stress reduction','Mental clarity']],
+  ['Travel','Trips near or far.',3,480,2,2,['Travel','Experience','Exploration'],['New experience','Cultural understanding']],
+  ['Learn a Skill','Deliberate practice of something new.',4,60,4,3,['Personal growth','Learning / knowledge','Career development'],['Skill development','Confidence']],
+  ['Personal Project','Something I am building or making for myself.',3,90,4,2,['Creativity / creating something','Personal growth','Because I want to'],['Something created','Sense of accomplishment','Creativity']],
+  ['Journaling','Writing things down to think clearly.',3,15,2,2,['Personal growth','Relaxation / restoration'],['Mental clarity','Emotional wellbeing','Reduced mental clutter']],
+  ['Spend Time With Friends','Meeting, calling or doing something together.',4,120,1,1,['Relationships / connection','Enjoyment'],['Connection','Emotional wellbeing','Fun']],
+  ['Spend Time With Family','Unhurried time with family.',5,120,1,1,['Relationships / connection','Maintain / take care of something'],['Connection','Emotional wellbeing']],
+  ['Explore a New Place','A new street, café, museum, park or town.',3,180,2,2,['Exploration','Experience'],['New experience']],
+  ['Learn About History','Books, videos, places, podcasts.',3,60,3,2,['Learning / knowledge','Culture / understanding'],['Knowledge','Understanding','Cultural understanding']],
+  ['Learn About Culture','Food, music, languages, traditions.',3,60,2,1,['Culture / understanding','Exploration'],['Cultural understanding','Understanding']],
+  ['Home Maintenance','Repairs, cleaning, organising.',3,60,2,4,['Maintain / take care of something','Resolve / remove something bothering me'],['Problem solved','Reduced mental clutter','Sense of accomplishment']],
+  ['Personal Administration','Bills, paperwork, banking, appointments.',4,30,3,4,['Resolve / remove something bothering me','Maintain / take care of something','Financial benefit'],['Problem solved','Reduced mental clutter']],
+];
+
+function defaultSettings(){
+  return {
+    theme:'auto', dayCapacityHours:'', pinHash:'', lastBackupAt:null,
+    scales:{
+      priority:['Very low','Low','Medium','High','Very high'],
+      mental:['Very low','Low','Moderate','High','Very high'],
+      resistance:['No resistance — I really want to','Very little resistance','Neutral','Reluctant','Very high — I strongly don\'t want to'],
+      satisfaction:['Very low','Low','Okay','Good','Very good'],
+    }
+  };
+}
+
+/* ---------- Utilities ---------- */
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+let _uidN = 0;
+const uid = () => Date.now().toString(36) + (_uidN++).toString(36) + Math.random().toString(36).slice(2,6);
+const nowISO = () => new Date().toISOString();
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sum = arr => arr.reduce((s,v) => s + (Number.isFinite(+v) && v !== null && v !== '' ? +v : 0), 0);
+const sameSet = (a,b) => a.length === b.length && [...a].sort().join('|') === [...b].sort().join('|');
+function toDateStr(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+const todayStr = () => toDateStr(new Date());
+function addDays(ds, n){ const d = new Date(ds+'T00:00:00'); d.setDate(d.getDate()+n); return toDateStr(d); }
+function dayDiff(ds){ return Math.round((new Date(ds+'T00:00:00') - new Date(todayStr()+'T00:00:00'))/86400000); }
+function fmtLong(ds){ return new Date(ds+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
+function fmtShort(ds){ return new Date(ds+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+function fmtStamp(iso){ return iso ? new Date(iso).toLocaleString(undefined,{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—'; }
+function relLabel(ds){ const d = dayDiff(ds); return d===0?'Today':d===1?'Tomorrow':d===-1?'Yesterday':d>1?`In ${d} days`:`${-d} days ago`; }
+function fmtMin(m){
+  if (m === null || m === undefined || m === '' || Number.isNaN(+m)) return '—';
+  m = Math.round(+m); const h = Math.floor(m/60), r = m % 60;
+  return h ? (r ? `${h}h ${r}m` : `${h}h`) : `${r}m`;
+}
+/** Accepts "90", "1:30", "1h", "1h 30m", "1.5h", "45m", "2 hours". Returns minutes, null if blank, NaN if not understood. */
+function parseDuration(s){
+  s = String(s ?? '').trim().toLowerCase();
+  if (!s) return null;
+  let m;
+  if (/^\d+$/.test(s)) return +s;
+  if ((m = s.match(/^(\d+):(\d{1,2})$/))) return +m[1]*60 + +m[2];
+  m = s.match(/^(?:(\d+(?:\.\d+)?)\s*h(?:r|rs|our|ours)?)?\s*(?:(\d+)\s*m(?:in|ins|inute|inutes)?)?$/);
+  if (m && (m[1] || m[2])) return Math.round(parseFloat(m[1]||0)*60 + parseInt(m[2]||0,10));
+  return NaN;
+}
+let toastTimer;
+function toast(msg){ const el = $('#toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), 1800); }
+function download(filename, text, type){
+  const blob = new Blob([text], {type}); const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+/* =====================================================================
+   DATA STORE — relational tables in localStorage
+   ===================================================================== */
+let db;
+
+function seedDB(){
+  const t = nowISO();
+  const d = { schemaVersion: SCHEMA_VERSION, createdAt: t, settings: defaultSettings() };
+  TABLES.forEach(k => d[k] = []);
+  SEED_MOTIVES.forEach((n,i) => d.motives.push({ id:'mot_'+uid(), name:n, description:'', active:true, order:i }));
+  SEED_OUTCOMES.forEach((n,i) => d.outcomes.push({ id:'out_'+uid(), name:n, description:'', active:true, order:i }));
+  const mid = n => d.motives.find(x => x.name === n)?.id;
+  const oid = n => d.outcomes.find(x => x.name === n)?.id;
+  SEED_ACTIVITIES.forEach(([name,desc,p,tm,me,er,ms,os]) => {
+    const id = 'act_'+uid();
+    d.activities.push({ id, name, description:desc, defaultPriority:p, defaultTimeMin:tm, defaultMental:me, defaultResistance:er, active:true, createdAt:t, modifiedAt:t });
+    ms.map(mid).filter(Boolean).forEach(motiveId => d.activityMotives.push({ activityId:id, motiveId }));
+    os.map(oid).filter(Boolean).forEach(outcomeId => d.activityOutcomes.push({ activityId:id, outcomeId }));
+    d.activityHistory.push({ id:'h_'+uid(), activityId:id, changeId:uid(), at:t, field:'created', oldValue:null, newValue:name, note:'Sample activity' });
+  });
+  return d;
+}
+function migrate(){
+  // Future schema upgrades go here, keyed on db.schemaVersion.
+  const def = defaultSettings();
+  db.settings = Object.assign(def, db.settings || {});
+  db.settings.scales = Object.assign(defaultSettings().scales, db.settings.scales || {});
+  TABLES.forEach(k => { if (!Array.isArray(db[k])) db[k] = []; });
+  db.schemaVersion = SCHEMA_VERSION;
+}
+function loadDB(){
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem(DB_KEY)); } catch(e) {}
+  db = (raw && raw.schemaVersion) ? raw : seedDB();
+  migrate(); persist();
+}
+function persist(){
+  try { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+  catch(e){ alert('Viana could not save your data: ' + e.message + '\nPlease export a backup from Settings.'); }
+}
+
+/* ---------- Lookups & link tables ---------- */
+const byId = (tbl, id) => db[tbl].find(r => r.id === id);
+const sorted = tbl => db[tbl].slice().sort((a,b) => (a.order??0) - (b.order??0));
+function getLinks(tbl, ownerKey, ownerId, refKey, kind){
+  return db[tbl].filter(r => r[ownerKey] === ownerId && (kind == null || r.kind === kind)).map(r => r[refKey]);
+}
+function setLinks(tbl, ownerKey, ownerId, refKey, ids, kind){
+  db[tbl] = db[tbl].filter(r => !(r[ownerKey] === ownerId && (kind == null || r.kind === kind)));
+  [...new Set(ids)].forEach(id => { const r = {[ownerKey]:ownerId, [refKey]:id}; if (kind != null) r.kind = kind; db[tbl].push(r); });
+}
+const A = {
+  motives: id => getLinks('activityMotives','activityId',id,'motiveId'),
+  outcomes: id => getLinks('activityOutcomes','activityId',id,'outcomeId'),
+};
+const T = {
+  motives: (id,kind) => getLinks('taskMotives','taskId',id,'motiveId',kind),
+  outcomes: (id,kind) => getLinks('taskOutcomes','taskId',id,'outcomeId',kind),
+};
+function setTaskTags(taskId, kind, motiveIds, outcomeIds){
+  setLinks('taskMotives','taskId',taskId,'motiveId',motiveIds,kind);
+  setLinks('taskOutcomes','taskId',taskId,'outcomeId',outcomeIds,kind);
+}
+const names = (tbl, ids) => ids.map(i => byId(tbl,i)?.name).filter(Boolean);
+const tasksOn = date => db.tasks.filter(t => t.date === date).sort((a,b) => (a.order??0) - (b.order??0));
+const nextOrder = date => Math.max(-1, ...tasksOn(date).map(t => t.order ?? 0)) + 1;
+const actName = t => byId('activities', t.activityId)?.name || t.activityNameAtCreation || '(removed activity)';
+const hasActuals = t => [t.actTimeMin,t.actMental,t.actResistance,t.actPriority,t.actSatisfaction].some(v => v != null) || T.motives(t.id,'actual').length || T.outcomes(t.id,'actual').length;
+function usageCount(tbl, id){
+  if (tbl === 'motives') return db.activityMotives.filter(r=>r.motiveId===id).length + db.taskMotives.filter(r=>r.motiveId===id).length;
+  return db.activityOutcomes.filter(r=>r.outcomeId===id).length + db.taskOutcomes.filter(r=>r.outcomeId===id).length;
+}
+function deleteTask(id){
+  db.tasks.forEach(o => { if (o.carriedToTaskId === id) o.carriedToTaskId = null; if (o.carriedFromTaskId === id) o.carriedFromTaskId = null; });
+  db.tasks = db.tasks.filter(t => t.id !== id);
+  db.taskMotives = db.taskMotives.filter(r => r.taskId !== id);
+  db.taskOutcomes = db.taskOutcomes.filter(r => r.taskId !== id);
+}
+/** Fills empty actual fields from the plan (used for "as planned"). Never touches plan fields. */
+function copyPlanToActual(t){
+  if (t.actTimeMin == null) t.actTimeMin = t.planTimeMin;
+  if (t.actMental == null) t.actMental = t.planMental;
+  if (t.actResistance == null) t.actResistance = t.planResistance;
+  if (t.actPriority == null) t.actPriority = t.planPriority;
+  if (!T.motives(t.id,'actual').length) setLinks('taskMotives','taskId',t.id,'motiveId',T.motives(t.id,'planned'),'actual');
+  if (!T.outcomes(t.id,'actual').length) setLinks('taskOutcomes','taskId',t.id,'outcomeId',T.outcomes(t.id,'planned'),'actual');
+}
+/** Creates a new planned task on another date, copying this task's plan; links both. */
+function carryTask(src, toDate){
+  const now = nowISO();
+  const t = { ...blankTask(src.activityId, toDate, false), title: src.title,
+    planTimeMin: src.planTimeMin ?? src.actTimeMin, planMental: src.planMental, planResistance: src.planResistance, planPriority: src.planPriority,
+    planNotes: src.planNotes, carriedFromTaskId: src.id, createdAt: now, modifiedAt: now };
+  t.activityNameAtCreation = src.activityNameAtCreation || actName(src);
+  db.tasks.push(t);
+  setTaskTags(t.id, 'planned', T.motives(src.id,'planned'), T.outcomes(src.id,'planned'));
+  src.carriedToTaskId = t.id; src.modifiedAt = now;
+  return t;
+}
+function blankTask(activityId, date, unplanned){
+  const a = byId('activities', activityId);
+  return { id:'task_'+uid(), activityId, activityNameAtCreation: a?.name || '', date, title:'', order: nextOrder(date),
+    isUnplanned: !!unplanned, status: unplanned ? 'done' : 'planned',
+    planTimeMin:null, planMental:null, planResistance:null, planPriority:null, planNotes:'',
+    actTimeMin:null, actMental:null, actResistance:null, actPriority:null, actSatisfaction:null, actNotes:'',
+    carriedFromTaskId:null, carriedToTaskId:null, createdAt:null, modifiedAt:null, reviewedAt:null };
+}
+function activityStats(aid){
+  const ts = db.tasks.filter(t => t.activityId === aid);
+  const done = ts.filter(t => PERFORMED.has(t.status) || (t.actTimeMin > 0 && !['abandoned','replaced','postponed'].includes(t.status)));
+  const count = (getter) => {
+    const c = {};
+    done.forEach(t => { let ids = getter(t.id,'actual'); if (!ids.length) ids = getter(t.id,'planned'); ids.forEach(i => c[i] = (c[i]||0)+1); });
+    return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([i])=>i);
+  };
+  const last = done.map(t=>t.date).sort().pop();
+  return { tasks: ts.length, performed: done.length, totalMin: sum(done.map(t=>t.actTimeMin)), topMotives: count(T.motives), topOutcomes: count(T.outcomes), last,
+           postponed: ts.filter(t=>t.status==='postponed').length };
+}
+
+/* =====================================================================
+   UI BUILDING BLOCKS
+   ===================================================================== */
+function chipsHTML(tbl, selected, group){
+  const sel = new Set(selected);
+  const items = sorted(tbl).filter(x => x.active || sel.has(x.id));
+  return `<div class="chips" data-group="${group}">${items.map(x =>
+    `<button type="button" class="chip${sel.has(x.id)?' on':''}${x.active?'':' inactive'}" data-id="${x.id}" title="${esc(x.description || (x.active?'':'Inactive — kept for history'))}">${esc(x.name)}</button>`).join('')}</div>`;
+}
+const readChips = (root, group) => $$(`.chips[data-group="${group}"] .chip.on`, root).map(b => b.dataset.id);
+function scaleHTML(kind, value, group){
+  const labels = db.settings.scales[kind];
+  return `<div class="scale" data-group="${group}" data-kind="${kind}" data-value="${value ?? ''}">${[1,2,3,4,5].map(v =>
+    `<button type="button" class="${value==v?'on':''}" data-v="${v}" title="${esc(labels[v-1])}">${v}</button>`).join('')}<span class="scale-label">${value ? esc(labels[value-1]) : '<span class="muted">not set</span>'}</span></div>`;
+}
+function readScale(root, group){ const v = $(`.scale[data-group="${group}"]`, root)?.dataset.value; return v ? +v : null; }
+function durHTML(group, min){
+  return `<div class="dur" data-group="${group}"><input type="text" placeholder="e.g. 90, 1:30, 1h 30m" value="${min != null ? fmtMin(min) : ''}"><div class="quick">${[15,30,45,60,90,120,180].map(m => `<button type="button" data-m="${m}">${fmtMin(m)}</button>`).join('')}</div></div>`;
+}
+function readDur(root, group){
+  const inp = $(`.dur[data-group="${group}"] input`, root); if (!inp) return null;
+  const v = parseDuration(inp.value); inp.classList.toggle('invalid', Number.isNaN(v)); return v;
+}
+const field = (label, inner, cls='') => `<div class="field ${cls}"><span>${label}</span>${inner}</div>`;
+const statusLabel = (k, unpl) => (unpl && k === 'done') ? 'Completed' : STATUS[k].label;
+const statusPill = t => `<span class="pill ${STATUS[t.status].tone}">${esc(statusLabel(t.status, t.isUnplanned))}</span>`;
+function statusSelect(attrs, val, unpl){
+  return `<select ${attrs}>${STATUSES.map(([k]) => `<option value="${k}" ${k===val?'selected':''}>${esc(statusLabel(k,unpl))}</option>`).join('')}</select>`;
+}
+const badge = (letter, v, title) => `<span class="badge" title="${title}${v?': '+v+'/5':': not set'}">${letter}<b>${v ?? '–'}</b></span>`;
+const stat = (label, value, sub='') => `<div class="stat"><div class="label">${label}</div><div class="value">${value}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;
+const unplTag = '<span class="tag-unpl">Unplanned</span>';
+
+/* ---------- Modal ---------- */
+function openModal({ title, body, footer = '', wide = false, onMount }){
+  const root = $('#modal-root');
+  root.innerHTML = `<div class="overlay"><div class="modal ${wide?'wide':''}" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+    <div class="modal-head"><h2>${title}</h2><button class="icon-btn" data-close aria-label="Close">✕</button></div>
+    <div class="modal-body">${body}</div>${footer ? `<div class="modal-foot">${footer}</div>` : ''}</div></div>`;
+  const ov = $('.overlay', root), m = $('.modal', root);
+  ov.addEventListener('mousedown', e => { if (e.target === ov) closeModal(); });
+  $$('[data-close]', root).forEach(b => b.addEventListener('click', closeModal));
+  document.body.classList.add('modal-open');
+  onMount && onMount(m);
+  const first = $('input[type=text],input[type=search]', m); if (first && window.innerWidth > 720) first.focus();
+  return m;
+}
+function closeModal(){ $('#modal-root').innerHTML = ''; document.body.classList.remove('modal-open'); }
+
+/* =====================================================================
+   ROUTER & NAV
+   ===================================================================== */
+const ICONS = {
+  today:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  plan:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  review:'<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+  activities:'<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>',
+  settings:'<svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+};
+const NAV = [['today','Today'],['plan','Plan'],['review','Review'],['activities','Activities'],['settings','Settings']];
+let current = { view:'today', arg:null };
+const VIEWS = {};
+
+function renderNav(){
+  $('#nav').innerHTML = NAV.map(([k,l]) => `<a href="#/${k}" data-view="${k}">${ICONS[k]}<span>${l}</span></a>`).join('');
+}
+function route(){
+  const [view, arg] = location.hash.replace(/^#\/?/, '').split('/');
+  current = { view: VIEWS[view] ? view : 'today', arg: arg ? decodeURIComponent(arg) : null };
+  const navKey = current.view === 'activity' ? 'activities' : current.view;
+  $$('#nav a').forEach(a => a.classList.toggle('active', a.dataset.view === navKey));
+  closeModal();
+  VIEWS[current.view](current.arg);
+}
+function rerender(){ const y = window.scrollY; VIEWS[current.view](current.arg); window.scrollTo(0, y); }
+function go(hash){ if (location.hash === hash) rerender(); else location.hash = hash; }
+
+/* =====================================================================
+   VIEW: TODAY
+   ===================================================================== */
+function greeting(){
+  const h = new Date().getHours();
+  return h < 5 ? 'Late night.' : h < 12 ? 'Good morning.' : h < 17 ? 'Good afternoon.' : 'Good evening.';
+}
+VIEWS.today = () => {
+  const d = todayStr(), tm = addDays(d,1);
+  const ts = tasksOn(d), planned = ts.filter(t => !t.isUnplanned);
+  const planMin = sum(planned.map(t => t.planTimeMin)), actMin = sum(ts.map(t => t.actTimeMin));
+  const done = ts.filter(t => DONE.has(t.status)), remaining = ts.filter(t => REMAINING.has(t.status));
+  const tmTasks = tasksOn(tm);
+  $('#main').innerHTML = `
+  <section class="page-head">
+    <div><div class="eyebrow">Today</div><h1>${fmtLong(d)}</h1><p class="lede">${greeting()} How would you like to spend today?</p></div>
+    <div class="head-actions">
+      <button class="btn" data-act="addUnplanned" data-date="${d}">+ Something unplanned</button>
+      <a class="btn primary" href="#/review/${d}">Review the day</a>
+    </div>
+  </section>
+  <div class="stats">
+    ${stat('Planned time', fmtMin(planMin), `${planned.length} planned task${planned.length===1?'':'s'}`)}
+    ${stat('Actual time', actMin ? fmtMin(actMin) : '—', 'where recorded')}
+    ${stat('Completed', `${done.length}<span class="muted" style="font-size:1rem"> / ${ts.length}</span>`, ts.filter(t=>t.status==='partial').length ? `${ts.filter(t=>t.status==='partial').length} partly` : '')}
+    ${stat('Remaining', remaining.length, remaining.length ? fmtMin(sum(remaining.map(t=>t.planTimeMin))) + ' planned' : '')}
+  </div>
+  <section class="card">
+    <div class="card-head"><h2>Today's tasks</h2><a class="btn sm ghost" href="#/plan/${d}">Edit today's plan</a></div>
+    ${ts.length ? `<div class="tlist">${ts.map(todayRow).join('')}</div>` : `
+      <div class="empty"><div class="big">Nothing planned for today.</div>That's fine too. You can plan a little, or simply record what you do as you go.
+      <div><a class="btn" href="#/plan/${d}">Plan today</a><button class="btn" data-act="addUnplanned" data-date="${d}">Record something I did</button></div></div>`}
+  </section>
+  <section class="card soft">
+    <div class="card-head" style="margin:0"><div><div class="eyebrow">Tomorrow</div>
+      <div>${tmTasks.length ? `${tmTasks.length} task${tmTasks.length===1?'':'s'} · ${fmtMin(sum(tmTasks.filter(t=>!t.isUnplanned).map(t=>t.planTimeMin)))} planned` : '<span class="muted">Not planned yet</span>'}</div></div>
+      <a class="btn primary" href="#/plan/${tm}">Plan tomorrow →</a></div>
+  </section>`;
+};
+function todayRow(t){
+  const tone = STATUS[t.status].tone;
+  return `<div class="trow s-${tone}">
+    <span class="dot" aria-hidden="true"></span>
+    <div class="tmain" data-act="openTask" data-id="${t.id}">
+      <div class="tname">${esc(actName(t))}${t.isUnplanned ? unplTag : ''}</div>
+      ${t.title ? `<div class="tsub">${esc(t.title)}</div>` : ''}
+      <div class="tmeta">${statusPill(t)}<span>${t.isUnplanned ? '' : 'Plan ' + fmtMin(t.planTimeMin)}${t.actTimeMin != null ? (t.isUnplanned?'':' · ') + 'Actual ' + fmtMin(t.actTimeMin) : ''}</span></div>
+    </div>
+    <div class="tactions">
+      ${t.status === 'planned' ? `<button class="btn sm ghost" data-act="startTask" data-id="${t.id}" title="Mark in progress">Start</button>` : ''}
+      ${REMAINING.has(t.status) ? `<button class="btn sm ghost" data-act="quickDone" data-id="${t.id}" title="Completed as planned — copies plan to actual">✓ Done</button>` : ''}
+      <button class="btn sm" data-act="openTask" data-id="${t.id}" data-tab="actual">Record</button>
+    </div></div>`;
+}
+
+/* =====================================================================
+   VIEW: DAILY PLANNING
+   ===================================================================== */
+function dateNav(view, d){
+  const quick = view === 'plan' ? ['Tomorrow', addDays(todayStr(),1)] : ['Today', todayStr()];
+  return `<div class="datenav">
+    <button class="icon-btn" data-act="goDate" data-view="${view}" data-date="${addDays(d,-1)}" aria-label="Previous day">‹</button>
+    <input type="date" class="date-pick" data-view="${view}" value="${d}" aria-label="Choose date">
+    <button class="icon-btn" data-act="goDate" data-view="${view}" data-date="${addDays(d,1)}" aria-label="Next day">›</button>
+    ${d !== quick[1] ? `<button class="btn sm ghost" data-act="goDate" data-view="${view}" data-date="${quick[1]}">${quick[0]}</button>` : ''}
+  </div>`;
+}
+VIEWS.plan = (arg) => {
+  const d = arg || addDays(todayStr(), 1);
+  const ts = tasksOn(d), planned = ts.filter(t => !t.isUnplanned);
+  const total = sum(planned.map(t => t.planTimeMin));
+  const cap = parseFloat(db.settings.dayCapacityHours);
+  const carry = tasksOn(addDays(d,-1)).filter(t => CARRYABLE.has(t.status) && !t.carriedToTaskId);
+  const favourites = db.activities.filter(a => a.active)
+    .map(a => ({ a, n: db.tasks.filter(t => t.activityId === a.id).length }))
+    .sort((x,y) => y.n - x.n || (y.a.defaultPriority||0) - (x.a.defaultPriority||0) || x.a.name.localeCompare(y.a.name))
+    .slice(0, 8).map(x => x.a);
+  $('#main').innerHTML = `
+  <section class="page-head">
+    <div><div class="eyebrow">Plan · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1><p class="lede">How do I want to spend this day?</p></div>
+    ${dateNav('plan', d)}
+  </section>
+  ${carry.length && dayDiff(d) >= 0 ? `<div class="card soft" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+     <div>${carry.length} unfinished item${carry.length===1?'':'s'} from ${relLabel(addDays(d,-1)).toLowerCase()}. Bring any of them over?</div>
+     <button class="btn sm" data-act="carryOver" data-date="${d}">Choose…</button></div>` : ''}
+  <section class="card">
+    <div class="card-head"><h2>Planned</h2><button class="btn primary" data-act="addPlanned" data-date="${d}">+ Add from activities</button></div>
+    ${ts.length ? `<div class="plist" id="plist">${ts.map((t,i) => planRow(t, i, ts.length)).join('')}</div>` :
+      `<div class="empty"><div class="big">An open day.</div>Add a few activities you'd like to give time to.</div>`}
+    <div style="margin-top:.8rem"><div class="field-label">Quick add</div><div class="quickadd">${favourites.map(a =>
+      `<button class="chip" data-act="quickPlan" data-aid="${a.id}" data-date="${d}">+ ${esc(a.name)}</button>`).join('')}</div></div>
+  </section>
+  ${planned.length ? `<section class="card">
+    <h2 style="margin-bottom:.6rem">Time allocation</h2>
+    <div class="tally">
+      ${planned.map(t => `<div class="line"><span>${esc(actName(t))}${t.title ? ' — ' + esc(t.title) : ''}</span><span>${fmtMin(t.planTimeMin)}</span></div>`).join('')}
+      <div class="line total"><span>Total planned</span><span>${fmtMin(total)}</span></div>
+      ${cap > 0 ? `<div class="line"><span>Of ${fmtMin(cap*60)} available</span><span>${total <= cap*60 ? fmtMin(cap*60 - total) + ' unallocated' : fmtMin(total - cap*60) + ' over'}</span></div>` : ''}
+    </div></section>` : ''}`;
+  const list = $('#plist'); if (list) bindPlanDrag(list);
+};
+function planRow(t, i, n){
+  const pm = names('motives', T.motives(t.id,'planned')), po = names('outcomes', T.outcomes(t.id,'planned'));
+  return `<div class="prow" draggable="true" data-id="${t.id}">
+    <div class="handle" title="Drag to reorder">⋮⋮</div>
+    <div class="pmain" data-act="openTask" data-id="${t.id}">
+      <div class="tname">${esc(actName(t))}${t.isUnplanned ? unplTag : ''} ${t.status !== 'planned' ? statusPill(t) : ''}</div>
+      ${t.title ? `<div class="tsub">${esc(t.title)}</div>` : ''}
+      ${t.planNotes ? `<div class="tsub small">${esc(t.planNotes)}</div>` : ''}
+      <div>${pm.map(x => `<span class="mini m">${esc(x)}</span>`).join('')}${po.map(x => `<span class="mini o">${esc(x)}</span>`).join('')}</div>
+    </div>
+    <div class="pnums"><div class="ptime">${fmtMin(t.isUnplanned ? t.actTimeMin : t.planTimeMin)}</div>
+      <div class="badges">${badge('M', t.planMental, 'Mental effort')}${badge('R', t.planResistance, 'Emotional resistance')}${badge('P', t.planPriority, 'Priority')}</div></div>
+    <div class="pact">
+      <button class="icon-btn" data-act="moveTask" data-dir="-1" data-id="${t.id}" ${i===0?'disabled':''} aria-label="Move up">↑</button>
+      <button class="icon-btn" data-act="moveTask" data-dir="1" data-id="${t.id}" ${i===n-1?'disabled':''} aria-label="Move down">↓</button>
+      <button class="icon-btn" data-act="openTask" data-id="${t.id}" aria-label="Edit">✎</button>
+      <button class="icon-btn" data-act="removeTask" data-id="${t.id}" aria-label="Remove from plan" title="Remove from plan (the activity stays)">✕</button>
+    </div></div>`;
+}
+function bindPlanDrag(list){
+  let dragId = null;
+  list.addEventListener('dragstart', e => { const r = e.target.closest('.prow'); if (!r) return; dragId = r.dataset.id; r.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
+  list.addEventListener('dragover', e => {
+    e.preventDefault(); const r = e.target.closest('.prow'); const dr = $('.dragging', list);
+    if (!r || !dr || r === dr) return;
+    const rect = r.getBoundingClientRect();
+    list.insertBefore(dr, e.clientY > rect.top + rect.height/2 ? r.nextSibling : r);
+  });
+  list.addEventListener('dragend', () => {
+    if (!dragId) return; dragId = null;
+    $$('.prow', list).forEach((r,i) => { const t = byId('tasks', r.dataset.id); if (t) t.order = i; });
+    persist(); rerender();
+  });
+}
+
+/* =====================================================================
+   VIEW: END-OF-DAY REVIEW
+   ===================================================================== */
+VIEWS.review = (arg) => {
+  const d = arg || todayStr();
+  const ts = tasksOn(d);
+  $('#main').innerHTML = `
+  <section class="page-head">
+    <div><div class="eyebrow">End-of-day review · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1>
+      <p class="lede">What actually happened? Tap <b>As planned</b> for anything that went to plan — only adjust what was different.</p></div>
+    ${dateNav('review', d)}
+  </section>
+  <div id="review-summary">${reviewSummaryHTML(d)}</div>
+  ${ts.length ? ts.map(reviewCard).join('') : `<div class="card"><div class="empty"><div class="big">Nothing was planned for this day.</div>Record anything you did — unplanned time counts too.</div></div>`}
+  <div class="card soft" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+    <div><b>Did something that wasn't planned?</b><div class="muted small">Spontaneous activities are part of real life, not failures.</div></div>
+    <button class="btn" data-act="addUnplanned" data-date="${d}">+ Add unplanned activity</button>
+  </div>
+  <div style="text-align:right;margin-top:1rem"><a class="btn primary" href="#/plan/${addDays(d,1)}">Plan ${relLabel(addDays(d,1)).toLowerCase()} →</a></div>`;
+};
+function reviewSummaryHTML(d){
+  const ts = tasksOn(d), planned = ts.filter(t => !t.isUnplanned), unpl = ts.filter(t => t.isUnplanned);
+  return `<div class="stats">
+    ${stat('Planned', fmtMin(sum(planned.map(t=>t.planTimeMin))), `${planned.length} task${planned.length===1?'':'s'}`)}
+    ${stat('Actually spent', fmtMin(sum(ts.map(t=>t.actTimeMin)) || null), 'recorded so far')}
+    ${stat('Reviewed', `${ts.filter(t => t.status !== 'planned').length}<span class="muted" style="font-size:1rem"> / ${ts.length}</span>`)}
+    ${stat('Unplanned', unpl.length, unpl.length ? fmtMin(sum(unpl.map(t=>t.actTimeMin))) : '')}
+  </div>`;
+}
+function reviewCard(t){
+  const pm = names('motives', T.motives(t.id,'planned'));
+  const am = T.motives(t.id,'actual'), ao = T.outcomes(t.id,'actual');
+  const quick = t.isUnplanned
+    ? [['done','Done'],['partial','Partly'],['in_progress','Still going']]
+    : [['done','As planned'],['done_diff','Differently'],['partial','Partly'],['postponed','Postponed'],['abandoned','Abandoned']];
+  const carried = t.carriedToTaskId ? byId('tasks', t.carriedToTaskId) : null;
+  return `<article class="card review-card" data-task="${t.id}">
+    <header><div>
+      <div class="tname">${esc(actName(t))}${t.isUnplanned ? unplTag : ''}</div>
+      ${t.title ? `<div class="tsub">${esc(t.title)}</div>` : ''}
+      <div class="plan-line">${t.isUnplanned ? 'Not in the plan — recorded afterwards' :
+        `Plan: ${fmtMin(t.planTimeMin)} · Mental ${t.planMental ?? '–'} · Resistance ${t.planResistance ?? '–'} · Priority ${t.planPriority ?? '–'}${pm.length ? ' · ' + esc(pm.join(', ')) : ''}`}</div>
+    </div><button class="btn sm ghost" data-act="openTask" data-id="${t.id}" data-tab="actual">All details</button></header>
+    <div class="status-row">
+      ${quick.map(([k,l]) => `<button type="button" class="sbtn ${t.status===k?'on':''}" data-act="setStatus" data-s="${k}">${l}</button>`).join('')}
+      ${statusSelect('data-field="status" aria-label="Status"', t.status, t.isUnplanned)}
+    </div>
+    ${t.status === 'postponed' || (t.status === 'partial' && !t.isUnplanned) ? (carried
+      ? `<div class="postpone">Carried over to <a href="#/plan/${carried.date}">${fmtShort(carried.date)}</a>.</div>`
+      : `<div class="postpone">Plan it again on <input type="date" class="carry-date" value="${addDays(t.date,1)}"> <button type="button" class="btn sm" data-act="carryOne">Add to that day</button></div>`) : ''}
+    <div class="actual-grid">
+      ${field('Actual time', durHTML('act-time', t.actTimeMin))}
+      ${field('Satisfaction <em>optional</em>', scaleHTML('satisfaction', t.actSatisfaction, 'act-sat'))}
+      ${field('Actual mental effort', scaleHTML('mental', t.actMental, 'act-mental'))}
+      ${field('Actual emotional resistance', scaleHTML('resistance', t.actResistance, 'act-res'))}
+      <details class="full"><summary>Actual motives &amp; outcomes (${am.length + ao.length} selected)</summary>
+        ${!t.isUnplanned ? `<button type="button" class="btn sm ghost" data-act="copyPlanTags" style="margin-bottom:.6rem">Same as plan</button>` : ''}
+        ${field('Why I actually did it', chipsHTML('motives', am, 'act-mot'))}
+        ${field('What I actually got from it', chipsHTML('outcomes', ao, 'act-out'))}
+      </details>
+      ${field('Notes', `<textarea data-field="actNotes" rows="2" placeholder="Anything worth remembering?">${esc(t.actNotes)}</textarea>`, 'full')}
+    </div>
+  </article>`;
+}
+function refreshReviewCard(id){
+  const card = $(`.review-card[data-task="${id}"]`), t = byId('tasks', id);
+  if (card && t) card.outerHTML = reviewCard(t);
+  const s = $('#review-summary'); if (s && current.view === 'review') s.innerHTML = reviewSummaryHTML(current.arg || todayStr());
+}
+function saveReviewCard(card){
+  const t = byId('tasks', card.dataset.task); if (!t) return;
+  const m = readDur(card, 'act-time');
+  if (Number.isNaN(m)) { toast('Time not understood — try 90, 1:30 or 1h 30m'); return; }
+  t.actTimeMin = m;
+  t.actMental = readScale(card, 'act-mental');
+  t.actResistance = readScale(card, 'act-res');
+  t.actSatisfaction = readScale(card, 'act-sat');
+  setTaskTags(t.id, 'actual', readChips(card, 'act-mot'), readChips(card, 'act-out'));
+  t.actNotes = $('[data-field="actNotes"]', card).value.trim();
+  t.modifiedAt = t.reviewedAt = nowISO();
+  persist();
+  const sum$ = $('#review-summary'); if (sum$) sum$.innerHTML = reviewSummaryHTML(current.arg || todayStr());
+  const det = $('details summary', card); if (det) det.textContent = `Actual motives & outcomes (${readChips(card,'act-mot').length + readChips(card,'act-out').length} selected)`;
+  toast('Saved');
+}
+function setTaskStatus(t, s){
+  t.status = s;
+  if (s === 'done' && !t.isUnplanned) copyPlanToActual(t);
+  t.modifiedAt = t.reviewedAt = nowISO();
+  persist();
+}
+
+/* =====================================================================
+   TASK EDITOR (Plan / Actual)
+   ===================================================================== */
+function planPaneHTML(t, tags, isNew){
+  return `<p class="hint">${isNew ? 'Pre-filled from the activity’s defaults. ' : ''}Change anything for this particular day — the activity itself won’t change.</p>
+    ${field('Why this, this time? <em>— motives</em>', chipsHTML('motives', tags.pm, 'p-mot'))}
+    ${field('What I hope to get from it <em>— outcomes</em>', chipsHTML('outcomes', tags.po, 'p-out'))}
+    <div class="grid2">${field('Planned time', durHTML('p-time', t.planTimeMin))}${field('Priority of this, today', scaleHTML('priority', t.planPriority, 'p-pri'))}</div>
+    <div class="grid2">${field('Planned mental effort', scaleHTML('mental', t.planMental, 'p-mental'))}${field('Expected emotional resistance', scaleHTML('resistance', t.planResistance, 'p-res'))}</div>
+    ${field('Notes', `<textarea id="te-pnotes" rows="2" placeholder="Anything about the plan">${esc(t.planNotes)}</textarea>`)}`;
+}
+function actualPaneHTML(t, tags){
+  return `<div class="grid2">${field('Status', statusSelect('id="te-status"', t.status, t.isUnplanned))}
+      ${!t.isUnplanned ? `<div class="field"><span>&nbsp;</span><button type="button" class="btn ghost" data-te="copy">Copy everything from plan</button></div>` : ''}</div>
+    ${field('Why I actually did it <em>— motives</em>', chipsHTML('motives', tags.am, 'a-mot'))}
+    ${field('What I actually got from it <em>— outcomes</em>', chipsHTML('outcomes', tags.ao, 'a-out'))}
+    <div class="grid2">${field('Actual time', durHTML('a-time', t.actTimeMin))}${field('Satisfaction <em>optional</em>', scaleHTML('satisfaction', t.actSatisfaction, 'a-sat'))}</div>
+    <div class="grid2">${field('Actual mental effort', scaleHTML('mental', t.actMental, 'a-mental'))}${field('Actual emotional resistance', scaleHTML('resistance', t.actResistance, 'a-res'))}</div>
+    ${field('Priority, in hindsight <em>optional</em>', scaleHTML('priority', t.actPriority, 'a-pri'))}
+    ${field('Notes', `<textarea id="te-anotes" rows="2" placeholder="What happened?">${esc(t.actNotes)}</textarea>`)}`;
+}
+function readTaskForm(m, base){
+  const t = { ...base }, tags = { pm: [], po: [], am: [], ao: [] };
+  t.title = $('#te-title', m).value.trim();
+  t.date = $('#te-date', m).value || base.date;
+  const pp = $('[data-pane="plan"]', m);
+  if (pp){
+    const pt = readDur(pp, 'p-time'); if (Number.isNaN(pt)) return { error: 'Planned time not understood — try 90, 1:30 or 1h 30m' };
+    t.planTimeMin = pt; t.planMental = readScale(pp,'p-mental'); t.planResistance = readScale(pp,'p-res'); t.planPriority = readScale(pp,'p-pri');
+    t.planNotes = $('#te-pnotes', m).value.trim(); tags.pm = readChips(pp,'p-mot'); tags.po = readChips(pp,'p-out');
+  }
+  const ap = $('[data-pane="actual"]', m);
+  const at = readDur(ap, 'a-time'); if (Number.isNaN(at)) return { error: 'Actual time not understood — try 90, 1:30 or 1h 30m' };
+  t.actTimeMin = at; t.actMental = readScale(ap,'a-mental'); t.actResistance = readScale(ap,'a-res'); t.actPriority = readScale(ap,'a-pri'); t.actSatisfaction = readScale(ap,'a-sat');
+  t.actNotes = $('#te-anotes', m).value.trim(); t.status = $('#te-status', m).value;
+  tags.am = readChips(ap,'a-mot'); tags.ao = readChips(ap,'a-out');
+  return { t, tags };
+}
+function openTaskEditor({ taskId, activityId, date, unplanned = false, tab }){
+  const isNew = !taskId;
+  let t, tags;
+  if (isNew){
+    const a = byId('activities', activityId);
+    t = blankTask(activityId, date, unplanned);
+    const am = A.motives(activityId), ao = A.outcomes(activityId);
+    if (unplanned){ t.actTimeMin = a.defaultTimeMin; t.actMental = a.defaultMental; t.actResistance = a.defaultResistance; tags = { pm:[], po:[], am, ao }; }
+    else { t.planTimeMin = a.defaultTimeMin; t.planMental = a.defaultMental; t.planResistance = a.defaultResistance; t.planPriority = a.defaultPriority; tags = { pm:am, po:ao, am:[], ao:[] }; }
+  } else {
+    const src = byId('tasks', taskId); if (!src) return;
+    t = { ...src };
+    tags = { pm: T.motives(taskId,'planned'), po: T.outcomes(taskId,'planned'), am: T.motives(taskId,'actual'), ao: T.outcomes(taskId,'actual') };
+  }
+  const showPlan = !t.isUnplanned;
+  tab = showPlan ? (tab || 'plan') : 'actual';
+  const a = byId('activities', t.activityId);
+  const title = isNew ? (unplanned ? 'Record unplanned activity' : 'Add to plan') : (t.isUnplanned ? 'Unplanned activity' : 'Task');
+  const body = `
+    <div class="te-activity"><div class="eyebrow">${t.isUnplanned ? 'Unplanned · ' : ''}Activity</div>
+      <div class="te-aname">${esc(actName(t))}</div>${a?.description ? `<div class="muted small">${esc(a.description)}</div>` : ''}</div>
+    <div class="grid2">
+      ${field('What specifically? <em>optional</em>', `<input type="text" id="te-title" value="${esc(t.title)}" placeholder="e.g. ${a?.name === 'Watch Movies' ? 'a documentary on Indian history' : 'something particular'}">`)}
+      ${field('Date', `<input type="date" id="te-date" value="${t.date}">`)}
+    </div>
+    ${showPlan ? `<div class="tabs" role="tablist">
+        <button type="button" data-tab="plan" class="${tab==='plan'?'on':''}">Plan<small>what I intend</small></button>
+        <button type="button" data-tab="actual" class="${tab==='actual'?'on':''}">Actual<small>what really happened</small></button></div>`
+      : `<p class="hint">Recording something you did that wasn’t in the plan. Spontaneous time is part of real life — not a failure.</p>`}
+    ${showPlan ? `<div class="pane" data-pane="plan" ${tab!=='plan'?'hidden':''}>${planPaneHTML(t, tags, isNew)}</div>` : ''}
+    <div class="pane" data-pane="actual" ${tab!=='actual'?'hidden':''}>${actualPaneHTML(t, tags)}</div>`;
+  const footer = `${isNew ? '' : `<button class="btn ghost danger" data-te="delete">${t.isUnplanned ? 'Delete' : 'Remove from plan'}</button>`}
+    <span class="spacer"></span><button class="btn ghost" data-close>Cancel</button>
+    <button class="btn primary" data-te="save">${isNew ? (unplanned ? 'Record' : 'Add to plan') : 'Save'}</button>`;
+  openModal({ title, body, footer, wide: true, onMount: m => {
+    m.addEventListener('click', e => {
+      const tb = e.target.closest('.tabs button');
+      if (tb){ $$('.tabs button', m).forEach(b => b.classList.toggle('on', b === tb)); $$('.pane', m).forEach(p => p.hidden = p.dataset.pane !== tb.dataset.tab); return; }
+      const te = e.target.closest('[data-te]'); if (!te) return;
+      if (te.dataset.te === 'copy'){
+        const r = readTaskForm(m, t); if (r.error) return toast(r.error);
+        const c = r.t; c.actTimeMin = c.planTimeMin; c.actMental = c.planMental; c.actResistance = c.planResistance; c.actPriority = c.planPriority;
+        r.tags.am = [...r.tags.pm]; r.tags.ao = [...r.tags.po];
+        if (c.status === 'planned') c.status = 'done';
+        $('[data-pane="actual"]', m).innerHTML = actualPaneHTML(c, r.tags); toast('Copied from plan');
+      }
+      if (te.dataset.te === 'delete'){
+        if (hasActuals(t) && !confirm('This task has recorded actuals. Remove it anyway? (The activity itself stays.)')) return;
+        deleteTask(t.id); persist(); closeModal(); toast('Removed'); rerender();
+      }
+      if (te.dataset.te === 'save'){
+        const r = readTaskForm(m, t); if (r.error) return toast(r.error);
+        const nt = r.t, now = nowISO();
+        nt.modifiedAt = now;
+        if (isNew){ nt.createdAt = now; nt.order = nextOrder(nt.date); }
+        else if (nt.date !== t.date) nt.order = nextOrder(nt.date);
+        if (isNew) db.tasks.push(nt); else Object.assign(byId('tasks', nt.id), nt);
+        setTaskTags(nt.id, 'planned', r.tags.pm, r.tags.po);
+        setTaskTags(nt.id, 'actual', r.tags.am, r.tags.ao);
+        if (!nt.reviewedAt && hasActuals(nt)) byId('tasks', nt.id).reviewedAt = now;
+        persist(); closeModal(); toast(isNew ? (unplanned ? 'Recorded' : 'Added to plan') : 'Saved'); rerender();
+      }
+    });
+  }});
+}
+
+/* ---------- Activity picker ---------- */
+function openActivityPicker({ date, unplanned }){
+  const list = () => db.activities.filter(a => a.active).sort((a,b) => a.name.localeCompare(b.name));
+  const item = a => `<button type="button" class="picker-item" data-aid="${a.id}"><span><b>${esc(a.name)}</b>${a.description ? `<br><span class="muted small">${esc(a.description)}</span>` : ''}</span>
+    <span class="badges">${a.defaultTimeMin ? `<span class="badge">${fmtMin(a.defaultTimeMin)}</span>` : ''}${badge('P', a.defaultPriority, 'Priority')}</span></button>`;
+  openModal({
+    title: unplanned ? 'What did you do?' : 'Choose an activity',
+    body: `<input type="search" id="pk-q" placeholder="Search activities…" autocomplete="off">
+      <div class="picker-list" id="pk-list">${list().map(item).join('')}</div>
+      <div style="margin-top:.8rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <span class="muted small">Not in your library yet?</span><button class="btn sm" id="pk-new">+ Create new activity</button></div>`,
+    onMount: m => {
+      $('#pk-q', m).addEventListener('input', e => {
+        const q = e.target.value.trim().toLowerCase();
+        $('#pk-list', m).innerHTML = list().filter(a => !q || a.name.toLowerCase().includes(q) || (a.description||'').toLowerCase().includes(q)).map(item).join('') || '<div class="empty">No match. Create it below.</div>';
+      });
+      $('#pk-list', m).addEventListener('click', e => { const b = e.target.closest('[data-aid]'); if (b){ closeModal(); openTaskEditor({ activityId: b.dataset.aid, date, unplanned }); } });
+      $('#pk-new', m).addEventListener('click', () => {
+        const q = $('#pk-q', m).value.trim(); closeModal();
+        openActivityForm(null, { presetName: q, onSaved: id => openTaskEditor({ activityId: id, date, unplanned }) });
+      });
+    }
+  });
+}
+
+/* ---------- Carry-over picker ---------- */
+function openCarryOver(date){
+  const prev = addDays(date, -1);
+  const items = tasksOn(prev).filter(t => CARRYABLE.has(t.status) && !t.carriedToTaskId);
+  openModal({
+    title: 'Bring over unfinished items',
+    body: `<p class="muted">From ${fmtLong(prev)}. Their plan is copied to ${relLabel(date).toLowerCase()}; the original records stay as they were.</p>
+      ${items.map(t => `<label style="display:flex;gap:.6rem;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--border)">
+        <input type="checkbox" value="${t.id}" checked> <span><b>${esc(actName(t))}</b>${t.title ? ' — ' + esc(t.title) : ''} <span class="muted small">· ${esc(statusLabel(t.status,t.isUnplanned))} · ${fmtMin(t.planTimeMin)}</span></span></label>`).join('')}
+      <p class="muted small">Items still marked “Planned” will be marked “Postponed” on the earlier day.</p>`,
+    footer: `<span class="spacer"></span><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="co-go">Bring over</button>`,
+    onMount: m => $('#co-go', m).addEventListener('click', () => {
+      const ids = $$('input[type=checkbox]:checked', m).map(c => c.value);
+      ids.forEach(id => { const src = byId('tasks', id); if (src.status === 'planned') src.status = 'postponed'; carryTask(src, date); });
+      persist(); closeModal(); toast(`${ids.length} brought over`); rerender();
+    })
+  });
+}
+
+/* =====================================================================
+   ACTIVITY FORM (create / edit with history)
+   ===================================================================== */
+const FIELD_LABELS = { created:'Created', name:'Name', description:'Description', defaultPriority:'Priority', defaultTimeMin:'Time effort', defaultMental:'Mental effort', defaultResistance:'Emotional resistance', active:'Status', motives:'General motives', outcomes:'General outcomes' };
+function fmtHistVal(f, v){
+  if (v === null || v === undefined || v === '') return '—';
+  if (f === 'defaultTimeMin') return fmtMin(v);
+  if (f === 'active') return v ? 'Active' : 'Inactive';
+  if (Array.isArray(v)) return v.length ? v.join(', ') : '—';
+  if (['defaultPriority','defaultMental','defaultResistance'].includes(f)) return v + '/5';
+  return String(v);
+}
+function openActivityForm(id, { onSaved, presetName = '' } = {}){
+  const isNew = !id;
+  const a = isNew ? { name: presetName, description:'', defaultPriority:3, defaultTimeMin:60, defaultMental:3, defaultResistance:3, active:true } : byId('activities', id);
+  const mot = isNew ? [] : A.motives(id), out = isNew ? [] : A.outcomes(id);
+  const body = `
+    ${field('Activity name', `<input type="text" id="af-name" value="${esc(a.name)}" placeholder="e.g. Learn Tamil">`)}
+    ${field('What it means to me <em>optional</em>', `<textarea id="af-desc" rows="2">${esc(a.description)}</textarea>`)}
+    <p class="hint">No justification needed — “Because I want to” is a perfectly good reason.</p>
+    ${field('General motives <em>— why I might do this</em>', chipsHTML('motives', mot, 'af-mot'))}
+    ${field('General outcomes <em>— what I usually get from it</em>', chipsHTML('outcomes', out, 'af-out'))}
+    <div class="grid2">${field('Usual time', durHTML('af-time', a.defaultTimeMin))}${field('General priority', scaleHTML('priority', a.defaultPriority, 'af-pri'))}</div>
+    <div class="grid2">${field('Mental effort', scaleHTML('mental', a.defaultMental, 'af-mental'))}${field('Emotional resistance', scaleHTML('resistance', a.defaultResistance, 'af-res'))}</div>
+    ${isNew ? '' : `<label class="field" style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" id="af-active" ${a.active?'checked':''}> Active (inactive activities are hidden from planning but keep their history)</label>
+      ${field('Change note <em>optional — why did this change?</em>', `<input type="text" id="af-note" placeholder="e.g. Exercise feels easier now">`)}
+      <p class="muted small">Past tasks keep the values they were planned with. Changes here are logged in the activity’s history.</p>`}`;
+  openModal({ title: isNew ? 'New activity' : 'Edit activity', body, wide: true,
+    footer: `<span class="spacer"></span><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="af-save">${isNew ? 'Create activity' : 'Save changes'}</button>`,
+    onMount: m => $('#af-save', m).addEventListener('click', () => {
+      const name = $('#af-name', m).value.trim();
+      if (!name){ $('#af-name', m).classList.add('invalid'); return toast('Please give the activity a name'); }
+      if (db.activities.some(x => x.id !== id && x.name.toLowerCase() === name.toLowerCase())) return toast('An activity with this name already exists');
+      const time = readDur(m, 'af-time'); if (Number.isNaN(time)) return toast('Time not understood — try 90, 1:30 or 1h 30m');
+      const vals = { name, description: $('#af-desc', m).value.trim(), defaultPriority: readScale(m,'af-pri'), defaultTimeMin: time, defaultMental: readScale(m,'af-mental'), defaultResistance: readScale(m,'af-res') };
+      const nm = readChips(m,'af-mot'), no = readChips(m,'af-out'), t = nowISO();
+      if (isNew){
+        const na = { id:'act_'+uid(), ...vals, active:true, createdAt:t, modifiedAt:t };
+        db.activities.push(na);
+        setLinks('activityMotives','activityId',na.id,'motiveId',nm); setLinks('activityOutcomes','activityId',na.id,'outcomeId',no);
+        db.activityHistory.push({ id:'h_'+uid(), activityId:na.id, changeId:uid(), at:t, field:'created', oldValue:null, newValue:name, note:'' });
+        persist(); closeModal(); toast('Activity created');
+        return onSaved ? onSaved(na.id) : rerender();
+      }
+      vals.active = $('#af-active', m).checked;
+      const note = $('#af-note', m).value.trim(), cid = uid(), changes = [];
+      Object.keys(vals).forEach(k => { if ((a[k] ?? null) !== (vals[k] ?? null)) changes.push([k, a[k] ?? null, vals[k] ?? null]); });
+      if (!sameSet(mot, nm)) changes.push(['motives', names('motives', mot), names('motives', nm)]);
+      if (!sameSet(out, no)) changes.push(['outcomes', names('outcomes', out), names('outcomes', no)]);
+      if (!changes.length){ closeModal(); return toast('No changes'); }
+      changes.forEach(([f,o,n]) => db.activityHistory.push({ id:'h_'+uid(), activityId:id, changeId:cid, at:t, field:f, oldValue:o, newValue:n, note }));
+      Object.assign(a, vals, { modifiedAt:t });
+      setLinks('activityMotives','activityId',id,'motiveId',nm); setLinks('activityOutcomes','activityId',id,'outcomeId',no);
+      persist(); closeModal(); toast('Saved — previous values kept in history'); onSaved ? onSaved(id) : rerender();
+    })
+  });
+}
+
+/* =====================================================================
+   VIEW: ACTIVITY LIBRARY
+   ===================================================================== */
+const lib = { q:'', status:'active', motive:'', sort:'name' };
+VIEWS.activities = () => {
+  $('#main').innerHTML = `
+  <section class="page-head">
+    <div><div class="eyebrow">Library</div><h1>Activities</h1><p class="lede">The things I generally want to do in my life.</p></div>
+    <div class="head-actions"><button class="btn primary" data-act="newActivity">+ New activity</button></div>
+  </section>
+  <div class="toolbar">
+    <input type="search" id="lib-q" placeholder="Search…" value="${esc(lib.q)}">
+    <select id="lib-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="all">All</option></select>
+    <select id="lib-motive"><option value="">Any motive</option>${sorted('motives').map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>
+    <select id="lib-sort"><option value="name">Name A–Z</option><option value="priority">Priority</option><option value="count">Most performed</option><option value="time">Most time</option><option value="recent">Recently done</option></select>
+  </div>
+  <div class="lib-grid" id="lib-grid"></div>`;
+  $('#lib-status').value = lib.status; $('#lib-motive').value = lib.motive; $('#lib-sort').value = lib.sort;
+  const upd = () => { lib.q = $('#lib-q').value; lib.status = $('#lib-status').value; lib.motive = $('#lib-motive').value; lib.sort = $('#lib-sort').value; renderLibGrid(); };
+  $('#lib-q').addEventListener('input', upd); ['#lib-status','#lib-motive','#lib-sort'].forEach(s => $(s).addEventListener('change', upd));
+  renderLibGrid();
+};
+function renderLibGrid(){
+  const q = lib.q.trim().toLowerCase();
+  let items = db.activities.filter(a =>
+    (lib.status === 'all' || (lib.status === 'active' ? a.active : !a.active)) &&
+    (!q || a.name.toLowerCase().includes(q) || (a.description||'').toLowerCase().includes(q)) &&
+    (!lib.motive || A.motives(a.id).includes(lib.motive))
+  ).map(a => ({ a, s: activityStats(a.id) }));
+  const cmp = { name:(x,y)=>x.a.name.localeCompare(y.a.name), priority:(x,y)=>(y.a.defaultPriority||0)-(x.a.defaultPriority||0), count:(x,y)=>y.s.performed-x.s.performed, time:(x,y)=>y.s.totalMin-x.s.totalMin, recent:(x,y)=>(y.s.last||'').localeCompare(x.s.last||'') }[lib.sort];
+  items.sort((x,y) => cmp(x,y) || x.a.name.localeCompare(y.a.name));
+  $('#lib-grid').innerHTML = items.length ? items.map(({a,s}) => {
+    const mot = s.topMotives.length ? names('motives', s.topMotives) : names('motives', A.motives(a.id)).slice(0,3);
+    const out = s.topOutcomes.length ? names('outcomes', s.topOutcomes) : names('outcomes', A.outcomes(a.id)).slice(0,3);
+    return `<div class="acard ${a.active?'':'inactive'}" data-act="openActivity" data-id="${a.id}">
+      <h3><span>${esc(a.name)}</span>${badge('P', a.defaultPriority, 'General priority')}</h3>
+      ${a.description ? `<div class="desc">${esc(a.description)}</div>` : ''}
+      <div class="row">${s.performed ? `Done <b>${s.performed}×</b> · <b>${fmtMin(s.totalMin)}</b> total${s.last ? ' · last ' + fmtShort(s.last) : ''}` : 'Not done yet'}${a.active ? '' : ' · <b>Inactive</b>'}</div>
+      <div>${mot.map(x => `<span class="mini m">${esc(x)}</span>`).join('')}</div>
+      <div>${out.map(x => `<span class="mini o">${esc(x)}</span>`).join('')}</div>
+      <div class="row">${s.topMotives.length ? 'Most common motives & outcomes from what you did' : 'General motives & outcomes'}</div>
+      ${a.active ? `<div class="foot"><button class="btn sm" data-act="planActivity" data-id="${a.id}">Plan tomorrow</button><button class="btn sm ghost" data-act="unplannedActivity" data-id="${a.id}">I did this today</button></div>` : ''}
+    </div>`; }).join('') : `<div class="empty card" style="grid-column:1/-1"><div class="big">No activities match.</div></div>`;
+}
+
+/* =====================================================================
+   VIEW: ACTIVITY DETAIL
+   ===================================================================== */
+VIEWS.activity = (id) => {
+  const a = byId('activities', id);
+  if (!a){ $('#main').innerHTML = `<div class="card empty"><div class="big">Activity not found.</div><a class="btn" href="#/activities">Back to library</a></div>`; return; }
+  const s = activityStats(id), sc = db.settings.scales;
+  const tasks = db.tasks.filter(t => t.activityId === id).sort((x,y) => y.date.localeCompare(x.date) || (x.order??0)-(y.order??0));
+  const hist = db.activityHistory.filter(h => h.activityId === id).sort((x,y) => y.at.localeCompare(x.at));
+  const groups = []; hist.forEach(h => { const g = groups.find(g => g.changeId === h.changeId); g ? g.items.push(h) : groups.push({ changeId:h.changeId, at:h.at, note:h.note, items:[h] }); });
+  $('#main').innerHTML = `
+  <p><a href="#/activities">← Activities</a></p>
+  <section class="page-head">
+    <div><div class="eyebrow">Activity${a.active ? '' : ' · inactive'}</div><h1>${esc(a.name)}</h1>${a.description ? `<p class="lede">${esc(a.description)}</p>` : ''}</div>
+    <div class="head-actions">
+      ${a.active ? `<button class="btn primary" data-act="planActivity" data-id="${id}">Plan tomorrow</button><button class="btn" data-act="unplannedActivity" data-id="${id}">I did this today</button>` : ''}
+      <button class="btn" data-act="editActivity" data-id="${id}">Edit</button>
+    </div>
+  </section>
+  <section class="card">
+    <h2 style="margin-bottom:.7rem">General profile</h2>
+    <div class="kv">
+      <div><div class="k">Priority</div><div class="v">${a.defaultPriority ?? '–'}/5 <span class="muted small">${esc(a.defaultPriority ? sc.priority[a.defaultPriority-1] : '')}</span></div></div>
+      <div><div class="k">Usual time</div><div class="v">${fmtMin(a.defaultTimeMin)}</div></div>
+      <div><div class="k">Mental effort</div><div class="v">${a.defaultMental ?? '–'}/5 <span class="muted small">${esc(a.defaultMental ? sc.mental[a.defaultMental-1] : '')}</span></div></div>
+      <div><div class="k">Emotional resistance</div><div class="v">${a.defaultResistance ?? '–'}/5</div></div>
+    </div>
+    <div style="margin-top:.9rem"><div class="field-label">General motives</div>${names('motives', A.motives(id)).map(x => `<span class="mini m">${esc(x)}</span>`).join('') || '<span class="muted small">None</span>'}</div>
+    <div style="margin-top:.6rem"><div class="field-label">General outcomes</div>${names('outcomes', A.outcomes(id)).map(x => `<span class="mini o">${esc(x)}</span>`).join('') || '<span class="muted small">None</span>'}</div>
+    <p class="muted small" style="margin:.9rem 0 0">Created ${fmtStamp(a.createdAt)} · Last modified ${fmtStamp(a.modifiedAt)}</p>
+  </section>
+  <div class="stats">
+    ${stat('Times done', s.performed)}${stat('Total time', s.totalMin ? fmtMin(s.totalMin) : '—')}
+    ${stat('Tasks created', s.tasks)}${stat('Postponed', s.postponed)}
+  </div>
+  ${s.topMotives.length ? `<section class="card"><div class="field-label">Most common motives when actually done</div>${names('motives', s.topMotives).map(x => `<span class="mini m">${esc(x)}</span>`).join('')}
+     <div class="field-label" style="margin-top:.6rem">Most common outcomes</div>${names('outcomes', s.topOutcomes).map(x => `<span class="mini o">${esc(x)}</span>`).join('')}</section>` : ''}
+  <section class="card">
+    <h2 style="margin-bottom:.6rem">Related tasks</h2>
+    ${tasks.length ? `<div class="table-wrap"><table class="simple"><thead><tr><th>Date</th><th>Task</th><th>Status</th><th>Plan</th><th>Actual</th><th>P plan/act</th></tr></thead><tbody>
+      ${tasks.map(t => `<tr><td><a href="#/review/${t.date}">${fmtShort(t.date)}</a></td><td><a href="javascript:void 0" data-act="openTask" data-id="${t.id}">${esc(t.title || '—')}</a>${t.isUnplanned ? unplTag : ''}</td><td>${statusPill(t)}</td><td>${fmtMin(t.planTimeMin)}</td><td>${fmtMin(t.actTimeMin)}</td><td>${t.planPriority ?? '–'} / ${t.actPriority ?? '–'}</td></tr>`).join('')}
+    </tbody></table></div>` : '<p class="muted">No tasks yet.</p>'}
+  </section>
+  <section class="card">
+    <h2 style="margin-bottom:.8rem">Change history</h2>
+    ${groups.map(g => `<div class="hist-group"><div class="hist-when">${fmtStamp(g.at)}</div>
+      ${g.items.map(h => h.field === 'created' ? `<div class="hist-line">Activity created${h.note ? ' — ' + esc(h.note) : ''}</div>` :
+        `<div class="hist-line"><b>${FIELD_LABELS[h.field] || esc(h.field)}:</b> <s>${esc(fmtHistVal(h.field, h.oldValue))}</s> → ${esc(fmtHistVal(h.field, h.newValue))}</div>`).join('')}
+      ${g.note && g.items[0].field !== 'created' ? `<div class="hist-note">“${esc(g.note)}”</div>` : ''}</div>`).join('') || '<p class="muted">No changes recorded.</p>'}
+  </section>
+  ${!tasks.length ? `<p style="text-align:right"><button class="btn ghost danger sm" data-act="deleteActivity" data-id="${id}">Delete activity</button></p>` :
+    `<p class="muted small" style="text-align:right">Activities with tasks can be deactivated (Edit → Active) but not deleted, so history stays meaningful.</p>`}`;
+};
+
+/* =====================================================================
+   VIEW: SETTINGS / MASTERS
+   ===================================================================== */
+VIEWS.settings = () => {
+  const s = db.settings;
+  const scaleNames = { priority:'Priority', mental:'Mental effort', resistance:'Emotional resistance', satisfaction:'Satisfaction' };
+  $('#main').innerHTML = `
+  <section class="page-head"><div><div class="eyebrow">Settings</div><h1>Masters &amp; preferences</h1></div></section>
+  ${masterSection('motives', 'Motives', 'Why I might do something. Rename freely; deactivate instead of deleting once used.')}
+  ${masterSection('outcomes', 'Outcomes', 'What I might get from something.')}
+  <section class="card">
+    <h2>Scale definitions</h2><p class="muted small">Labels shown for each 1–5 value.</p>
+    ${Object.keys(scaleNames).map(k => `<div class="field"><span>${scaleNames[k]}</span><div class="scale-edit">${s.scales[k].map((l,i) =>
+      `<label>${i+1}<input type="text" class="scale-input" data-kind="${k}" data-i="${i}" value="${esc(l)}"></label>`).join('')}</div></div>`).join('')}
+  </section>
+  <section class="card">
+    <h2>Preferences</h2>
+    <div class="setting-row"><div>Appearance</div><select id="set-theme"><option value="auto">Match device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+    <div class="setting-row"><div>Hours available per day <div class="muted small">Optional — shows unallocated time when planning</div></div><input type="number" id="set-cap" min="0" max="24" step="0.5" value="${esc(s.dayCapacityHours)}" placeholder="e.g. 6"></div>
+    <div class="setting-row"><div>PIN lock <div class="muted small">${s.pinHash ? 'On' : 'Off'} — a simple privacy screen for this device, not strong security</div></div>
+      <div>${s.pinHash ? '<button class="btn sm" data-act="setPin">Change PIN</button> <button class="btn sm ghost" data-act="removePin">Turn off</button>' : '<button class="btn sm" data-act="setPin">Set a PIN</button>'}</div></div>
+  </section>
+  <section class="card">
+    <h2>Your data</h2>
+    <p class="muted small">Everything is stored only in this browser on this device. Export a backup regularly — clearing browser data would erase it.
+      Last backup: <b>${s.lastBackupAt ? fmtStamp(s.lastBackupAt) : 'never'}</b>.</p>
+    <div class="head-actions">
+      <button class="btn primary" data-act="exportJSON">Export backup (.json)</button>
+      <button class="btn" data-act="importJSON">Restore from backup…</button>
+      <button class="btn" data-act="exportCSV">Export tasks (.csv)</button>
+    </div>
+    <p class="muted small" style="margin-top:.8rem">${db.activities.length} activities · ${db.tasks.length} tasks · ${db.activityHistory.length} history entries · Viana v${APP_VERSION}</p>
+    <button class="btn sm ghost danger" data-act="resetData">Erase everything and start fresh…</button>
+  </section>`;
+  $('#set-theme').value = s.theme;
+};
+function masterSection(tbl, title, help){
+  return `<section class="card" data-master="${tbl}">
+    <h2>${title}</h2><p class="muted small">${help}</p>
+    ${sorted(tbl).map((x,i,arr) => { const n = usageCount(tbl, x.id); return `<div class="mrow ${x.active?'':'off'}" data-tbl="${tbl}" data-id="${x.id}">
+      <input type="text" class="m-name" value="${esc(x.name)}" aria-label="Name">
+      <input type="text" class="m-desc" value="${esc(x.description)}" placeholder="Description (optional)" aria-label="Description">
+      <span class="usage">${n ? `used ${n}×` : 'unused'}</span>
+      <label><input type="checkbox" class="m-active" ${x.active?'checked':''}> Active</label>
+      <span class="ord"><button class="icon-btn" data-act="moveMaster" data-dir="-1" ${i===0?'disabled':''} aria-label="Up">↑</button><button class="icon-btn" data-act="moveMaster" data-dir="1" ${i===arr.length-1?'disabled':''} aria-label="Down">↓</button>${n ? '' : `<button class="icon-btn" data-act="deleteMaster" aria-label="Delete" title="Delete (only possible while unused)">✕</button>`}</span>
+    </div>`; }).join('')}
+    <div class="addrow"><input type="text" class="m-new" placeholder="Add a new ${title.toLowerCase().slice(0,-1)}…"><button class="btn" data-act="addMaster" data-tbl="${tbl}">Add</button></div>
+  </section>`;
+}
+
+/* ---------- Backup / import / CSV ---------- */
+function exportJSON(){
+  db.settings.lastBackupAt = nowISO(); persist();
+  download(`viana-backup-${todayStr()}.json`, JSON.stringify(db, null, 2), 'application/json');
+  toast('Backup downloaded');
+}
+function importJSON(file){
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      if (!data.schemaVersion || !TABLES.every(k => Array.isArray(data[k]))) throw new Error('This does not look like a Viana backup.');
+      if (!confirm(`Replace ALL current data with this backup?\n\n${data.activities.length} activities, ${data.tasks.length} tasks.`)) return;
+      db = data; migrate(); persist(); applyTheme(); toast('Backup restored'); rerender();
+    } catch(e){ alert('Could not restore: ' + e.message); }
+  };
+  r.readAsText(file);
+}
+function exportCSV(){
+  const cols = ['date','activity','activity_name_at_creation','task','unplanned','status','plan_time_min','actual_time_min','plan_mental','actual_mental','plan_resistance','actual_resistance','plan_priority','actual_priority','satisfaction','planned_motives','actual_motives','planned_outcomes','actual_outcomes','plan_notes','actual_notes','carried_from_date','created_at','modified_at'];
+  const q = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; };
+  const rows = db.tasks.slice().sort((a,b) => a.date.localeCompare(b.date) || (a.order??0)-(b.order??0)).map(t => [
+    t.date, actName(t), t.activityNameAtCreation, t.title, t.isUnplanned ? 'yes' : 'no', STATUS[t.status]?.label,
+    t.planTimeMin, t.actTimeMin, t.planMental, t.actMental, t.planResistance, t.actResistance, t.planPriority, t.actPriority, t.actSatisfaction,
+    names('motives',T.motives(t.id,'planned')).join('; '), names('motives',T.motives(t.id,'actual')).join('; '),
+    names('outcomes',T.outcomes(t.id,'planned')).join('; '), names('outcomes',T.outcomes(t.id,'actual')).join('; '),
+    t.planNotes, t.actNotes, t.carriedFromTaskId ? byId('tasks', t.carriedFromTaskId)?.date : '', t.createdAt, t.modifiedAt].map(q).join(','));
+  download(`viana-tasks-${todayStr()}.csv`, '\ufeff' + [cols.join(','), ...rows].join('\n'), 'text/csv');
+}
+
+/* ---------- PIN lock ---------- */
+async function hashPin(p){
+  const s = 'viana:' + p;
+  if (window.crypto?.subtle){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return 's:' + [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
+  let h = 5381; for (const c of s) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0; return 'f:' + h.toString(16);
+}
+function showLock(){
+  const lock = $('#lock'); lock.hidden = false; const inp = $('#lock-pin'); inp.focus();
+  const tryIt = async () => {
+    if (await hashPin(inp.value) === db.settings.pinHash){ sessionStorage.setItem('viana.unlocked','1'); lock.hidden = true; inp.value=''; }
+    else { $('#lock-msg').textContent = 'That PIN didn’t match.'; inp.select(); }
+  };
+  $('#lock-go').onclick = tryIt; inp.onkeydown = e => { if (e.key === 'Enter') tryIt(); };
+}
+
+function applyTheme(){
+  const t = db.settings.theme;
+  if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = t;
+}
+
+/* =====================================================================
+   EVENT DELEGATION
+   ===================================================================== */
+const fireChange = el => el.dispatchEvent(new CustomEvent('viana:change', { bubbles: true }));
+const ACTIONS = {
+  goDate: el => go(`#/${el.dataset.view}/${el.dataset.date}`),
+  openTask: el => openTaskEditor({ taskId: el.dataset.id, tab: el.dataset.tab }),
+  addPlanned: el => openActivityPicker({ date: el.dataset.date, unplanned: false }),
+  addUnplanned: el => openActivityPicker({ date: el.dataset.date, unplanned: true }),
+  quickPlan: el => openTaskEditor({ activityId: el.dataset.aid, date: el.dataset.date }),
+  planActivity: el => openTaskEditor({ activityId: el.dataset.id, date: addDays(todayStr(),1) }),
+  unplannedActivity: el => openTaskEditor({ activityId: el.dataset.id, date: todayStr(), unplanned: true }),
+  quickDone: el => { const t = byId('tasks', el.dataset.id); setTaskStatus(t, 'done'); toast('Marked done — plan copied to actual'); rerender(); },
+  startTask: el => { const t = byId('tasks', el.dataset.id); setTaskStatus(t, 'in_progress'); rerender(); },
+  moveTask: el => {
+    const t = byId('tasks', el.dataset.id), list = tasksOn(t.date), i = list.indexOf(t), j = i + +el.dataset.dir;
+    if (j < 0 || j >= list.length) return;
+    [list[i], list[j]] = [list[j], list[i]]; list.forEach((x,k) => x.order = k); persist(); rerender();
+  },
+  removeTask: el => {
+    const t = byId('tasks', el.dataset.id);
+    if (!confirm(hasActuals(t) ? 'This task has recorded actuals. Remove it from the day anyway? (The activity stays.)' : `Remove “${actName(t)}” from this day? The activity stays in your library.`)) return;
+    deleteTask(t.id); persist(); toast('Removed from plan'); rerender();
+  },
+  carryOver: el => openCarryOver(el.dataset.date),
+  setStatus: el => { const card = el.closest('.review-card'); const t = byId('tasks', card.dataset.task); saveReviewCardQuiet(card); setTaskStatus(t, el.dataset.s); refreshReviewCard(t.id); toast(statusLabel(t.status, t.isUnplanned)); },
+  copyPlanTags: el => {
+    const card = el.closest('.review-card'), t = byId('tasks', card.dataset.task);
+    setTaskTags(t.id, 'actual', T.motives(t.id,'planned'), T.outcomes(t.id,'planned')); persist(); refreshReviewCard(t.id);
+    $(`.review-card[data-task="${t.id}"] details`).open = true; toast('Copied from plan');
+  },
+  carryOne: el => {
+    const card = el.closest('.review-card'), t = byId('tasks', card.dataset.task), d = $('.carry-date', card).value;
+    if (!d) return toast('Pick a date'); carryTask(t, d); persist(); refreshReviewCard(t.id); toast(`Added to ${fmtShort(d)}`);
+  },
+  newActivity: () => openActivityForm(null),
+  editActivity: el => openActivityForm(el.dataset.id),
+  openActivity: (el, e) => { if (e.target.closest('button')) return; go(`#/activity/${el.dataset.id}`); },
+  deleteActivity: el => {
+    const a = byId('activities', el.dataset.id);
+    if (db.tasks.some(t => t.activityId === a.id)) return toast('This activity has tasks — deactivate it instead');
+    if (!confirm(`Delete “${a.name}” permanently?`)) return;
+    db.activities = db.activities.filter(x => x.id !== a.id);
+    ['activityMotives','activityOutcomes','activityHistory'].forEach(k => db[k] = db[k].filter(r => r.activityId !== a.id));
+    persist(); toast('Deleted'); go('#/activities');
+  },
+  addMaster: el => {
+    const tbl = el.dataset.tbl, inp = el.parentElement.querySelector('.m-new'), name = inp.value.trim();
+    if (!name) return;
+    if (db[tbl].some(x => x.name.toLowerCase() === name.toLowerCase())) return toast('That already exists');
+    db[tbl].push({ id: (tbl==='motives'?'mot_':'out_') + uid(), name, description:'', active:true, order: Math.max(-1, ...db[tbl].map(x=>x.order??0)) + 1 });
+    persist(); toast('Added'); rerender();
+  },
+  moveMaster: el => {
+    const row = el.closest('.mrow'), tbl = row.dataset.tbl, list = sorted(tbl), i = list.findIndex(x => x.id === row.dataset.id), j = i + +el.dataset.dir;
+    if (j < 0 || j >= list.length) return; [list[i], list[j]] = [list[j], list[i]]; list.forEach((x,k) => x.order = k); persist(); rerender();
+  },
+  deleteMaster: el => {
+    const row = el.closest('.mrow'), tbl = row.dataset.tbl;
+    if (usageCount(tbl, row.dataset.id)) return toast('In use — deactivate instead');
+    db[tbl] = db[tbl].filter(x => x.id !== row.dataset.id); persist(); rerender();
+  },
+  exportJSON: () => exportJSON(),
+  importJSON: () => $('#import-file').click(),
+  exportCSV: () => exportCSV(),
+  resetData: () => {
+    const v = prompt('This erases ALL activities, tasks and history on this device and restores the sample activities.\nExport a backup first.\n\nType ERASE to confirm:');
+    if (v !== 'ERASE') return;
+    const theme = db.settings.theme; db = seedDB(); db.settings.theme = theme; persist(); toast('Started fresh'); go('#/today');
+  },
+  setPin: async () => {
+    const p = prompt('Choose a PIN (4+ characters). If you forget it, the only fix is clearing this site’s data — so keep a backup.');
+    if (p == null) return; if (p.length < 4) return toast('PIN too short');
+    if (prompt('Type the PIN again to confirm') !== p) return toast('PINs didn’t match');
+    db.settings.pinHash = await hashPin(p); persist(); sessionStorage.setItem('viana.unlocked','1'); toast('PIN set'); rerender();
+  },
+  removePin: () => { if (!confirm('Turn off the PIN lock?')) return; db.settings.pinHash = ''; persist(); toast('PIN removed'); rerender(); },
+};
+function saveReviewCardQuiet(card){
+  // persist any typed-but-not-blurred values before a re-render
+  const t = byId('tasks', card.dataset.task); const m = readDur(card, 'act-time');
+  if (!Number.isNaN(m)) t.actTimeMin = m;
+  t.actNotes = $('[data-field="actNotes"]', card).value.trim();
+}
+
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.chips .chip[data-id]');
+  if (chip){ chip.classList.toggle('on'); fireChange(chip); return; }
+  const sb = e.target.closest('.scale button');
+  if (sb){
+    const sc = sb.parentElement, v = sc.dataset.value === sb.dataset.v ? '' : sb.dataset.v, labels = db.settings.scales[sc.dataset.kind];
+    sc.dataset.value = v; $$('button', sc).forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    $('.scale-label', sc).innerHTML = v ? esc(labels[v-1]) : '<span class="muted">not set</span>';
+    fireChange(sc); return;
+  }
+  const qb = e.target.closest('.dur .quick button');
+  if (qb){ const inp = $('input', qb.closest('.dur')); inp.value = fmtMin(+qb.dataset.m); inp.classList.remove('invalid'); fireChange(inp); return; }
+  const el = e.target.closest('[data-act]');
+  if (el && ACTIONS[el.dataset.act]){ if (el.tagName === 'A') e.preventDefault(); ACTIONS[el.dataset.act](el, e); }
+});
+document.addEventListener('viana:change', e => { const card = e.target.closest('.review-card'); if (card) saveReviewCard(card); });
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.id === 'import-file'){ if (el.files[0]) importJSON(el.files[0]); el.value = ''; return; }
+  if (el.classList.contains('date-pick') && el.value) return go(`#/${el.dataset.view}/${el.value}`);
+  const card = el.closest('.review-card');
+  if (card){
+    if (el.dataset.field === 'status'){ const t = byId('tasks', card.dataset.task); saveReviewCardQuiet(card); setTaskStatus(t, el.value); refreshReviewCard(t.id); toast('Status updated'); }
+    else saveReviewCard(card);
+    return;
+  }
+  const row = el.closest('.mrow');
+  if (row){
+    const item = byId(row.dataset.tbl, row.dataset.id);
+    if (el.classList.contains('m-name')){
+      const n = el.value.trim();
+      if (!n || db[row.dataset.tbl].some(x => x.id !== item.id && x.name.toLowerCase() === n.toLowerCase())){ el.value = item.name; return toast(n ? 'That name already exists' : 'Name can’t be empty'); }
+      item.name = n; toast('Renamed');
+    }
+    if (el.classList.contains('m-desc')){ item.description = el.value.trim(); toast('Saved'); }
+    if (el.classList.contains('m-active')){ item.active = el.checked; row.classList.toggle('off', !el.checked); toast(el.checked ? 'Activated' : 'Deactivated — kept for history'); }
+    return persist();
+  }
+  if (el.classList.contains('scale-input')){ db.settings.scales[el.dataset.kind][+el.dataset.i] = el.value.trim() || defaultSettings().scales[el.dataset.kind][+el.dataset.i]; persist(); return toast('Saved'); }
+  if (el.id === 'set-theme'){ db.settings.theme = el.value; persist(); applyTheme(); return; }
+  if (el.id === 'set-cap'){ db.settings.dayCapacityHours = el.value; persist(); return toast('Saved'); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#modal-root').innerHTML) closeModal();
+  if (e.key === 'Enter' && e.target.classList?.contains('m-new')) e.target.parentElement.querySelector('[data-act="addMaster"]').click();
+});
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+loadDB();
+applyTheme();
+renderNav();
+window.addEventListener('hashchange', () => { route(); window.scrollTo(0,0); });
+route();
+if (db.settings.pinHash && !sessionStorage.getItem('viana.unlocked')) showLock();
+if (navigator.storage?.persist) navigator.storage.persist().catch(()=>{});
+</script>
+</body>
+</html>

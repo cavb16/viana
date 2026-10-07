@@ -1,0 +1,56 @@
+rules_version = '2';
+// Viana — Firestore security rules.
+// Paste into Firebase console → Firestore Database → Rules → Publish.
+// Each user can only read/write their own data. The ADMIN account (admin@viana.app) can access everything.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin()  { return signedIn() && request.auth.token.email == 'admin@viana.app'; }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
+    function activeProfile(uid) {
+      return get(/databases/$(database)/documents/profiles/$(uid)).data.active == true;
+    }
+
+    // User profiles (no passwords — Firebase Authentication keeps those)
+    match /profiles/{uid} {
+      allow read: if isAdmin() || isSelf(uid);
+      allow create: if isAdmin() || (isSelf(uid)
+                     && request.resource.data.id == uid
+                     && request.resource.data.role == 'user'
+                     && request.resource.data.active == true
+                     && request.resource.data.deleted == false
+                     && request.resource.data.username + '@viana.app' == request.auth.token.email);
+      allow update: if isAdmin() || (isSelf(uid) && activeProfile(uid)
+                     && request.resource.data.diff(resource.data).affectedKeys()
+                          .hasOnly(['displayName', 'prefs', 'lastLoginAt', 'modifiedAt']));
+      allow delete: if isAdmin();
+    }
+
+    // Private data: users/{uid}/activities, /tasks, /activityHistory
+    match /users/{uid}/{table}/{docId} {
+      allow read, write: if isAdmin() || (isSelf(uid) && activeProfile(uid));
+    }
+
+    // Shared master lists: everyone can read and add; only the admin can change or delete
+    match /motives/{id} {
+      allow read, create: if signedIn();
+      allow update, delete: if isAdmin();
+    }
+    match /outcomes/{id} {
+      allow read, create: if signedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // Scale labels and other app-wide settings
+    match /shared/{doc} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Admin audit trail
+    match /auditLog/{id} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
