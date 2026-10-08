@@ -1,1373 +1,756 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Viana — how I want to spend my time</title>
-<meta name="description" content="Viana: a personal space to decide how I want to spend my time.">
-<meta name="theme-color" content="#5b7f6a">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%235b7f6a'/%3E%3Cpath d='M20 22l12 22 12-22' stroke='%23fff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Viana — Activity & Time Planning</title>
+<meta name="viana-version" content="2.0-login">
 <style>
-/* ============ Theme ============ */
-:root{
-  --bg:#f6f4ef; --surface:#ffffff; --surface-2:#fbfaf7; --text:#2b2d2a; --muted:#767870; --border:#e6e2d8;
-  --accent:#5b7f6a; --accent-ink:#ffffff; --accent-soft:#e7efe9; --accent-2:#8a6f9e; --accent-2-soft:#f0eaf4;
-  --good:#5b7f6a; --mid:#b88a3e; --mid-soft:#f6eedf; --low:#9a8f86; --info:#4f7896; --info-soft:#e4edf3; --danger:#b4574c;
-  --radius:14px; --shadow:0 1px 2px rgba(40,40,30,.05),0 4px 16px rgba(40,40,30,.05);
-  --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  --sans: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#1a1c1a; --surface:#232623; --surface-2:#1f221f; --text:#e7e5df; --muted:#9b9e95; --border:#353a34;
-    --accent:#8db89b; --accent-ink:#152018; --accent-soft:#2a372e; --accent-2:#b79bcb; --accent-2-soft:#342c3a;
-    --good:#8db89b; --mid:#d6aa5e; --mid-soft:#3a3122; --low:#8d857e; --info:#86a9c4; --info-soft:#24313b; --danger:#d98479;
-    --shadow:none; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#1a1c1a; --surface:#232623; --surface-2:#1f221f; --text:#e7e5df; --muted:#9b9e95; --border:#353a34;
-  --accent:#8db89b; --accent-ink:#152018; --accent-soft:#2a372e; --accent-2:#b79bcb; --accent-2-soft:#342c3a;
-  --good:#8db89b; --mid:#d6aa5e; --mid-soft:#3a3122; --low:#8d857e; --info:#86a9c4; --info-soft:#24313b; --danger:#d98479;
-  --shadow:none; color-scheme: dark;
-}
-
-/* ============ Base ============ */
+:root{--bg:#f6f7fb;--card:#fff;--ink:#1d2433;--muted:#6b7385;--line:#e3e6ee;--pri:#4f46e5;--pri2:#eef0ff;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--r:12px}
 *{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-body.modal-open{overflow:hidden}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
-h1{font-size:1.9rem;line-height:1.2}
-h2{font-size:1.25rem}
-h3{font-size:1.05rem}
-input,select,textarea,button{font:inherit;color:inherit}
-input[type=text],input[type=date],input[type=number],input[type=password],input[type=search],select,textarea{
-  width:100%;padding:.55rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);outline:none;transition:border-color .15s}
-input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-textarea{resize:vertical;min-height:2.6rem}
-.invalid{border-color:var(--danger)!important}
-.muted{color:var(--muted)} .small{font-size:.85rem}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+button,input,select,textarea{font:inherit}
 .hidden{display:none!important}
+/* auth */
+#auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.authbox{background:var(--card);width:100%;max-width:380px;border-radius:16px;padding:28px;box-shadow:0 10px 30px rgba(30,40,80,.08)}
+.logo{font-size:30px;font-weight:800;color:var(--pri);text-align:center;letter-spacing:.5px}
+.sub{text-align:center;color:var(--muted);margin:4px 0 20px;font-size:13px}
+.tabs2{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:18px}
+.tabs2 button{flex:1;border:0;background:none;padding:9px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:600}
+.tabs2 button.on{background:#fff;color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px;font-weight:600}
+input[type=text],input[type=password],input[type=number],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:64px;resize:vertical}
+.btn{border:0;background:var(--pri);color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:600}
+.btn.full{width:100%;margin-top:16px}
+.btn.ghost{background:var(--pri2);color:var(--pri)}
+.btn.light{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:#fee2e2;color:var(--bad)}
+.btn.sm{padding:6px 10px;font-size:13px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:10px}
+.modepill{font-size:12px;text-align:center;color:var(--muted);margin-top:14px}
+/* app */
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:center;gap:10px;padding:10px 16px;max-width:1100px;margin:0 auto}
+.hrow .logo{font-size:22px;text-align:left}
+.who{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.badge{background:var(--pri2);color:var(--pri);padding:3px 8px;border-radius:20px;font-size:12px;font-weight:700}
+nav{display:flex;gap:4px;overflow-x:auto;padding:0 12px 8px;max-width:1100px;margin:0 auto;scrollbar-width:none}
+nav button{border:0;background:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:600;white-space:nowrap}
+nav button.on{background:var(--pri2);color:var(--pri)}
+.viewas{background:#fff7ed;color:#9a3412;padding:8px 16px;font-size:13px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h2{margin:4px 0 14px;font-size:20px}
+h3{margin:0 0 10px;font-size:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .spacer{flex:1}
-
-/* ============ Layout ============ */
-.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-.topbar-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.7rem 1.2rem}
-.brand{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:.5rem}
-.brand-dot{width:22px;height:22px;border-radius:50%;background:var(--accent);display:inline-grid;place-items:center}
-.brand-dot svg{width:12px;height:12px;stroke:var(--accent-ink);stroke-width:3;fill:none}
-nav#nav{margin-left:auto;display:flex;gap:.25rem}
-nav#nav a{display:flex;align-items:center;gap:.4rem;padding:.45rem .75rem;border-radius:999px;color:var(--muted);font-weight:500}
-nav#nav a:hover{text-decoration:none;color:var(--text);background:var(--surface)}
-nav#nav a.active{color:var(--accent);background:var(--accent-soft)}
-nav#nav svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-main{max-width:980px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
-@media (max-width:720px){
-  .topbar{backdrop-filter:none;background:var(--bg)}
-  .topbar-in{padding:.6rem 1rem}
-  nav#nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--border);justify-content:space-around;padding:.3rem .2rem calc(.3rem + env(safe-area-inset-bottom))}
-  nav#nav a{flex-direction:column;gap:.1rem;font-size:.7rem;padding:.35rem .5rem;border-radius:10px}
-  main{padding:1.1rem .9rem 6.5rem}
-  h1{font-size:1.55rem}
-}
-
-/* ============ Components ============ */
-.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
-.eyebrow{text-transform:uppercase;letter-spacing:.09em;font-size:.72rem;font-weight:600;color:var(--accent)}
-.lede{color:var(--muted);margin:.3rem 0 0}
-.head-actions{display:flex;gap:.5rem;flex-wrap:wrap}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.1rem 1.2rem;margin-bottom:1rem}
-.card.soft{background:var(--surface-2);box-shadow:none}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.7rem;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;padding:.55rem 1rem;border-radius:999px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-weight:500;white-space:nowrap;transition:background .15s,border-color .15s;color:var(--text)}
-.btn:hover{border-color:var(--accent);text-decoration:none}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn.primary:hover{filter:brightness(1.05)}
-.btn.ghost{background:transparent}
-.btn.danger{color:var(--danger)}
-.btn.danger:hover{border-color:var(--danger)}
-.btn.sm{padding:.3rem .7rem;font-size:.85rem}
-.btn:disabled{opacity:.45;cursor:default}
-.icon-btn{border:1px solid transparent;background:transparent;width:32px;height:32px;border-radius:50%;cursor:pointer;display:inline-grid;place-items:center;color:var(--muted);font-size:1rem}
-.icon-btn:hover:not(:disabled){background:var(--accent-soft);color:var(--accent)}
-.icon-btn:disabled{opacity:.3;cursor:default}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1rem}
-@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1rem}
-.stat .label{font-size:.78rem;color:var(--muted)}
-.stat .value{font-family:var(--serif);font-size:1.45rem;font-weight:600;line-height:1.3}
-.stat .sub{font-size:.78rem;color:var(--muted)}
-.empty{text-align:center;padding:2rem 1rem;color:var(--muted)}
-.empty .big{font-family:var(--serif);font-size:1.15rem;color:var(--text);margin-bottom:.3rem}
-.empty .btn{margin:.8rem .25rem 0}
-.pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.12rem .55rem;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
-.pill.good{background:var(--accent-soft);color:var(--good);border-color:transparent}
-.pill.mid{background:var(--mid-soft);color:var(--mid);border-color:transparent}
-.pill.info{background:var(--info-soft);color:var(--info);border-color:transparent}
-.pill.low{color:var(--low)}
-.tag-unpl{display:inline-block;font-size:.7rem;font-weight:600;padding:.08rem .5rem;border-radius:999px;background:var(--accent-2-soft);color:var(--accent-2);vertical-align:middle;margin-left:.3rem;font-family:var(--sans)}
-.mini{display:inline-block;font-size:.72rem;padding:.08rem .5rem;border-radius:999px;margin:.15rem .25rem 0 0}
-.mini.m{background:var(--accent-soft);color:var(--accent)}
-.mini.o{background:var(--accent-2-soft);color:var(--accent-2)}
-.badge{display:inline-flex;align-items:center;gap:.15rem;font-size:.72rem;padding:.05rem .4rem;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted);font-variant-numeric:tabular-nums}
-.badge b{color:var(--text);font-weight:600}
-
-/* Task rows (today) */
-.tlist{display:flex;flex-direction:column}
-.trow{display:flex;align-items:center;gap:.8rem;padding:.75rem .2rem;border-bottom:1px solid var(--border)}
-.trow:last-child{border-bottom:none}
-.trow .dot{width:10px;height:10px;border-radius:50%;flex:none;border:2px solid var(--border)}
-.trow.s-good .dot{background:var(--good);border-color:var(--good)}
-.trow.s-mid .dot{background:var(--mid);border-color:var(--mid)}
-.trow.s-info .dot{background:var(--info);border-color:var(--info)}
-.trow.s-low .dot{background:var(--low);border-color:var(--low)}
-.tmain{flex:1;min-width:0;cursor:pointer}
-.tname{font-weight:600}
-.tsub{color:var(--muted);font-size:.9rem;overflow:hidden;text-overflow:ellipsis}
-.tmeta{font-size:.8rem;color:var(--muted);margin-top:.15rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
-.tactions{display:flex;gap:.35rem;flex:none;flex-wrap:wrap;justify-content:flex-end}
-
-/* Plan rows */
-.prow{display:grid;grid-template-columns:22px 1fr auto auto;gap:.7rem;align-items:center;padding:.75rem .2rem;border-bottom:1px solid var(--border);background:var(--surface)}
-.prow:last-child{border-bottom:none}
-.prow.dragging{opacity:.5}
-.handle{cursor:grab;color:var(--muted);user-select:none;text-align:center;letter-spacing:-2px}
-.pmain{cursor:pointer;min-width:0}
-.pnums{text-align:right}
-.ptime{font-family:var(--serif);font-weight:600;font-size:1.05rem;font-variant-numeric:tabular-nums}
-.badges{display:flex;gap:.25rem;justify-content:flex-end;margin-top:.15rem}
-.pact{display:flex;gap:0}
-@media (max-width:720px){
-  .prow{grid-template-columns:1fr auto;}
-  .prow .handle{display:none}
-  .prow .pact{grid-column:1 / -1;justify-content:flex-end;margin-top:-.3rem}
-}
-.tally{font-variant-numeric:tabular-nums}
-.tally .line{display:flex;justify-content:space-between;gap:1rem;padding:.2rem 0;color:var(--muted)}
-.tally .line span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tally .total{border-top:1px solid var(--border);margin-top:.4rem;padding-top:.5rem;color:var(--text);font-weight:600;font-size:1.05rem}
-.quickadd{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
-.datenav{display:flex;align-items:center;gap:.35rem}
-.datenav input[type=date]{width:auto}
-
-/* Chips / scales / durations */
-.field{display:block;margin-bottom:1rem}
-.field>span,.field-label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.35rem}
-.field em{font-weight:400;font-style:normal;opacity:.8}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
-@media (max-width:600px){.grid2{grid-template-columns:1fr}}
-.chips{display:flex;flex-wrap:wrap;gap:.35rem}
-.chip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.3rem .7rem;font-size:.83rem;cursor:pointer;transition:all .12s;color:var(--text)}
-.chip:hover{border-color:var(--accent)}
-.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.chips[data-group*="out"] .chip.on{background:var(--accent-2);border-color:var(--accent-2);color:#fff}
-.chip.inactive{border-style:dashed;opacity:.75}
-.scale{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
-.scale button{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-weight:600;font-variant-numeric:tabular-nums}
-.scale button:hover{border-color:var(--accent)}
-.scale button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.scale-label{font-size:.8rem;color:var(--muted);margin-left:.3rem}
-.dur{display:flex;flex-direction:column;gap:.35rem}
-.dur input{max-width:220px}
-.dur .quick{display:flex;gap:.25rem;flex-wrap:wrap}
-.dur .quick button{border:1px solid var(--border);background:transparent;border-radius:7px;padding:.12rem .45rem;font-size:.75rem;cursor:pointer;color:var(--muted)}
-.dur .quick button:hover{border-color:var(--accent);color:var(--accent)}
-.hint{font-size:.85rem;color:var(--muted);background:var(--surface-2);border:1px dashed var(--border);border-radius:10px;padding:.5rem .7rem;margin:0 0 1rem}
-
-/* Modal */
-.overlay{position:fixed;inset:0;background:rgba(20,22,20,.45);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:4vh 1rem;overflow-y:auto;animation:fade .15s}
-.modal{background:var(--bg);border-radius:18px;width:100%;max-width:640px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:rise .18s}
-.modal.wide{max-width:780px}
-.modal-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem .4rem}
-.modal-body{padding:.6rem 1.2rem 1rem}
-.modal-foot{display:flex;gap:.5rem;align-items:center;padding:.8rem 1.2rem 1.1rem;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--bg);border-radius:0 0 18px 18px}
-@media (max-width:600px){.overlay{padding:0}.modal{border-radius:0;min-height:100%}.modal-foot{border-radius:0}}
-@keyframes fade{from{opacity:0}}
-@keyframes rise{from{transform:translateY(12px);opacity:0}}
-.tabs{display:flex;gap:.3rem;background:var(--surface-2);border:1px solid var(--border);padding:.25rem;border-radius:12px;margin-bottom:1rem}
-.tabs button{flex:1;border:none;background:transparent;padding:.5rem;border-radius:9px;cursor:pointer;font-weight:600}
-.tabs button small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
-.tabs button.on{background:var(--surface);box-shadow:var(--shadow);color:var(--accent)}
-.te-activity{margin-bottom:.9rem}
-.te-aname{font-family:var(--serif);font-size:1.35rem;font-weight:600}
-.picker-list{display:flex;flex-direction:column;max-height:55vh;overflow-y:auto;margin-top:.6rem}
-.picker-item{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.65rem .5rem;border-radius:10px;cursor:pointer;border:none;background:transparent;text-align:left;width:100%}
-.picker-item:hover{background:var(--accent-soft)}
-
-/* Review */
-.review-card header{display:flex;justify-content:space-between;gap:.6rem;align-items:flex-start;margin-bottom:.6rem}
-.plan-line{font-size:.82rem;color:var(--muted);margin-top:.2rem}
-.status-row{display:flex;gap:.35rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem}
-.status-row .sbtn{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.3rem .75rem;font-size:.83rem;cursor:pointer}
-.status-row .sbtn:hover{border-color:var(--accent)}
-.status-row .sbtn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.status-row select{width:auto;padding:.3rem .5rem;font-size:.83rem;border-radius:999px}
-.actual-grid{display:grid;grid-template-columns:1fr 1fr;gap:.2rem 1rem}
-.actual-grid .full{grid-column:1/-1}
-@media (max-width:600px){.actual-grid{grid-template-columns:1fr}}
-details summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--accent);margin-bottom:.6rem}
-.postpone{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;background:var(--mid-soft);padding:.55rem .7rem;border-radius:10px;font-size:.88rem;margin-bottom:.8rem}
-.postpone input{width:auto}
-
-/* Library */
-.toolbar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:.5rem;margin-bottom:1rem}
-@media (max-width:720px){.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}}
-.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.8rem}
-.acard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;gap:.45rem;cursor:pointer;transition:border-color .15s,transform .15s}
-.acard:hover{border-color:var(--accent);transform:translateY(-1px)}
-.acard.inactive{opacity:.6}
-.acard h3{display:flex;justify-content:space-between;gap:.5rem}
-.acard .desc{font-size:.85rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.acard .row{font-size:.8rem;color:var(--muted)}
-.acard .row b{color:var(--text);font-weight:600}
-.acard .foot{margin-top:auto;display:flex;gap:.4rem;padding-top:.3rem}
-.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
-@media (max-width:720px){.kv{grid-template-columns:repeat(2,1fr)}}
-.kv div{background:var(--surface-2);border-radius:10px;padding:.6rem .75rem}
-.kv .k{font-size:.75rem;color:var(--muted)}
-.kv .v{font-weight:600}
-table.simple{width:100%;border-collapse:collapse;font-size:.88rem}
-table.simple th{text-align:left;font-weight:600;color:var(--muted);font-size:.78rem;padding:.4rem .5rem;border-bottom:1px solid var(--border)}
-table.simple td{padding:.5rem;border-bottom:1px solid var(--border);vertical-align:top}
-table.simple tr:last-child td{border-bottom:none}
-.table-wrap{overflow-x:auto}
-.hist-group{border-left:2px solid var(--accent-soft);padding:.1rem 0 .1rem .9rem;margin-bottom:.9rem}
-.hist-when{font-size:.78rem;color:var(--muted)}
-.hist-line{font-size:.88rem}
-.hist-line s{color:var(--muted)}
-.hist-note{font-size:.85rem;font-style:italic;color:var(--muted)}
-
-/* Settings */
-.mrow{display:grid;grid-template-columns:1.3fr 1.6fr auto auto auto;gap:.4rem;align-items:center;padding:.35rem 0;border-bottom:1px solid var(--border)}
-.mrow.off .m-name{opacity:.55;text-decoration:line-through}
-.mrow input[type=text]{padding:.35rem .55rem;font-size:.88rem}
-.mrow .usage{font-size:.75rem;color:var(--muted);white-space:nowrap;min-width:58px;text-align:right}
-.mrow label{display:flex;align-items:center;gap:.25rem;font-size:.8rem;color:var(--muted)}
-.mrow .ord{display:flex}
-@media (max-width:720px){.mrow{grid-template-columns:1fr auto auto}.mrow .m-desc{grid-column:1/-1;order:5}.mrow .usage{display:none}}
-.addrow{display:flex;gap:.5rem;margin-top:.7rem}
-.scale-edit{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem}
-@media (max-width:720px){.scale-edit{grid-template-columns:1fr}}
-.scale-edit label{font-size:.75rem;color:var(--muted)}
-.setting-row{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:.5rem 0}
-.setting-row select,.setting-row input{width:auto;min-width:140px}
-
-/* Toast & lock */
-#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--text);color:var(--bg);padding:.55rem 1rem;border-radius:999px;font-size:.88rem;opacity:0;pointer-events:none;transition:all .2s;z-index:100}
-#toast.show{opacity:1;transform:translate(-50%,0)}
-@media (max-width:720px){#toast{bottom:84px}}
-#lock[hidden]{display:none}
-#lock{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
-#lock .box{max-width:320px;width:100%;text-align:center}
-#lock h1{margin-bottom:.3rem}
-#lock input{text-align:center;font-size:1.2rem;letter-spacing:.3em;margin:1rem 0 .6rem}
+.muted{color:var(--muted);font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.task{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:8px;cursor:pointer}
+.task:hover{border-color:var(--pri)}
+.task .nm{font-weight:600}
+.chip{display:inline-block;padding:4px 10px;border-radius:20px;border:1px solid var(--line);font-size:12px;margin:2px;background:#fff;cursor:pointer;user-select:none}
+.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.st{font-size:12px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.st0{background:#f1f5f9;color:#64748b}.st1{background:#dcfce7;color:#166534}.st2{background:#e0f2fe;color:#075985}.st3{background:#fef9c3;color:#854d0e}.st4{background:#ffedd5;color:#9a3412}.st5{background:#fee2e2;color:#991b1b}.st6{background:#f3e8ff;color:#6b21a8}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;cursor:pointer;font-size:13px}
+.seg button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;background:#fafbfd}
+.bar{height:8px;border-radius:4px;background:var(--pri);min-width:2px}
+.bar.b2{background:#f59e0b}
+.bars{display:flex;flex-direction:column;gap:3px;min-width:120px}
+.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat b{display:block;font-size:20px}
+.cmp{display:grid;grid-template-columns:110px 1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+.cmp div{padding:7px 10px;border-bottom:1px solid var(--line)}
+.cmp .h{background:#fafbfd;font-weight:700;color:var(--muted)}
+.cmp .k{color:var(--muted);font-weight:600;background:#fafbfd}
+.diff{background:#fffbeb}
+.legend{font-size:12px;color:var(--muted);display:flex;gap:12px;margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+#modal.hidden{display:none}
+.mbox{background:#fff;width:100%;max-width:620px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px}
+@media(min-width:700px){#modal{align-items:center}.mbox{border-radius:16px}}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;position:sticky;bottom:-18px;background:#fff;padding:10px 0}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:60;opacity:0;transition:.25s;pointer-events:none}
+#toast.show{opacity:1}
+.empty{text-align:center;color:var(--muted);padding:24px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}.cmp{grid-template-columns:90px 1fr 1fr}main{padding:12px}}
 </style>
+<!-- Firebase settings (optional). If this file is missing or empty, Viana runs in local mode. -->
+<script src="firebase-config.js" onerror="window.VIANA_FIREBASE_CONFIG=null"></script>
 </head>
 <body>
-<noscript><p style="padding:2rem">Viana needs JavaScript enabled to run.</p></noscript>
 
-<div id="lock" hidden>
-  <div class="box">
-    <h1>Viana</h1>
-    <p class="muted">Enter your PIN to continue</p>
-    <input type="password" id="lock-pin" inputmode="numeric" autocomplete="current-password" aria-label="PIN">
-    <button class="btn primary" id="lock-go" style="width:100%">Unlock</button>
-    <p class="muted small" id="lock-msg"></p>
+<!-- ============ LOGIN PAGE ============ -->
+<section id="auth">
+  <div class="authbox">
+    <div class="logo">Viana</div>
+    <div class="sub">Personal Activity &amp; Time Planning</div>
+    <div class="tabs2">
+      <button id="tabIn" class="on" onclick="authTab('in')">Sign in</button>
+      <button id="tabUp" onclick="authTab('up')">Create account</button>
+    </div>
+    <form id="authForm" onsubmit="return doAuth(event)">
+      <label for="aUser">Username</label>
+      <input type="text" id="aUser" autocomplete="username" required>
+      <label for="aPass">Password</label>
+      <input type="password" id="aPass" autocomplete="current-password" required>
+      <div id="aPass2Wrap" class="hidden">
+        <label for="aPass2">Confirm password</label>
+        <input type="password" id="aPass2" autocomplete="new-password">
+      </div>
+      <button class="btn full" id="authBtn" type="submit">Sign in</button>
+      <div class="err" id="authErr"></div>
+    </form>
+    <div class="modepill" id="modePill">Loading…</div>
   </div>
-</div>
+</section>
 
-<header class="topbar">
-  <div class="topbar-in">
-    <a class="brand" href="#/today"><span class="brand-dot"><svg viewBox="0 0 24 24"><path d="M6 7l6 11 6-11" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Viana</a>
-    <nav id="nav" aria-label="Main"></nav>
-  </div>
-</header>
-<main id="main"></main>
-<div id="modal-root"></div>
-<div id="toast" role="status" aria-live="polite"></div>
-<input type="file" id="import-file" accept="application/json,.json" hidden>
+<!-- ============ APP ============ -->
+<section id="app" class="hidden">
+  <header>
+    <div class="hrow">
+      <div class="logo">Viana</div>
+      <div class="who"><span id="whoName"></span><span id="whoBadge" class="badge hidden">ADMIN</span>
+        <button class="btn light sm" onclick="signOut()">Sign out</button></div>
+    </div>
+    <div id="viewAs" class="viewas hidden"></div>
+    <nav id="nav"></nav>
+  </header>
+  <main id="main"></main>
+</section>
+
+<div id="modal" class="hidden" onclick="if(event.target===this)closeModal()"><div class="mbox" id="mbox"></div></div>
+<div id="toast"></div>
 
 <script>
 'use strict';
 /* =====================================================================
-   Viana — personal activity & time planning
-   Single-file app. Data lives in this browser's localStorage as a small
-   relational store (tables of rows linked by ids). See README.md.
+   CONSTANTS & DEFAULTS
    ===================================================================== */
-
-const APP_VERSION = '1.0.0';
-const DB_KEY = 'viana.db.v1';
-const SCHEMA_VERSION = 1;
-const TABLES = ['motives','outcomes','activities','activityMotives','activityOutcomes','activityHistory','tasks','taskMotives','taskOutcomes'];
-
-const STATUSES = [
-  ['planned','Planned','neutral'],
-  ['in_progress','In progress','info'],
-  ['done','Completed as planned','good'],
-  ['done_diff','Completed differently','good'],
-  ['partial','Partially completed','mid'],
-  ['postponed','Postponed','mid'],
-  ['abandoned','Abandoned','low'],
-  ['replaced','Replaced','low'],
-  ['still_in_progress','Still in progress','info'],
+const ADMIN_USER='ADMIN', ADMIN_PASS='2409';
+const STATUSES=[
+  {k:'',        t:'Not recorded',          c:'st0'},
+  {k:'asplanned',t:'Completed as planned', c:'st1'},
+  {k:'differently',t:'Completed differently',c:'st2'},
+  {k:'partial', t:'Partially done',        c:'st3'},
+  {k:'postponed',t:'Postponed',            c:'st4'},
+  {k:'skipped', t:'Skipped',               c:'st5'},
+  {k:'cancelled',t:'Cancelled',            c:'st6'}
 ];
-const STATUS = Object.fromEntries(STATUSES.map(([k,l,t]) => [k,{label:l,tone:t}]));
-const DONE = new Set(['done','done_diff']);
-const PERFORMED = new Set(['done','done_diff','partial','in_progress','still_in_progress']);
-const REMAINING = new Set(['planned','in_progress','still_in_progress']);
-const CARRYABLE = new Set(['planned','postponed','in_progress','still_in_progress','partial']);
-
-/* ---------- Seed data (editable defaults) ---------- */
-const SEED_MOTIVES = ['Resolve / remove something bothering me','Maintain / take care of something','Enjoyment','Fun / entertainment','Relaxation / restoration','Personal growth','Career development','Learning / knowledge','Creativity / creating something','Relationships / connection','Experience','Travel','Exploration','Culture / understanding','Financial benefit','Health / wellbeing','Luxury / indulgence','Contribution / helping others','Because I want to'];
-const SEED_OUTCOMES = ['Fun','Entertainment','Relaxation','Mental clarity','Emotional wellbeing','Stress reduction','Knowledge','Understanding','Personal growth','Career benefit','Skill development','Confidence','Sense of accomplishment','Creativity','Connection','Physical wellbeing','Financial benefit','New experience','Cultural understanding','Reduced mental clutter','Problem solved','Something created','Because I enjoy the experience itself'];
-// [name, description, priority, minutes, mental, resistance, motives, outcomes]
-const SEED_ACTIVITIES = [
-  ['Watch Movies','Films of any kind — entertainment, documentaries, classics.',2,120,1,1,['Enjoyment','Fun / entertainment','Culture / understanding','Exploration','Because I want to'],['Entertainment','Relaxation','Cultural understanding','Because I enjoy the experience itself']],
-  ['Watch Series','An episode or a few of a show I am following.',2,60,1,1,['Fun / entertainment','Relaxation / restoration','Because I want to'],['Entertainment','Relaxation']],
-  ['Read Books','Fiction or non-fiction, paper or screen.',4,45,3,2,['Learning / knowledge','Personal growth','Enjoyment'],['Knowledge','Understanding','Personal growth']],
-  ['Exercise','Walk, workout, yoga, sport.',4,45,2,3,['Health / wellbeing','Maintain / take care of something'],['Physical wellbeing','Stress reduction','Mental clarity']],
-  ['Travel','Trips near or far.',3,480,2,2,['Travel','Experience','Exploration'],['New experience','Cultural understanding']],
-  ['Learn a Skill','Deliberate practice of something new.',4,60,4,3,['Personal growth','Learning / knowledge','Career development'],['Skill development','Confidence']],
-  ['Personal Project','Something I am building or making for myself.',3,90,4,2,['Creativity / creating something','Personal growth','Because I want to'],['Something created','Sense of accomplishment','Creativity']],
-  ['Journaling','Writing things down to think clearly.',3,15,2,2,['Personal growth','Relaxation / restoration'],['Mental clarity','Emotional wellbeing','Reduced mental clutter']],
-  ['Spend Time With Friends','Meeting, calling or doing something together.',4,120,1,1,['Relationships / connection','Enjoyment'],['Connection','Emotional wellbeing','Fun']],
-  ['Spend Time With Family','Unhurried time with family.',5,120,1,1,['Relationships / connection','Maintain / take care of something'],['Connection','Emotional wellbeing']],
-  ['Explore a New Place','A new street, café, museum, park or town.',3,180,2,2,['Exploration','Experience'],['New experience']],
-  ['Learn About History','Books, videos, places, podcasts.',3,60,3,2,['Learning / knowledge','Culture / understanding'],['Knowledge','Understanding','Cultural understanding']],
-  ['Learn About Culture','Food, music, languages, traditions.',3,60,2,1,['Culture / understanding','Exploration'],['Cultural understanding','Understanding']],
-  ['Home Maintenance','Repairs, cleaning, organising.',3,60,2,4,['Maintain / take care of something','Resolve / remove something bothering me'],['Problem solved','Reduced mental clutter','Sense of accomplishment']],
-  ['Personal Administration','Bills, paperwork, banking, appointments.',4,30,3,4,['Resolve / remove something bothering me','Maintain / take care of something','Financial benefit'],['Problem solved','Reduced mental clutter']],
+const DONE_KEYS=['asplanned','differently','partial'];
+const DEF_MOTIVES=['Because I want to','Relaxation','Learning','Health','Connection','Duty / obligation','Personal growth','Fun','Sense of achievement','Habit'];
+const DEF_OUTCOMES=['Felt rested','Gained knowledge','Improved a skill','Felt fitter','Closer relationships','Got it done','Enjoyment','Clarity of mind','Nothing in particular'];
+const DEF_ACTS=[
+ ['Watch movies','Leisure',120,2,1,1,['Relaxation','Fun'],['Enjoyment','Felt rested']],
+ ['Read books','Learning',45,4,3,2,['Learning','Because I want to'],['Gained knowledge']],
+ ['Exercise','Health',45,5,3,4,['Health'],['Felt fitter']],
+ ['Travel','Leisure',240,3,2,2,['Fun','Because I want to'],['Enjoyment']],
+ ['Learn programming','Learning',60,4,4,3,['Learning','Personal growth'],['Improved a skill']],
+ ['Learn mathematics','Learning',60,4,5,4,['Learning','Personal growth'],['Improved a skill']],
+ ['Journaling','Reflection',15,3,2,2,['Personal growth'],['Clarity of mind']],
+ ['Spend time with family','Relationships',90,5,1,1,['Connection'],['Closer relationships']],
+ ['Meet friends','Relationships',120,3,1,1,['Connection','Fun'],['Closer relationships','Enjoyment']],
+ ['Meditation','Health',20,4,2,3,['Health','Relaxation'],['Clarity of mind']],
+ ['Cooking','Home',60,3,2,2,['Duty / obligation','Fun'],['Got it done']],
+ ['Household chores','Home',45,3,2,3,['Duty / obligation'],['Got it done']],
+ ['Music','Leisure',30,2,1,1,['Relaxation','Because I want to'],['Enjoyment']],
+ ['Walk','Health',30,3,1,2,['Health','Relaxation'],['Felt fitter','Felt rested']],
+ ['Office work outside hours','Work',60,3,4,4,['Duty / obligation'],['Got it done']]
 ];
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const nowISO=()=>new Date().toISOString();
+const dstr=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10)};
+const today=()=>dstr(new Date());
+const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return dstr(d)};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtMin=m=>{m=Math.round(+m||0);const h=Math.floor(Math.abs(m)/60),r=Math.abs(m)%60;return (m<0?'-':'')+(h?h+'h ':'')+(r||!h?r+'m':'')};
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const f1=v=>v==null?'—':(Math.round(v*10)/10).toString();
+const pct=v=>v==null?'—':Math.round(v*100)+'%';
+const stInfo=k=>STATUSES.find(s=>s.k===(k||''))||STATUSES[0];
 
-function defaultSettings(){
-  return {
-    theme:'auto', dayCapacityHours:'', pinHash:'', lastBackupAt:null,
-    scales:{
-      priority:['Very low','Low','Medium','High','Very high'],
-      mental:['Very low','Low','Moderate','High','Very high'],
-      resistance:['No resistance — I really want to','Very little resistance','Neutral','Reluctant','Very high — I strongly don\'t want to'],
-      satisfaction:['Very low','Low','Okay','Good','Very good'],
-    }
-  };
+function defaultData(){
+  return {version:2,created:nowISO(),
+    activities:DEF_ACTS.map(a=>({id:uid(),name:a[0],category:a[1],minutes:a[2],importance:a[3],effort:a[4],resistance:a[5],motives:a[6],outcomes:a[7],notes:'',active:true,created:nowISO(),history:[]})),
+    tasks:[],motives:DEF_MOTIVES.slice(),outcomes:DEF_OUTCOMES.slice(),settings:{hoursPerDay:''}};
 }
-
-/* ---------- Utilities ---------- */
-const $ = (s, el=document) => el.querySelector(s);
-const $$ = (s, el=document) => [...el.querySelectorAll(s)];
-let _uidN = 0;
-const uid = () => Date.now().toString(36) + (_uidN++).toString(36) + Math.random().toString(36).slice(2,6);
-const nowISO = () => new Date().toISOString();
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const sum = arr => arr.reduce((s,v) => s + (Number.isFinite(+v) && v !== null && v !== '' ? +v : 0), 0);
-const sameSet = (a,b) => a.length === b.length && [...a].sort().join('|') === [...b].sort().join('|');
-function toDateStr(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-const todayStr = () => toDateStr(new Date());
-function addDays(ds, n){ const d = new Date(ds+'T00:00:00'); d.setDate(d.getDate()+n); return toDateStr(d); }
-function dayDiff(ds){ return Math.round((new Date(ds+'T00:00:00') - new Date(todayStr()+'T00:00:00'))/86400000); }
-function fmtLong(ds){ return new Date(ds+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
-function fmtShort(ds){ return new Date(ds+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
-function fmtStamp(iso){ return iso ? new Date(iso).toLocaleString(undefined,{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—'; }
-function relLabel(ds){ const d = dayDiff(ds); return d===0?'Today':d===1?'Tomorrow':d===-1?'Yesterday':d>1?`In ${d} days`:`${-d} days ago`; }
-function fmtMin(m){
-  if (m === null || m === undefined || m === '' || Number.isNaN(+m)) return '—';
-  m = Math.round(+m); const h = Math.floor(m/60), r = m % 60;
-  return h ? (r ? `${h}h ${r}m` : `${h}h`) : `${r}m`;
-}
-/** Accepts "90", "1:30", "1h", "1h 30m", "1.5h", "45m", "2 hours". Returns minutes, null if blank, NaN if not understood. */
-function parseDuration(s){
-  s = String(s ?? '').trim().toLowerCase();
-  if (!s) return null;
-  let m;
-  if (/^\d+$/.test(s)) return +s;
-  if ((m = s.match(/^(\d+):(\d{1,2})$/))) return +m[1]*60 + +m[2];
-  m = s.match(/^(?:(\d+(?:\.\d+)?)\s*h(?:r|rs|our|ours)?)?\s*(?:(\d+)\s*m(?:in|ins|inute|inutes)?)?$/);
-  if (m && (m[1] || m[2])) return Math.round(parseFloat(m[1]||0)*60 + parseInt(m[2]||0,10));
-  return NaN;
-}
-let toastTimer;
-function toast(msg){ const el = $('#toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), 1800); }
-function download(filename, text, type){
-  const blob = new Blob([text], {type}); const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
-}
-
-/* =====================================================================
-   DATA STORE — relational tables in localStorage
-   ===================================================================== */
-let db;
-
-function seedDB(){
-  const t = nowISO();
-  const d = { schemaVersion: SCHEMA_VERSION, createdAt: t, settings: defaultSettings() };
-  TABLES.forEach(k => d[k] = []);
-  SEED_MOTIVES.forEach((n,i) => d.motives.push({ id:'mot_'+uid(), name:n, description:'', active:true, order:i }));
-  SEED_OUTCOMES.forEach((n,i) => d.outcomes.push({ id:'out_'+uid(), name:n, description:'', active:true, order:i }));
-  const mid = n => d.motives.find(x => x.name === n)?.id;
-  const oid = n => d.outcomes.find(x => x.name === n)?.id;
-  SEED_ACTIVITIES.forEach(([name,desc,p,tm,me,er,ms,os]) => {
-    const id = 'act_'+uid();
-    d.activities.push({ id, name, description:desc, defaultPriority:p, defaultTimeMin:tm, defaultMental:me, defaultResistance:er, active:true, createdAt:t, modifiedAt:t });
-    ms.map(mid).filter(Boolean).forEach(motiveId => d.activityMotives.push({ activityId:id, motiveId }));
-    os.map(oid).filter(Boolean).forEach(outcomeId => d.activityOutcomes.push({ activityId:id, outcomeId }));
-    d.activityHistory.push({ id:'h_'+uid(), activityId:id, changeId:uid(), at:t, field:'created', oldValue:null, newValue:name, note:'Sample activity' });
-  });
+function normalise(d){
+  d=d&&typeof d==='object'?d:defaultData();
+  d.activities=d.activities||[];d.tasks=d.tasks||[];d.motives=d.motives||DEF_MOTIVES.slice();d.outcomes=d.outcomes||DEF_OUTCOMES.slice();d.settings=d.settings||{};
+  d.activities.forEach(a=>{a.history=a.history||[];a.motives=a.motives||[];a.outcomes=a.outcomes||[];if(a.active===undefined)a.active=true});
+  d.tasks.forEach(t=>{t.plan=t.plan||{};t.actual=t.actual||{};t.plan.motives=t.plan.motives||[];t.plan.outcomes=t.plan.outcomes||[];t.actual.motives=t.actual.motives||[];t.actual.outcomes=t.actual.outcomes||[]});
   return d;
 }
-function migrate(){
-  // Future schema upgrades go here, keyed on db.schemaVersion.
-  const def = defaultSettings();
-  db.settings = Object.assign(def, db.settings || {});
-  db.settings.scales = Object.assign(defaultSettings().scales, db.settings.scales || {});
-  TABLES.forEach(k => { if (!Array.isArray(db[k])) db[k] = []; });
-  db.schemaVersion = SCHEMA_VERSION;
-}
-function loadDB(){
-  let raw = null;
-  try { raw = JSON.parse(localStorage.getItem(DB_KEY)); } catch(e) {}
-  db = (raw && raw.schemaVersion) ? raw : seedDB();
-  migrate(); persist();
-}
-function persist(){
-  try { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-  catch(e){ alert('Viana could not save your data: ' + e.message + '\nPlease export a backup from Settings.'); }
-}
-
-/* ---------- Lookups & link tables ---------- */
-const byId = (tbl, id) => db[tbl].find(r => r.id === id);
-const sorted = tbl => db[tbl].slice().sort((a,b) => (a.order??0) - (b.order??0));
-function getLinks(tbl, ownerKey, ownerId, refKey, kind){
-  return db[tbl].filter(r => r[ownerKey] === ownerId && (kind == null || r.kind === kind)).map(r => r[refKey]);
-}
-function setLinks(tbl, ownerKey, ownerId, refKey, ids, kind){
-  db[tbl] = db[tbl].filter(r => !(r[ownerKey] === ownerId && (kind == null || r.kind === kind)));
-  [...new Set(ids)].forEach(id => { const r = {[ownerKey]:ownerId, [refKey]:id}; if (kind != null) r.kind = kind; db[tbl].push(r); });
-}
-const A = {
-  motives: id => getLinks('activityMotives','activityId',id,'motiveId'),
-  outcomes: id => getLinks('activityOutcomes','activityId',id,'outcomeId'),
-};
-const T = {
-  motives: (id,kind) => getLinks('taskMotives','taskId',id,'motiveId',kind),
-  outcomes: (id,kind) => getLinks('taskOutcomes','taskId',id,'outcomeId',kind),
-};
-function setTaskTags(taskId, kind, motiveIds, outcomeIds){
-  setLinks('taskMotives','taskId',taskId,'motiveId',motiveIds,kind);
-  setLinks('taskOutcomes','taskId',taskId,'outcomeId',outcomeIds,kind);
-}
-const names = (tbl, ids) => ids.map(i => byId(tbl,i)?.name).filter(Boolean);
-const tasksOn = date => db.tasks.filter(t => t.date === date).sort((a,b) => (a.order??0) - (b.order??0));
-const nextOrder = date => Math.max(-1, ...tasksOn(date).map(t => t.order ?? 0)) + 1;
-const actName = t => byId('activities', t.activityId)?.name || t.activityNameAtCreation || '(removed activity)';
-const hasActuals = t => [t.actTimeMin,t.actMental,t.actResistance,t.actPriority,t.actSatisfaction].some(v => v != null) || T.motives(t.id,'actual').length || T.outcomes(t.id,'actual').length;
-function usageCount(tbl, id){
-  if (tbl === 'motives') return db.activityMotives.filter(r=>r.motiveId===id).length + db.taskMotives.filter(r=>r.motiveId===id).length;
-  return db.activityOutcomes.filter(r=>r.outcomeId===id).length + db.taskOutcomes.filter(r=>r.outcomeId===id).length;
-}
-function deleteTask(id){
-  db.tasks.forEach(o => { if (o.carriedToTaskId === id) o.carriedToTaskId = null; if (o.carriedFromTaskId === id) o.carriedFromTaskId = null; });
-  db.tasks = db.tasks.filter(t => t.id !== id);
-  db.taskMotives = db.taskMotives.filter(r => r.taskId !== id);
-  db.taskOutcomes = db.taskOutcomes.filter(r => r.taskId !== id);
-}
-/** Fills empty actual fields from the plan (used for "as planned"). Never touches plan fields. */
-function copyPlanToActual(t){
-  if (t.actTimeMin == null) t.actTimeMin = t.planTimeMin;
-  if (t.actMental == null) t.actMental = t.planMental;
-  if (t.actResistance == null) t.actResistance = t.planResistance;
-  if (t.actPriority == null) t.actPriority = t.planPriority;
-  if (!T.motives(t.id,'actual').length) setLinks('taskMotives','taskId',t.id,'motiveId',T.motives(t.id,'planned'),'actual');
-  if (!T.outcomes(t.id,'actual').length) setLinks('taskOutcomes','taskId',t.id,'outcomeId',T.outcomes(t.id,'planned'),'actual');
-}
-/** Creates a new planned task on another date, copying this task's plan; links both. */
-function carryTask(src, toDate){
-  const now = nowISO();
-  const t = { ...blankTask(src.activityId, toDate, false), title: src.title,
-    planTimeMin: src.planTimeMin ?? src.actTimeMin, planMental: src.planMental, planResistance: src.planResistance, planPriority: src.planPriority,
-    planNotes: src.planNotes, carriedFromTaskId: src.id, createdAt: now, modifiedAt: now };
-  t.activityNameAtCreation = src.activityNameAtCreation || actName(src);
-  db.tasks.push(t);
-  setTaskTags(t.id, 'planned', T.motives(src.id,'planned'), T.outcomes(src.id,'planned'));
-  src.carriedToTaskId = t.id; src.modifiedAt = now;
-  return t;
-}
-function blankTask(activityId, date, unplanned){
-  const a = byId('activities', activityId);
-  return { id:'task_'+uid(), activityId, activityNameAtCreation: a?.name || '', date, title:'', order: nextOrder(date),
-    isUnplanned: !!unplanned, status: unplanned ? 'done' : 'planned',
-    planTimeMin:null, planMental:null, planResistance:null, planPriority:null, planNotes:'',
-    actTimeMin:null, actMental:null, actResistance:null, actPriority:null, actSatisfaction:null, actNotes:'',
-    carriedFromTaskId:null, carriedToTaskId:null, createdAt:null, modifiedAt:null, reviewedAt:null };
-}
-function activityStats(aid){
-  const ts = db.tasks.filter(t => t.activityId === aid);
-  const done = ts.filter(t => PERFORMED.has(t.status) || (t.actTimeMin > 0 && !['abandoned','replaced','postponed'].includes(t.status)));
-  const count = (getter) => {
-    const c = {};
-    done.forEach(t => { let ids = getter(t.id,'actual'); if (!ids.length) ids = getter(t.id,'planned'); ids.forEach(i => c[i] = (c[i]||0)+1); });
-    return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([i])=>i);
-  };
-  const last = done.map(t=>t.date).sort().pop();
-  return { tasks: ts.length, performed: done.length, totalMin: sum(done.map(t=>t.actTimeMin)), topMotives: count(T.motives), topOutcomes: count(T.outcomes), last,
-           postponed: ts.filter(t=>t.status==='postponed').length };
-}
 
 /* =====================================================================
-   UI BUILDING BLOCKS
+   PASSWORD HASHING (local mode)
    ===================================================================== */
-function chipsHTML(tbl, selected, group){
-  const sel = new Set(selected);
-  const items = sorted(tbl).filter(x => x.active || sel.has(x.id));
-  return `<div class="chips" data-group="${group}">${items.map(x =>
-    `<button type="button" class="chip${sel.has(x.id)?' on':''}${x.active?'':' inactive'}" data-id="${x.id}" title="${esc(x.description || (x.active?'':'Inactive — kept for history'))}">${esc(x.name)}</button>`).join('')}</div>`;
-}
-const readChips = (root, group) => $$(`.chips[data-group="${group}"] .chip.on`, root).map(b => b.dataset.id);
-function scaleHTML(kind, value, group){
-  const labels = db.settings.scales[kind];
-  return `<div class="scale" data-group="${group}" data-kind="${kind}" data-value="${value ?? ''}">${[1,2,3,4,5].map(v =>
-    `<button type="button" class="${value==v?'on':''}" data-v="${v}" title="${esc(labels[v-1])}">${v}</button>`).join('')}<span class="scale-label">${value ? esc(labels[value-1]) : '<span class="muted">not set</span>'}</span></div>`;
-}
-function readScale(root, group){ const v = $(`.scale[data-group="${group}"]`, root)?.dataset.value; return v ? +v : null; }
-function durHTML(group, min){
-  return `<div class="dur" data-group="${group}"><input type="text" placeholder="e.g. 90, 1:30, 1h 30m" value="${min != null ? fmtMin(min) : ''}"><div class="quick">${[15,30,45,60,90,120,180].map(m => `<button type="button" data-m="${m}">${fmtMin(m)}</button>`).join('')}</div></div>`;
-}
-function readDur(root, group){
-  const inp = $(`.dur[data-group="${group}"] input`, root); if (!inp) return null;
-  const v = parseDuration(inp.value); inp.classList.toggle('invalid', Number.isNaN(v)); return v;
-}
-const field = (label, inner, cls='') => `<div class="field ${cls}"><span>${label}</span>${inner}</div>`;
-const statusLabel = (k, unpl) => (unpl && k === 'done') ? 'Completed' : STATUS[k].label;
-const statusPill = t => `<span class="pill ${STATUS[t.status].tone}">${esc(statusLabel(t.status, t.isUnplanned))}</span>`;
-function statusSelect(attrs, val, unpl){
-  return `<select ${attrs}>${STATUSES.map(([k]) => `<option value="${k}" ${k===val?'selected':''}>${esc(statusLabel(k,unpl))}</option>`).join('')}</select>`;
-}
-const badge = (letter, v, title) => `<span class="badge" title="${title}${v?': '+v+'/5':': not set'}">${letter}<b>${v ?? '–'}</b></span>`;
-const stat = (label, value, sub='') => `<div class="stat"><div class="label">${label}</div><div class="value">${value}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;
-const unplTag = '<span class="tag-unpl">Unplanned</span>';
-
-/* ---------- Modal ---------- */
-function openModal({ title, body, footer = '', wide = false, onMount }){
-  const root = $('#modal-root');
-  root.innerHTML = `<div class="overlay"><div class="modal ${wide?'wide':''}" role="dialog" aria-modal="true" aria-label="${esc(title)}">
-    <div class="modal-head"><h2>${title}</h2><button class="icon-btn" data-close aria-label="Close">✕</button></div>
-    <div class="modal-body">${body}</div>${footer ? `<div class="modal-foot">${footer}</div>` : ''}</div></div>`;
-  const ov = $('.overlay', root), m = $('.modal', root);
-  ov.addEventListener('mousedown', e => { if (e.target === ov) closeModal(); });
-  $$('[data-close]', root).forEach(b => b.addEventListener('click', closeModal));
-  document.body.classList.add('modal-open');
-  onMount && onMount(m);
-  const first = $('input[type=text],input[type=search]', m); if (first && window.innerWidth > 720) first.focus();
-  return m;
-}
-function closeModal(){ $('#modal-root').innerHTML = ''; document.body.classList.remove('modal-open'); }
-
-/* =====================================================================
-   ROUTER & NAV
-   ===================================================================== */
-const ICONS = {
-  today:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
-  plan:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
-  review:'<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
-  activities:'<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>',
-  settings:'<svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
-};
-const NAV = [['today','Today'],['plan','Plan'],['review','Review'],['activities','Activities'],['settings','Settings']];
-let current = { view:'today', arg:null };
-const VIEWS = {};
-
-function renderNav(){
-  $('#nav').innerHTML = NAV.map(([k,l]) => `<a href="#/${k}" data-view="${k}">${ICONS[k]}<span>${l}</span></a>`).join('');
-}
-function route(){
-  const [view, arg] = location.hash.replace(/^#\/?/, '').split('/');
-  current = { view: VIEWS[view] ? view : 'today', arg: arg ? decodeURIComponent(arg) : null };
-  const navKey = current.view === 'activity' ? 'activities' : current.view;
-  $$('#nav a').forEach(a => a.classList.toggle('active', a.dataset.view === navKey));
-  closeModal();
-  VIEWS[current.view](current.arg);
-}
-function rerender(){ const y = window.scrollY; VIEWS[current.view](current.arg); window.scrollTo(0, y); }
-function go(hash){ if (location.hash === hash) rerender(); else location.hash = hash; }
-
-/* =====================================================================
-   VIEW: TODAY
-   ===================================================================== */
-function greeting(){
-  const h = new Date().getHours();
-  return h < 5 ? 'Late night.' : h < 12 ? 'Good morning.' : h < 17 ? 'Good afternoon.' : 'Good evening.';
-}
-VIEWS.today = () => {
-  const d = todayStr(), tm = addDays(d,1);
-  const ts = tasksOn(d), planned = ts.filter(t => !t.isUnplanned);
-  const planMin = sum(planned.map(t => t.planTimeMin)), actMin = sum(ts.map(t => t.actTimeMin));
-  const done = ts.filter(t => DONE.has(t.status)), remaining = ts.filter(t => REMAINING.has(t.status));
-  const tmTasks = tasksOn(tm);
-  $('#main').innerHTML = `
-  <section class="page-head">
-    <div><div class="eyebrow">Today</div><h1>${fmtLong(d)}</h1><p class="lede">${greeting()} How would you like to spend today?</p></div>
-    <div class="head-actions">
-      <button class="btn" data-act="addUnplanned" data-date="${d}">+ Something unplanned</button>
-      <a class="btn primary" href="#/review/${d}">Review the day</a>
-    </div>
-  </section>
-  <div class="stats">
-    ${stat('Planned time', fmtMin(planMin), `${planned.length} planned task${planned.length===1?'':'s'}`)}
-    ${stat('Actual time', actMin ? fmtMin(actMin) : '—', 'where recorded')}
-    ${stat('Completed', `${done.length}<span class="muted" style="font-size:1rem"> / ${ts.length}</span>`, ts.filter(t=>t.status==='partial').length ? `${ts.filter(t=>t.status==='partial').length} partly` : '')}
-    ${stat('Remaining', remaining.length, remaining.length ? fmtMin(sum(remaining.map(t=>t.planTimeMin))) + ' planned' : '')}
-  </div>
-  <section class="card">
-    <div class="card-head"><h2>Today's tasks</h2><a class="btn sm ghost" href="#/plan/${d}">Edit today's plan</a></div>
-    ${ts.length ? `<div class="tlist">${ts.map(todayRow).join('')}</div>` : `
-      <div class="empty"><div class="big">Nothing planned for today.</div>That's fine too. You can plan a little, or simply record what you do as you go.
-      <div><a class="btn" href="#/plan/${d}">Plan today</a><button class="btn" data-act="addUnplanned" data-date="${d}">Record something I did</button></div></div>`}
-  </section>
-  <section class="card soft">
-    <div class="card-head" style="margin:0"><div><div class="eyebrow">Tomorrow</div>
-      <div>${tmTasks.length ? `${tmTasks.length} task${tmTasks.length===1?'':'s'} · ${fmtMin(sum(tmTasks.filter(t=>!t.isUnplanned).map(t=>t.planTimeMin)))} planned` : '<span class="muted">Not planned yet</span>'}</div></div>
-      <a class="btn primary" href="#/plan/${tm}">Plan tomorrow →</a></div>
-  </section>`;
-};
-function todayRow(t){
-  const tone = STATUS[t.status].tone;
-  return `<div class="trow s-${tone}">
-    <span class="dot" aria-hidden="true"></span>
-    <div class="tmain" data-act="openTask" data-id="${t.id}">
-      <div class="tname">${esc(actName(t))}${t.isUnplanned ? unplTag : ''}</div>
-      ${t.title ? `<div class="tsub">${esc(t.title)}</div>` : ''}
-      <div class="tmeta">${statusPill(t)}<span>${t.isUnplanned ? '' : 'Plan ' + fmtMin(t.planTimeMin)}${t.actTimeMin != null ? (t.isUnplanned?'':' · ') + 'Actual ' + fmtMin(t.actTimeMin) : ''}</span></div>
-    </div>
-    <div class="tactions">
-      ${t.status === 'planned' ? `<button class="btn sm ghost" data-act="startTask" data-id="${t.id}" title="Mark in progress">Start</button>` : ''}
-      ${REMAINING.has(t.status) ? `<button class="btn sm ghost" data-act="quickDone" data-id="${t.id}" title="Completed as planned — copies plan to actual">✓ Done</button>` : ''}
-      <button class="btn sm" data-act="openTask" data-id="${t.id}" data-tab="actual">Record</button>
-    </div></div>`;
-}
-
-/* =====================================================================
-   VIEW: DAILY PLANNING
-   ===================================================================== */
-function dateNav(view, d){
-  const quick = view === 'plan' ? ['Tomorrow', addDays(todayStr(),1)] : ['Today', todayStr()];
-  return `<div class="datenav">
-    <button class="icon-btn" data-act="goDate" data-view="${view}" data-date="${addDays(d,-1)}" aria-label="Previous day">‹</button>
-    <input type="date" class="date-pick" data-view="${view}" value="${d}" aria-label="Choose date">
-    <button class="icon-btn" data-act="goDate" data-view="${view}" data-date="${addDays(d,1)}" aria-label="Next day">›</button>
-    ${d !== quick[1] ? `<button class="btn sm ghost" data-act="goDate" data-view="${view}" data-date="${quick[1]}">${quick[0]}</button>` : ''}
-  </div>`;
-}
-VIEWS.plan = (arg) => {
-  const d = arg || addDays(todayStr(), 1);
-  const ts = tasksOn(d), planned = ts.filter(t => !t.isUnplanned);
-  const total = sum(planned.map(t => t.planTimeMin));
-  const cap = parseFloat(db.settings.dayCapacityHours);
-  const carry = tasksOn(addDays(d,-1)).filter(t => CARRYABLE.has(t.status) && !t.carriedToTaskId);
-  const favourites = db.activities.filter(a => a.active)
-    .map(a => ({ a, n: db.tasks.filter(t => t.activityId === a.id).length }))
-    .sort((x,y) => y.n - x.n || (y.a.defaultPriority||0) - (x.a.defaultPriority||0) || x.a.name.localeCompare(y.a.name))
-    .slice(0, 8).map(x => x.a);
-  $('#main').innerHTML = `
-  <section class="page-head">
-    <div><div class="eyebrow">Plan · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1><p class="lede">How do I want to spend this day?</p></div>
-    ${dateNav('plan', d)}
-  </section>
-  ${carry.length && dayDiff(d) >= 0 ? `<div class="card soft" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
-     <div>${carry.length} unfinished item${carry.length===1?'':'s'} from ${relLabel(addDays(d,-1)).toLowerCase()}. Bring any of them over?</div>
-     <button class="btn sm" data-act="carryOver" data-date="${d}">Choose…</button></div>` : ''}
-  <section class="card">
-    <div class="card-head"><h2>Planned</h2><button class="btn primary" data-act="addPlanned" data-date="${d}">+ Add from activities</button></div>
-    ${ts.length ? `<div class="plist" id="plist">${ts.map((t,i) => planRow(t, i, ts.length)).join('')}</div>` :
-      `<div class="empty"><div class="big">An open day.</div>Add a few activities you'd like to give time to.</div>`}
-    <div style="margin-top:.8rem"><div class="field-label">Quick add</div><div class="quickadd">${favourites.map(a =>
-      `<button class="chip" data-act="quickPlan" data-aid="${a.id}" data-date="${d}">+ ${esc(a.name)}</button>`).join('')}</div></div>
-  </section>
-  ${planned.length ? `<section class="card">
-    <h2 style="margin-bottom:.6rem">Time allocation</h2>
-    <div class="tally">
-      ${planned.map(t => `<div class="line"><span>${esc(actName(t))}${t.title ? ' — ' + esc(t.title) : ''}</span><span>${fmtMin(t.planTimeMin)}</span></div>`).join('')}
-      <div class="line total"><span>Total planned</span><span>${fmtMin(total)}</span></div>
-      ${cap > 0 ? `<div class="line"><span>Of ${fmtMin(cap*60)} available</span><span>${total <= cap*60 ? fmtMin(cap*60 - total) + ' unallocated' : fmtMin(total - cap*60) + ' over'}</span></div>` : ''}
-    </div></section>` : ''}`;
-  const list = $('#plist'); if (list) bindPlanDrag(list);
-};
-function planRow(t, i, n){
-  const pm = names('motives', T.motives(t.id,'planned')), po = names('outcomes', T.outcomes(t.id,'planned'));
-  return `<div class="prow" draggable="true" data-id="${t.id}">
-    <div class="handle" title="Drag to reorder">⋮⋮</div>
-    <div class="pmain" data-act="openTask" data-id="${t.id}">
-      <div class="tname">${esc(actName(t))}${t.isUnplanned ? unplTag : ''} ${t.status !== 'planned' ? statusPill(t) : ''}</div>
-      ${t.title ? `<div class="tsub">${esc(t.title)}</div>` : ''}
-      ${t.planNotes ? `<div class="tsub small">${esc(t.planNotes)}</div>` : ''}
-      <div>${pm.map(x => `<span class="mini m">${esc(x)}</span>`).join('')}${po.map(x => `<span class="mini o">${esc(x)}</span>`).join('')}</div>
-    </div>
-    <div class="pnums"><div class="ptime">${fmtMin(t.isUnplanned ? t.actTimeMin : t.planTimeMin)}</div>
-      <div class="badges">${badge('M', t.planMental, 'Mental effort')}${badge('R', t.planResistance, 'Emotional resistance')}${badge('P', t.planPriority, 'Priority')}</div></div>
-    <div class="pact">
-      <button class="icon-btn" data-act="moveTask" data-dir="-1" data-id="${t.id}" ${i===0?'disabled':''} aria-label="Move up">↑</button>
-      <button class="icon-btn" data-act="moveTask" data-dir="1" data-id="${t.id}" ${i===n-1?'disabled':''} aria-label="Move down">↓</button>
-      <button class="icon-btn" data-act="openTask" data-id="${t.id}" aria-label="Edit">✎</button>
-      <button class="icon-btn" data-act="removeTask" data-id="${t.id}" aria-label="Remove from plan" title="Remove from plan (the activity stays)">✕</button>
-    </div></div>`;
-}
-function bindPlanDrag(list){
-  let dragId = null;
-  list.addEventListener('dragstart', e => { const r = e.target.closest('.prow'); if (!r) return; dragId = r.dataset.id; r.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
-  list.addEventListener('dragover', e => {
-    e.preventDefault(); const r = e.target.closest('.prow'); const dr = $('.dragging', list);
-    if (!r || !dr || r === dr) return;
-    const rect = r.getBoundingClientRect();
-    list.insertBefore(dr, e.clientY > rect.top + rect.height/2 ? r.nextSibling : r);
-  });
-  list.addEventListener('dragend', () => {
-    if (!dragId) return; dragId = null;
-    $$('.prow', list).forEach((r,i) => { const t = byId('tasks', r.dataset.id); if (t) t.order = i; });
-    persist(); rerender();
-  });
-}
-
-/* =====================================================================
-   VIEW: END-OF-DAY REVIEW
-   ===================================================================== */
-VIEWS.review = (arg) => {
-  const d = arg || todayStr();
-  const ts = tasksOn(d);
-  $('#main').innerHTML = `
-  <section class="page-head">
-    <div><div class="eyebrow">End-of-day review · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1>
-      <p class="lede">What actually happened? Tap <b>As planned</b> for anything that went to plan — only adjust what was different.</p></div>
-    ${dateNav('review', d)}
-  </section>
-  <div id="review-summary">${reviewSummaryHTML(d)}</div>
-  ${ts.length ? ts.map(reviewCard).join('') : `<div class="card"><div class="empty"><div class="big">Nothing was planned for this day.</div>Record anything you did — unplanned time counts too.</div></div>`}
-  <div class="card soft" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
-    <div><b>Did something that wasn't planned?</b><div class="muted small">Spontaneous activities are part of real life, not failures.</div></div>
-    <button class="btn" data-act="addUnplanned" data-date="${d}">+ Add unplanned activity</button>
-  </div>
-  <div style="text-align:right;margin-top:1rem"><a class="btn primary" href="#/plan/${addDays(d,1)}">Plan ${relLabel(addDays(d,1)).toLowerCase()} →</a></div>`;
-};
-function reviewSummaryHTML(d){
-  const ts = tasksOn(d), planned = ts.filter(t => !t.isUnplanned), unpl = ts.filter(t => t.isUnplanned);
-  return `<div class="stats">
-    ${stat('Planned', fmtMin(sum(planned.map(t=>t.planTimeMin))), `${planned.length} task${planned.length===1?'':'s'}`)}
-    ${stat('Actually spent', fmtMin(sum(ts.map(t=>t.actTimeMin)) || null), 'recorded so far')}
-    ${stat('Reviewed', `${ts.filter(t => t.status !== 'planned').length}<span class="muted" style="font-size:1rem"> / ${ts.length}</span>`)}
-    ${stat('Unplanned', unpl.length, unpl.length ? fmtMin(sum(unpl.map(t=>t.actTimeMin))) : '')}
-  </div>`;
-}
-function reviewCard(t){
-  const pm = names('motives', T.motives(t.id,'planned'));
-  const am = T.motives(t.id,'actual'), ao = T.outcomes(t.id,'actual');
-  const quick = t.isUnplanned
-    ? [['done','Done'],['partial','Partly'],['in_progress','Still going']]
-    : [['done','As planned'],['done_diff','Differently'],['partial','Partly'],['postponed','Postponed'],['abandoned','Abandoned']];
-  const carried = t.carriedToTaskId ? byId('tasks', t.carriedToTaskId) : null;
-  return `<article class="card review-card" data-task="${t.id}">
-    <header><div>
-      <div class="tname">${esc(actName(t))}${t.isUnplanned ? unplTag : ''}</div>
-      ${t.title ? `<div class="tsub">${esc(t.title)}</div>` : ''}
-      <div class="plan-line">${t.isUnplanned ? 'Not in the plan — recorded afterwards' :
-        `Plan: ${fmtMin(t.planTimeMin)} · Mental ${t.planMental ?? '–'} · Resistance ${t.planResistance ?? '–'} · Priority ${t.planPriority ?? '–'}${pm.length ? ' · ' + esc(pm.join(', ')) : ''}`}</div>
-    </div><button class="btn sm ghost" data-act="openTask" data-id="${t.id}" data-tab="actual">All details</button></header>
-    <div class="status-row">
-      ${quick.map(([k,l]) => `<button type="button" class="sbtn ${t.status===k?'on':''}" data-act="setStatus" data-s="${k}">${l}</button>`).join('')}
-      ${statusSelect('data-field="status" aria-label="Status"', t.status, t.isUnplanned)}
-    </div>
-    ${t.status === 'postponed' || (t.status === 'partial' && !t.isUnplanned) ? (carried
-      ? `<div class="postpone">Carried over to <a href="#/plan/${carried.date}">${fmtShort(carried.date)}</a>.</div>`
-      : `<div class="postpone">Plan it again on <input type="date" class="carry-date" value="${addDays(t.date,1)}"> <button type="button" class="btn sm" data-act="carryOne">Add to that day</button></div>`) : ''}
-    <div class="actual-grid">
-      ${field('Actual time', durHTML('act-time', t.actTimeMin))}
-      ${field('Satisfaction <em>optional</em>', scaleHTML('satisfaction', t.actSatisfaction, 'act-sat'))}
-      ${field('Actual mental effort', scaleHTML('mental', t.actMental, 'act-mental'))}
-      ${field('Actual emotional resistance', scaleHTML('resistance', t.actResistance, 'act-res'))}
-      <details class="full"><summary>Actual motives &amp; outcomes (${am.length + ao.length} selected)</summary>
-        ${!t.isUnplanned ? `<button type="button" class="btn sm ghost" data-act="copyPlanTags" style="margin-bottom:.6rem">Same as plan</button>` : ''}
-        ${field('Why I actually did it', chipsHTML('motives', am, 'act-mot'))}
-        ${field('What I actually got from it', chipsHTML('outcomes', ao, 'act-out'))}
-      </details>
-      ${field('Notes', `<textarea data-field="actNotes" rows="2" placeholder="Anything worth remembering?">${esc(t.actNotes)}</textarea>`, 'full')}
-    </div>
-  </article>`;
-}
-function refreshReviewCard(id){
-  const card = $(`.review-card[data-task="${id}"]`), t = byId('tasks', id);
-  if (card && t) card.outerHTML = reviewCard(t);
-  const s = $('#review-summary'); if (s && current.view === 'review') s.innerHTML = reviewSummaryHTML(current.arg || todayStr());
-}
-function saveReviewCard(card){
-  const t = byId('tasks', card.dataset.task); if (!t) return;
-  const m = readDur(card, 'act-time');
-  if (Number.isNaN(m)) { toast('Time not understood — try 90, 1:30 or 1h 30m'); return; }
-  t.actTimeMin = m;
-  t.actMental = readScale(card, 'act-mental');
-  t.actResistance = readScale(card, 'act-res');
-  t.actSatisfaction = readScale(card, 'act-sat');
-  setTaskTags(t.id, 'actual', readChips(card, 'act-mot'), readChips(card, 'act-out'));
-  t.actNotes = $('[data-field="actNotes"]', card).value.trim();
-  t.modifiedAt = t.reviewedAt = nowISO();
-  persist();
-  const sum$ = $('#review-summary'); if (sum$) sum$.innerHTML = reviewSummaryHTML(current.arg || todayStr());
-  const det = $('details summary', card); if (det) det.textContent = `Actual motives & outcomes (${readChips(card,'act-mot').length + readChips(card,'act-out').length} selected)`;
-  toast('Saved');
-}
-function setTaskStatus(t, s){
-  t.status = s;
-  if (s === 'done' && !t.isUnplanned) copyPlanToActual(t);
-  t.modifiedAt = t.reviewedAt = nowISO();
-  persist();
-}
-
-/* =====================================================================
-   TASK EDITOR (Plan / Actual)
-   ===================================================================== */
-function planPaneHTML(t, tags, isNew){
-  return `<p class="hint">${isNew ? 'Pre-filled from the activity’s defaults. ' : ''}Change anything for this particular day — the activity itself won’t change.</p>
-    ${field('Why this, this time? <em>— motives</em>', chipsHTML('motives', tags.pm, 'p-mot'))}
-    ${field('What I hope to get from it <em>— outcomes</em>', chipsHTML('outcomes', tags.po, 'p-out'))}
-    <div class="grid2">${field('Planned time', durHTML('p-time', t.planTimeMin))}${field('Priority of this, today', scaleHTML('priority', t.planPriority, 'p-pri'))}</div>
-    <div class="grid2">${field('Planned mental effort', scaleHTML('mental', t.planMental, 'p-mental'))}${field('Expected emotional resistance', scaleHTML('resistance', t.planResistance, 'p-res'))}</div>
-    ${field('Notes', `<textarea id="te-pnotes" rows="2" placeholder="Anything about the plan">${esc(t.planNotes)}</textarea>`)}`;
-}
-function actualPaneHTML(t, tags){
-  return `<div class="grid2">${field('Status', statusSelect('id="te-status"', t.status, t.isUnplanned))}
-      ${!t.isUnplanned ? `<div class="field"><span>&nbsp;</span><button type="button" class="btn ghost" data-te="copy">Copy everything from plan</button></div>` : ''}</div>
-    ${field('Why I actually did it <em>— motives</em>', chipsHTML('motives', tags.am, 'a-mot'))}
-    ${field('What I actually got from it <em>— outcomes</em>', chipsHTML('outcomes', tags.ao, 'a-out'))}
-    <div class="grid2">${field('Actual time', durHTML('a-time', t.actTimeMin))}${field('Satisfaction <em>optional</em>', scaleHTML('satisfaction', t.actSatisfaction, 'a-sat'))}</div>
-    <div class="grid2">${field('Actual mental effort', scaleHTML('mental', t.actMental, 'a-mental'))}${field('Actual emotional resistance', scaleHTML('resistance', t.actResistance, 'a-res'))}</div>
-    ${field('Priority, in hindsight <em>optional</em>', scaleHTML('priority', t.actPriority, 'a-pri'))}
-    ${field('Notes', `<textarea id="te-anotes" rows="2" placeholder="What happened?">${esc(t.actNotes)}</textarea>`)}`;
-}
-function readTaskForm(m, base){
-  const t = { ...base }, tags = { pm: [], po: [], am: [], ao: [] };
-  t.title = $('#te-title', m).value.trim();
-  t.date = $('#te-date', m).value || base.date;
-  const pp = $('[data-pane="plan"]', m);
-  if (pp){
-    const pt = readDur(pp, 'p-time'); if (Number.isNaN(pt)) return { error: 'Planned time not understood — try 90, 1:30 or 1h 30m' };
-    t.planTimeMin = pt; t.planMental = readScale(pp,'p-mental'); t.planResistance = readScale(pp,'p-res'); t.planPriority = readScale(pp,'p-pri');
-    t.planNotes = $('#te-pnotes', m).value.trim(); tags.pm = readChips(pp,'p-mot'); tags.po = readChips(pp,'p-out');
+async function hashPw(salt,pw){
+  const s=salt+'|'+pw;
+  if(window.crypto&&crypto.subtle){
+    const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
   }
-  const ap = $('[data-pane="actual"]', m);
-  const at = readDur(ap, 'a-time'); if (Number.isNaN(at)) return { error: 'Actual time not understood — try 90, 1:30 or 1h 30m' };
-  t.actTimeMin = at; t.actMental = readScale(ap,'a-mental'); t.actResistance = readScale(ap,'a-res'); t.actPriority = readScale(ap,'a-pri'); t.actSatisfaction = readScale(ap,'a-sat');
-  t.actNotes = $('#te-anotes', m).value.trim(); t.status = $('#te-status', m).value;
-  tags.am = readChips(ap,'a-mot'); tags.ao = readChips(ap,'a-out');
-  return { t, tags };
-}
-function openTaskEditor({ taskId, activityId, date, unplanned = false, tab }){
-  const isNew = !taskId;
-  let t, tags;
-  if (isNew){
-    const a = byId('activities', activityId);
-    t = blankTask(activityId, date, unplanned);
-    const am = A.motives(activityId), ao = A.outcomes(activityId);
-    if (unplanned){ t.actTimeMin = a.defaultTimeMin; t.actMental = a.defaultMental; t.actResistance = a.defaultResistance; tags = { pm:[], po:[], am, ao }; }
-    else { t.planTimeMin = a.defaultTimeMin; t.planMental = a.defaultMental; t.planResistance = a.defaultResistance; t.planPriority = a.defaultPriority; tags = { pm:am, po:ao, am:[], ao:[] }; }
-  } else {
-    const src = byId('tasks', taskId); if (!src) return;
-    t = { ...src };
-    tags = { pm: T.motives(taskId,'planned'), po: T.outcomes(taskId,'planned'), am: T.motives(taskId,'actual'), ao: T.outcomes(taskId,'actual') };
-  }
-  const showPlan = !t.isUnplanned;
-  tab = showPlan ? (tab || 'plan') : 'actual';
-  const a = byId('activities', t.activityId);
-  const title = isNew ? (unplanned ? 'Record unplanned activity' : 'Add to plan') : (t.isUnplanned ? 'Unplanned activity' : 'Task');
-  const body = `
-    <div class="te-activity"><div class="eyebrow">${t.isUnplanned ? 'Unplanned · ' : ''}Activity</div>
-      <div class="te-aname">${esc(actName(t))}</div>${a?.description ? `<div class="muted small">${esc(a.description)}</div>` : ''}</div>
-    <div class="grid2">
-      ${field('What specifically? <em>optional</em>', `<input type="text" id="te-title" value="${esc(t.title)}" placeholder="e.g. ${a?.name === 'Watch Movies' ? 'a documentary on Indian history' : 'something particular'}">`)}
-      ${field('Date', `<input type="date" id="te-date" value="${t.date}">`)}
-    </div>
-    ${showPlan ? `<div class="tabs" role="tablist">
-        <button type="button" data-tab="plan" class="${tab==='plan'?'on':''}">Plan<small>what I intend</small></button>
-        <button type="button" data-tab="actual" class="${tab==='actual'?'on':''}">Actual<small>what really happened</small></button></div>`
-      : `<p class="hint">Recording something you did that wasn’t in the plan. Spontaneous time is part of real life — not a failure.</p>`}
-    ${showPlan ? `<div class="pane" data-pane="plan" ${tab!=='plan'?'hidden':''}>${planPaneHTML(t, tags, isNew)}</div>` : ''}
-    <div class="pane" data-pane="actual" ${tab!=='actual'?'hidden':''}>${actualPaneHTML(t, tags)}</div>`;
-  const footer = `${isNew ? '' : `<button class="btn ghost danger" data-te="delete">${t.isUnplanned ? 'Delete' : 'Remove from plan'}</button>`}
-    <span class="spacer"></span><button class="btn ghost" data-close>Cancel</button>
-    <button class="btn primary" data-te="save">${isNew ? (unplanned ? 'Record' : 'Add to plan') : 'Save'}</button>`;
-  openModal({ title, body, footer, wide: true, onMount: m => {
-    m.addEventListener('click', e => {
-      const tb = e.target.closest('.tabs button');
-      if (tb){ $$('.tabs button', m).forEach(b => b.classList.toggle('on', b === tb)); $$('.pane', m).forEach(p => p.hidden = p.dataset.pane !== tb.dataset.tab); return; }
-      const te = e.target.closest('[data-te]'); if (!te) return;
-      if (te.dataset.te === 'copy'){
-        const r = readTaskForm(m, t); if (r.error) return toast(r.error);
-        const c = r.t; c.actTimeMin = c.planTimeMin; c.actMental = c.planMental; c.actResistance = c.planResistance; c.actPriority = c.planPriority;
-        r.tags.am = [...r.tags.pm]; r.tags.ao = [...r.tags.po];
-        if (c.status === 'planned') c.status = 'done';
-        $('[data-pane="actual"]', m).innerHTML = actualPaneHTML(c, r.tags); toast('Copied from plan');
-      }
-      if (te.dataset.te === 'delete'){
-        if (hasActuals(t) && !confirm('This task has recorded actuals. Remove it anyway? (The activity itself stays.)')) return;
-        deleteTask(t.id); persist(); closeModal(); toast('Removed'); rerender();
-      }
-      if (te.dataset.te === 'save'){
-        const r = readTaskForm(m, t); if (r.error) return toast(r.error);
-        const nt = r.t, now = nowISO();
-        nt.modifiedAt = now;
-        if (isNew){ nt.createdAt = now; nt.order = nextOrder(nt.date); }
-        else if (nt.date !== t.date) nt.order = nextOrder(nt.date);
-        if (isNew) db.tasks.push(nt); else Object.assign(byId('tasks', nt.id), nt);
-        setTaskTags(nt.id, 'planned', r.tags.pm, r.tags.po);
-        setTaskTags(nt.id, 'actual', r.tags.am, r.tags.ao);
-        if (!nt.reviewedAt && hasActuals(nt)) byId('tasks', nt.id).reviewedAt = now;
-        persist(); closeModal(); toast(isNew ? (unplanned ? 'Recorded' : 'Added to plan') : 'Saved'); rerender();
-      }
-    });
-  }});
+  let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return 'f'+(h>>>0).toString(16);
 }
 
-/* ---------- Activity picker ---------- */
-function openActivityPicker({ date, unplanned }){
-  const list = () => db.activities.filter(a => a.active).sort((a,b) => a.name.localeCompare(b.name));
-  const item = a => `<button type="button" class="picker-item" data-aid="${a.id}"><span><b>${esc(a.name)}</b>${a.description ? `<br><span class="muted small">${esc(a.description)}</span>` : ''}</span>
-    <span class="badges">${a.defaultTimeMin ? `<span class="badge">${fmtMin(a.defaultTimeMin)}</span>` : ''}${badge('P', a.defaultPriority, 'Priority')}</span></button>`;
-  openModal({
-    title: unplanned ? 'What did you do?' : 'Choose an activity',
-    body: `<input type="search" id="pk-q" placeholder="Search activities…" autocomplete="off">
-      <div class="picker-list" id="pk-list">${list().map(item).join('')}</div>
-      <div style="margin-top:.8rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap">
-        <span class="muted small">Not in your library yet?</span><button class="btn sm" id="pk-new">+ Create new activity</button></div>`,
-    onMount: m => {
-      $('#pk-q', m).addEventListener('input', e => {
-        const q = e.target.value.trim().toLowerCase();
-        $('#pk-list', m).innerHTML = list().filter(a => !q || a.name.toLowerCase().includes(q) || (a.description||'').toLowerCase().includes(q)).map(item).join('') || '<div class="empty">No match. Create it below.</div>';
-      });
-      $('#pk-list', m).addEventListener('click', e => { const b = e.target.closest('[data-aid]'); if (b){ closeModal(); openTaskEditor({ activityId: b.dataset.aid, date, unplanned }); } });
-      $('#pk-new', m).addEventListener('click', () => {
-        const q = $('#pk-q', m).value.trim(); closeModal();
-        openActivityForm(null, { presetName: q, onSaved: id => openTaskEditor({ activityId: id, date, unplanned }) });
-      });
+/* =====================================================================
+   STORAGE: LOCAL (this browser only)
+   ===================================================================== */
+const LocalStore={
+  mode:'local',
+  K_USERS:'viana2_users', K_SESS:'viana2_session',
+  users(){try{return JSON.parse(localStorage.getItem(this.K_USERS))||{}}catch(e){return {}}},
+  putUsers(u){localStorage.setItem(this.K_USERS,JSON.stringify(u))},
+  async init(){const s=sessionStorage.getItem(this.K_SESS);return s?JSON.parse(s):null},
+  remember(s){sessionStorage.setItem(this.K_SESS,JSON.stringify(s))},
+  async signUp(username,pw){
+    const key=username.toLowerCase();
+    if(key===ADMIN_USER.toLowerCase())throw new Error('That username is reserved.');
+    const u=this.users(); if(u[key])throw new Error('That username is already taken.');
+    const salt=uid(); u[key]={username,salt,hash:await hashPw(salt,pw),created:nowISO(),disabled:false};
+    this.putUsers(u); localStorage.setItem('viana2_data_'+key,JSON.stringify(defaultData()));
+    const s={id:key,username,isAdmin:false}; this.remember(s); return s;
+  },
+  async signIn(username,pw){
+    if(username.toUpperCase()===ADMIN_USER){
+      if(pw!==ADMIN_PASS)throw new Error('Incorrect username or password.');
+      const s={id:'__admin__',username:ADMIN_USER,isAdmin:true};this.remember(s);return s;
     }
-  });
-}
-
-/* ---------- Carry-over picker ---------- */
-function openCarryOver(date){
-  const prev = addDays(date, -1);
-  const items = tasksOn(prev).filter(t => CARRYABLE.has(t.status) && !t.carriedToTaskId);
-  openModal({
-    title: 'Bring over unfinished items',
-    body: `<p class="muted">From ${fmtLong(prev)}. Their plan is copied to ${relLabel(date).toLowerCase()}; the original records stay as they were.</p>
-      ${items.map(t => `<label style="display:flex;gap:.6rem;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--border)">
-        <input type="checkbox" value="${t.id}" checked> <span><b>${esc(actName(t))}</b>${t.title ? ' — ' + esc(t.title) : ''} <span class="muted small">· ${esc(statusLabel(t.status,t.isUnplanned))} · ${fmtMin(t.planTimeMin)}</span></span></label>`).join('')}
-      <p class="muted small">Items still marked “Planned” will be marked “Postponed” on the earlier day.</p>`,
-    footer: `<span class="spacer"></span><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="co-go">Bring over</button>`,
-    onMount: m => $('#co-go', m).addEventListener('click', () => {
-      const ids = $$('input[type=checkbox]:checked', m).map(c => c.value);
-      ids.forEach(id => { const src = byId('tasks', id); if (src.status === 'planned') src.status = 'postponed'; carryTask(src, date); });
-      persist(); closeModal(); toast(`${ids.length} brought over`); rerender();
-    })
-  });
-}
+    const key=username.toLowerCase(),r=this.users()[key];
+    if(!r||r.hash!==await hashPw(r.salt,pw))throw new Error('Incorrect username or password.');
+    if(r.disabled)throw new Error('This account has been disabled by the admin.');
+    const s={id:key,username:r.username,isAdmin:false};this.remember(s);return s;
+  },
+  async signOut(){sessionStorage.removeItem(this.K_SESS)},
+  async load(id){try{return normalise(JSON.parse(localStorage.getItem('viana2_data_'+id)))}catch(e){return normalise(null)}},
+  async save(id,data){localStorage.setItem('viana2_data_'+id,JSON.stringify(data))},
+  async listUsers(){
+    const u=this.users();
+    return Object.keys(u).map(k=>{let n=0;try{n=(JSON.parse(localStorage.getItem('viana2_data_'+k))||{}).tasks.length}catch(e){}
+      return {id:k,username:u[k].username,created:u[k].created,disabled:!!u[k].disabled,tasks:n}});
+  },
+  async setDisabled(id,v){const u=this.users();if(u[id]){u[id].disabled=v;this.putUsers(u)}},
+  async deleteUser(id){const u=this.users();delete u[id];this.putUsers(u);localStorage.removeItem('viana2_data_'+id)},
+  async resetPassword(id,pw){const u=this.users();if(!u[id])return;u[id].salt=uid();u[id].hash=await hashPw(u[id].salt,pw);this.putUsers(u)},
+  async changePassword(id,oldpw,newpw){
+    const u=this.users(),r=u[id];if(!r)throw new Error('Admin password is fixed and cannot be changed here.');
+    if(r.hash!==await hashPw(r.salt,oldpw))throw new Error('Current password is incorrect.');
+    r.salt=uid();r.hash=await hashPw(r.salt,newpw);this.putUsers(u);
+  },
+  canResetPasswords:true
+};
 
 /* =====================================================================
-   ACTIVITY FORM (create / edit with history)
+   STORAGE: CLOUD (Firebase Auth + Firestore) — used when firebase-config.js is filled in
    ===================================================================== */
-const FIELD_LABELS = { created:'Created', name:'Name', description:'Description', defaultPriority:'Priority', defaultTimeMin:'Time effort', defaultMental:'Mental effort', defaultResistance:'Emotional resistance', active:'Status', motives:'General motives', outcomes:'General outcomes' };
-function fmtHistVal(f, v){
-  if (v === null || v === undefined || v === '') return '—';
-  if (f === 'defaultTimeMin') return fmtMin(v);
-  if (f === 'active') return v ? 'Active' : 'Inactive';
-  if (Array.isArray(v)) return v.length ? v.join(', ') : '—';
-  if (['defaultPriority','defaultMental','defaultResistance'].includes(f)) return v + '/5';
-  return String(v);
-}
-function openActivityForm(id, { onSaved, presetName = '' } = {}){
-  const isNew = !id;
-  const a = isNew ? { name: presetName, description:'', defaultPriority:3, defaultTimeMin:60, defaultMental:3, defaultResistance:3, active:true } : byId('activities', id);
-  const mot = isNew ? [] : A.motives(id), out = isNew ? [] : A.outcomes(id);
-  const body = `
-    ${field('Activity name', `<input type="text" id="af-name" value="${esc(a.name)}" placeholder="e.g. Learn Tamil">`)}
-    ${field('What it means to me <em>optional</em>', `<textarea id="af-desc" rows="2">${esc(a.description)}</textarea>`)}
-    <p class="hint">No justification needed — “Because I want to” is a perfectly good reason.</p>
-    ${field('General motives <em>— why I might do this</em>', chipsHTML('motives', mot, 'af-mot'))}
-    ${field('General outcomes <em>— what I usually get from it</em>', chipsHTML('outcomes', out, 'af-out'))}
-    <div class="grid2">${field('Usual time', durHTML('af-time', a.defaultTimeMin))}${field('General priority', scaleHTML('priority', a.defaultPriority, 'af-pri'))}</div>
-    <div class="grid2">${field('Mental effort', scaleHTML('mental', a.defaultMental, 'af-mental'))}${field('Emotional resistance', scaleHTML('resistance', a.defaultResistance, 'af-res'))}</div>
-    ${isNew ? '' : `<label class="field" style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" id="af-active" ${a.active?'checked':''}> Active (inactive activities are hidden from planning but keep their history)</label>
-      ${field('Change note <em>optional — why did this change?</em>', `<input type="text" id="af-note" placeholder="e.g. Exercise feels easier now">`)}
-      <p class="muted small">Past tasks keep the values they were planned with. Changes here are logged in the activity’s history.</p>`}`;
-  openModal({ title: isNew ? 'New activity' : 'Edit activity', body, wide: true,
-    footer: `<span class="spacer"></span><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="af-save">${isNew ? 'Create activity' : 'Save changes'}</button>`,
-    onMount: m => $('#af-save', m).addEventListener('click', () => {
-      const name = $('#af-name', m).value.trim();
-      if (!name){ $('#af-name', m).classList.add('invalid'); return toast('Please give the activity a name'); }
-      if (db.activities.some(x => x.id !== id && x.name.toLowerCase() === name.toLowerCase())) return toast('An activity with this name already exists');
-      const time = readDur(m, 'af-time'); if (Number.isNaN(time)) return toast('Time not understood — try 90, 1:30 or 1h 30m');
-      const vals = { name, description: $('#af-desc', m).value.trim(), defaultPriority: readScale(m,'af-pri'), defaultTimeMin: time, defaultMental: readScale(m,'af-mental'), defaultResistance: readScale(m,'af-res') };
-      const nm = readChips(m,'af-mot'), no = readChips(m,'af-out'), t = nowISO();
-      if (isNew){
-        const na = { id:'act_'+uid(), ...vals, active:true, createdAt:t, modifiedAt:t };
-        db.activities.push(na);
-        setLinks('activityMotives','activityId',na.id,'motiveId',nm); setLinks('activityOutcomes','activityId',na.id,'outcomeId',no);
-        db.activityHistory.push({ id:'h_'+uid(), activityId:na.id, changeId:uid(), at:t, field:'created', oldValue:null, newValue:name, note:'' });
-        persist(); closeModal(); toast('Activity created');
-        return onSaved ? onSaved(na.id) : rerender();
+const EMAIL_DOMAIN='@viana.app';
+const cloudPw=p=>p+'#viana';   // Firebase needs 6+ characters; this lets short passwords like 2409 work
+const CloudStore={
+  mode:'cloud',canResetPasswords:false,
+  async init(){
+    const cfg=window.VIANA_FIREBASE_CONFIG;
+    firebase.initializeApp(cfg);
+    this.auth=firebase.auth();this.db=firebase.firestore();
+    await this.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+    const user=await new Promise(r=>{const un=this.auth.onAuthStateChanged(u=>{un();r(u)})});
+    if(!user)return null;
+    return this.sessionFor(user);
+  },
+  async sessionFor(user){
+    const isAdmin=user.email===ADMIN_USER.toLowerCase()+EMAIL_DOMAIN;
+    const ref=this.db.collection('users').doc(user.uid);
+    let snap=await ref.get();
+    if(!snap.exists){
+      const uname=isAdmin?ADMIN_USER:(user.displayName||user.email.replace(EMAIL_DOMAIN,''));
+      await ref.set({username:uname,created:nowISO(),disabled:false,isAdmin,data:JSON.stringify(defaultData())});
+      snap=await ref.get();
+    }
+    const d=snap.data();
+    if(d.disabled&&!isAdmin){await this.auth.signOut();throw new Error('This account has been disabled by the admin.')}
+    return {id:user.uid,username:d.username,isAdmin};
+  },
+  friendly(e){
+    const c=e&&e.code||'';
+    if(/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c))return 'Incorrect username or password.';
+    if(/email-already-in-use/.test(c))return 'That username is already taken.';
+    if(/network/.test(c))return 'No internet connection. Please try again.';
+    if(/operation-not-allowed/.test(c))return 'Email/Password sign-in is not enabled in Firebase (Authentication → Sign-in method).';
+    if(/permission-denied/.test(c))return 'Firestore rules are blocking access. Paste firestore.rules into Firebase and publish.';
+    return e.message||String(e);
+  },
+  async signUp(username,pw){
+    if(username.toUpperCase()===ADMIN_USER)throw new Error('That username is reserved.');
+    if(!/^[A-Za-z0-9._-]+$/.test(username))throw new Error('Use only letters, numbers, dot, dash or underscore in the username.');
+    try{
+      const cr=await this.auth.createUserWithEmailAndPassword(username.toLowerCase()+EMAIL_DOMAIN,cloudPw(pw));
+      await cr.user.updateProfile({displayName:username});
+      await this.db.collection('users').doc(cr.user.uid).set({username,created:nowISO(),disabled:false,isAdmin:false,data:JSON.stringify(defaultData())});
+      return {id:cr.user.uid,username,isAdmin:false};
+    }catch(e){throw new Error(this.friendly(e))}
+  },
+  async signIn(username,pw){
+    const isAdmin=username.toUpperCase()===ADMIN_USER;
+    if(isAdmin&&pw!==ADMIN_PASS)throw new Error('Incorrect username or password.');
+    const email=username.toLowerCase()+EMAIL_DOMAIN;
+    try{
+      const cr=await this.auth.signInWithEmailAndPassword(email,cloudPw(pw));
+      return await this.sessionFor(cr.user);
+    }catch(e){
+      if(isAdmin&&!/disabled/.test(e.message||'')){ // first ever admin sign-in creates the admin login
+        try{const cr=await this.auth.createUserWithEmailAndPassword(email,cloudPw(pw));return await this.sessionFor(cr.user)}
+        catch(e2){throw new Error(this.friendly(e2.code&&/email-already-in-use/.test(e2.code)?e:e2))}
       }
-      vals.active = $('#af-active', m).checked;
-      const note = $('#af-note', m).value.trim(), cid = uid(), changes = [];
-      Object.keys(vals).forEach(k => { if ((a[k] ?? null) !== (vals[k] ?? null)) changes.push([k, a[k] ?? null, vals[k] ?? null]); });
-      if (!sameSet(mot, nm)) changes.push(['motives', names('motives', mot), names('motives', nm)]);
-      if (!sameSet(out, no)) changes.push(['outcomes', names('outcomes', out), names('outcomes', no)]);
-      if (!changes.length){ closeModal(); return toast('No changes'); }
-      changes.forEach(([f,o,n]) => db.activityHistory.push({ id:'h_'+uid(), activityId:id, changeId:cid, at:t, field:f, oldValue:o, newValue:n, note }));
-      Object.assign(a, vals, { modifiedAt:t });
-      setLinks('activityMotives','activityId',id,'motiveId',nm); setLinks('activityOutcomes','activityId',id,'outcomeId',no);
-      persist(); closeModal(); toast('Saved — previous values kept in history'); onSaved ? onSaved(id) : rerender();
-    })
+      if(e instanceof Error&&!e.code)throw e;
+      throw new Error(this.friendly(e));
+    }
+  },
+  async signOut(){await this.auth.signOut()},
+  async load(id){const s=await this.db.collection('users').doc(id).get();if(!s.exists)return normalise(null);let d=null;try{d=JSON.parse(s.data().data)}catch(e){}return normalise(d)},
+  async save(id,data){await this.db.collection('users').doc(id).set({data:JSON.stringify(data),updated:nowISO()},{merge:true})},
+  async listUsers(){
+    const q=await this.db.collection('users').get();const out=[];
+    q.forEach(doc=>{const d=doc.data();if(d.isAdmin)return;let n=0;try{n=JSON.parse(d.data).tasks.length}catch(e){}
+      out.push({id:doc.id,username:d.username,created:d.created,disabled:!!d.disabled,tasks:n})});
+    return out;
+  },
+  async setDisabled(id,v){await this.db.collection('users').doc(id).set({disabled:v},{merge:true})},
+  async deleteUser(id){await this.db.collection('users').doc(id).delete()},
+  async resetPassword(){throw new Error('In cloud mode, reset passwords from the Firebase console (Authentication → Users).')},
+  async changePassword(id,oldpw,newpw){
+    const u=this.auth.currentUser;
+    try{const cred=firebase.auth.EmailAuthProvider.credential(u.email,cloudPw(oldpw));await u.reauthenticateWithCredential(cred);await u.updatePassword(cloudPw(newpw))}
+    catch(e){throw new Error(this.friendly(e))}
+  }
+};
+
+let Store=LocalStore;
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Could not load '+src));document.head.appendChild(s)})}
+
+/* =====================================================================
+   APP STATE
+   ===================================================================== */
+let S=null;          // session {id, username, isAdmin}
+let D=null;          // data currently on screen
+let viewing=null;    // {id, username} when admin views another user's data
+let tab='today';
+let saveTimer=null;
+const ui={planDate:null,reviewDate:null,cmpFrom:null,cmpTo:null,anRange:30,adminUsers:null};
+
+function dataOwner(){return viewing?viewing.id:S.id}
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{try{await Store.save(dataOwner(),D)}catch(e){toast('Save failed: '+(e.message||e))}},250);
+}
+async function flushSave(){if(saveTimer){clearTimeout(saveTimer);saveTimer=null;await Store.save(dataOwner(),D)}}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* =====================================================================
+   AUTH UI
+   ===================================================================== */
+let authMode='in';
+function authTab(m){
+  authMode=m;
+  document.getElementById('tabIn').classList.toggle('on',m==='in');
+  document.getElementById('tabUp').classList.toggle('on',m==='up');
+  document.getElementById('aPass2Wrap').classList.toggle('hidden',m!=='up');
+  document.getElementById('authBtn').textContent=m==='in'?'Sign in':'Create account';
+  document.getElementById('aPass').autocomplete=m==='in'?'current-password':'new-password';
+  document.getElementById('authErr').textContent='';
+}
+async function doAuth(ev){
+  ev.preventDefault();
+  const u=document.getElementById('aUser').value.trim(),p=document.getElementById('aPass').value,err=document.getElementById('authErr'),btn=document.getElementById('authBtn');
+  err.textContent='';
+  if(!u||!p){err.textContent='Enter username and password.';return false}
+  if(authMode==='up'){
+    if(u.length<3){err.textContent='Username must be at least 3 characters.';return false}
+    if(p.length<4){err.textContent='Password must be at least 4 characters.';return false}
+    if(p!==document.getElementById('aPass2').value){err.textContent='Passwords do not match.';return false}
+  }
+  btn.disabled=true;btn.textContent='Please wait…';
+  try{
+    S=authMode==='in'?await Store.signIn(u,p):await Store.signUp(u,p);
+    document.getElementById('authForm').reset();
+    await enterApp();
+    if(authMode==='up')toast('Account created. Welcome, '+S.username+'!');
+  }catch(e){err.textContent=e.message||String(e)}
+  btn.disabled=false;btn.textContent=authMode==='in'?'Sign in':'Create account';
+  return false;
+}
+async function enterApp(){
+  viewing=null;D=await Store.load(S.id);tab='today';
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('whoName').textContent=S.username;
+  document.getElementById('whoBadge').classList.toggle('hidden',!S.isAdmin);
+  render();
+}
+async function signOut(){
+  try{await flushSave()}catch(e){}
+  await Store.signOut();S=null;D=null;viewing=null;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('auth').classList.remove('hidden');
+  authTab('in');
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+const TABS=[['today','Today'],['plan','Plan'],['review','Review'],['compare','Compare'],['analysis','Analysis'],['activities','Activities'],['settings','Settings']];
+function render(){
+  const tabs=TABS.slice();if(S.isAdmin)tabs.push(['admin','Admin']);
+  document.getElementById('nav').innerHTML=tabs.map(([k,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')">${t}</button>`).join('');
+  const va=document.getElementById('viewAs');
+  if(viewing){va.classList.remove('hidden');va.innerHTML=`Admin: you are viewing and editing <b>${esc(viewing.username)}</b>'s data <button class="btn sm light" onclick="stopViewing()">Back to my data</button>`}
+  else va.classList.add('hidden');
+  const m=document.getElementById('main');
+  ({today:vToday,plan:vPlan,review:vReview,compare:vCompare,analysis:vAnalysis,activities:vActivities,settings:vSettings,admin:vAdmin}[tab]||vToday)(m);
+}
+function go(t){tab=t;render();window.scrollTo(0,0)}
+const actById=id=>D.activities.find(a=>a.id===id);
+const actName=id=>(actById(id)||{}).name||'(deleted activity)';
+const tasksOn=d=>D.tasks.filter(t=>t.date===d);
+
+function taskRow(t,click){
+  const s=stInfo(t.actual.status);
+  const act=t.actual.status&&t.actual.minutes!=null&&t.actual.minutes!==''?` · actual ${fmtMin(t.actual.minutes)}`:'';
+  return `<div class="task" onclick="${click}('${t.id}')"><div style="flex:1"><div class="nm">${esc(actName(t.activityId))}${t.unplanned?' <span class="st st6">Unplanned</span>':''}</div>
+  <div class="muted">${t.unplanned?'':'planned '+fmtMin(t.plan.minutes)}${act}${t.plan.note?' · '+esc(t.plan.note):''}</div></div><span class="st ${s.c}">${s.t}</span></div>`;
+}
+function totals(list){let p=0,a=0;list.forEach(t=>{if(!t.unplanned)p+=+t.plan.minutes||0;if(DONE_KEYS.includes(t.actual.status))a+=+t.actual.minutes||0});return {p,a}}
+
+/* ---------- TODAY ---------- */
+function vToday(m){
+  const d=today(),list=tasksOn(d),tt=totals(list),done=list.filter(t=>DONE_KEYS.includes(t.actual.status)).length;
+  m.innerHTML=`<h2>Today <span class="muted">${new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}</span></h2>
+  <div class="sumgrid"><div class="stat"><span class="muted">Planned</span><b>${fmtMin(tt.p)}</b></div><div class="stat"><span class="muted">Actual so far</span><b>${fmtMin(tt.a)}</b></div>
+  <div class="stat"><span class="muted">Tasks done</span><b>${done} / ${list.length}</b></div></div>
+  <div class="row" style="margin-bottom:10px"><b>Today's tasks</b><span class="spacer"></span><button class="btn sm ghost" onclick="ui.planDate=today();go('plan')">+ Plan a task</button><button class="btn sm" onclick="ui.reviewDate=today();go('review')">Record actuals</button></div>
+  ${list.length?list.map(t=>taskRow(t,'openActual')).join(''):'<div class="card empty">Nothing planned for today. Use <b>Plan</b> to add tasks.</div>'}`;
+}
+
+/* ---------- PLAN ---------- */
+function vPlan(m){
+  const d=ui.planDate||(ui.planDate=addDays(today(),1)),list=tasksOn(d).filter(t=>!t.unplanned),tt=totals(list);
+  const hrs=+D.settings.hoursPerDay||0;
+  m.innerHTML=`<h2>Plan</h2>
+  <div class="card row"><button class="btn sm light" onclick="ui.planDate=addDays(ui.planDate,-1);render()">◀</button>
+  <input type="date" value="${d}" style="max-width:180px" onchange="ui.planDate=this.value||today();render()">
+  <button class="btn sm light" onclick="ui.planDate=addDays(ui.planDate,1);render()">▶</button><span class="spacer"></span>
+  <span class="muted">Planned <b>${fmtMin(tt.p)}</b>${hrs?` of ${hrs}h available (${fmtMin(hrs*60-tt.p)} free)`:''}</span></div>
+  <div class="row" style="margin-bottom:10px"><b>Tasks for ${d}</b><span class="spacer"></span><button class="btn sm" onclick="newTask('${d}')">+ Add task</button></div>
+  ${list.length?list.map(t=>taskRow(t,'editPlan')).join(''):'<div class="card empty">No tasks planned for this day yet.</div>'}`;
+}
+function chips(name,all,sel){return `<div data-chips="${name}">`+all.map(x=>`<span class="chip ${sel.includes(x)?'on':''}" data-v="${esc(x)}" onclick="this.classList.toggle('on')">${esc(x)}</span>`).join('')+`</div>`}
+function readChips(name){return [...document.querySelectorAll(`[data-chips="${name}"] .chip.on`)].map(c=>c.dataset.v)}
+function scale(name,val,lbl){return `<label>${lbl}</label><div class="seg" data-seg="${name}">`+[1,2,3,4,5].map(n=>`<button type="button" class="${+val===n?'on':''}" onclick="segPick(this)">${n}</button>`).join('')+`</div>`}
+function segPick(b){const on=b.classList.contains('on');b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('on'));if(!on)b.classList.add('on')}
+function readSeg(name){const b=document.querySelector(`[data-seg="${name}"] button.on`);return b?+b.textContent:null}
+function openModal(h){document.getElementById('mbox').innerHTML=h;document.getElementById('modal').classList.remove('hidden')}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+
+function newTask(date){
+  const acts=D.activities.filter(a=>a.active);
+  if(!acts.length){toast('Create an activity first.');return}
+  openModal(`<h3>Add task for ${date}</h3><label>Activity</label>
+  <select id="ntAct">${acts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>
+  <div class="mfoot"><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="createTask('${date}')">Next</button></div>`);
+}
+function createTask(date,unplanned){
+  const a=actById(document.getElementById('ntAct').value);
+  const t={id:uid(),date,activityId:a.id,unplanned:!!unplanned,created:nowISO(),
+    plan:unplanned?{motives:[],outcomes:[]}:{minutes:a.minutes,motives:a.motives.slice(),outcomes:a.outcomes.slice(),importance:a.importance,effort:a.effort,resistance:a.resistance,note:''},
+    actual:{motives:[],outcomes:[]}};
+  D.tasks.push(t);save();closeModal();render();
+  unplanned?openActual(t.id):editPlan(t.id);
+}
+function editPlan(id){
+  const t=D.tasks.find(x=>x.id===id);if(!t)return;const p=t.plan;
+  openModal(`<h3>Plan: ${esc(actName(t.activityId))}</h3><div class="muted">${t.date} · values copied from the activity; changing them here affects this task only.</div>
+  <div class="grid2"><div><label>Date</label><input type="date" id="pDate" value="${t.date}"></div><div><label>Planned time (minutes)</label><input type="number" id="pMin" min="0" value="${p.minutes??''}"></div></div>
+  <label>Why I'm doing it (motives)</label>${chips('pMot',D.motives,p.motives)}
+  <label>What I expect to get (outcomes)</label>${chips('pOut',D.outcomes,p.outcomes)}
+  ${scale('pImp',p.importance,'Importance (1 low – 5 high)')}${scale('pEff',p.effort,'Expected mental effort')}${scale('pRes',p.resistance,'Expected emotional resistance')}
+  <label>Note</label><textarea id="pNote">${esc(p.note||'')}</textarea>
+  <div class="mfoot"><button class="btn danger" onclick="delTask('${id}')">Delete</button><span class="spacer"></span><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="savePlan('${id}')">Save</button></div>`);
+}
+function savePlan(id){
+  const t=D.tasks.find(x=>x.id===id);
+  t.date=document.getElementById('pDate').value||t.date;
+  Object.assign(t.plan,{minutes:+document.getElementById('pMin').value||0,motives:readChips('pMot'),outcomes:readChips('pOut'),importance:readSeg('pImp'),effort:readSeg('pEff'),resistance:readSeg('pRes'),note:document.getElementById('pNote').value.trim()});
+  t.updated=nowISO();save();closeModal();render();toast('Plan saved');
+}
+function delTask(id){if(!confirm('Delete this task?'))return;D.tasks=D.tasks.filter(x=>x.id!==id);save();closeModal();render();toast('Task deleted')}
+
+/* ---------- REVIEW (actuals only) ---------- */
+function vReview(m){
+  const d=ui.reviewDate||(ui.reviewDate=today()),list=tasksOn(d),pend=list.filter(t=>!t.actual.status).length;
+  const post=list.filter(t=>t.actual.status==='postponed'&&!t.carried).length;
+  m.innerHTML=`<h2>Review</h2>
+  <div class="card row"><button class="btn sm light" onclick="ui.reviewDate=addDays(ui.reviewDate,-1);render()">◀</button>
+  <input type="date" value="${d}" style="max-width:180px" onchange="ui.reviewDate=this.value||today();render()">
+  <button class="btn sm light" onclick="ui.reviewDate=addDays(ui.reviewDate,1);render()">▶</button><span class="spacer"></span><span class="muted">${pend} not yet recorded</span></div>
+  <div class="row" style="margin-bottom:10px"><b>Tap an activity to record what actually happened</b><span class="spacer"></span>
+  ${post?`<button class="btn sm light" onclick="carryPostponed('${d}')">Move ${post} postponed to next day</button>`:''}
+  <button class="btn sm ghost" onclick="newUnplanned('${d}')">+ Unplanned task</button></div>
+  ${list.length?list.map(t=>taskRow(t,'openActual')).join(''):'<div class="card empty">No tasks on this day.</div>'}`;
+}
+function newUnplanned(date){
+  openModal(`<h3>Unplanned task on ${date}</h3><label>Activity</label>
+  <select id="ntAct">${D.activities.filter(a=>a.active).map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>
+  <div class="mfoot"><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="createTask('${date}',true)">Next</button></div>`);
+}
+function openActual(id){
+  const t=D.tasks.find(x=>x.id===id);if(!t)return;const a=t.actual;
+  openModal(`<h3>${esc(actName(t.activityId))}</h3><div class="muted">${t.date} — record what actually happened</div>
+  <label>Status</label><div class="seg" id="aSt">${STATUSES.slice(1).filter(s=>!(t.unplanned&&s.k!=='asplanned'&&s.k!=='partial'&&s.k!=='differently')).map(s=>`<button type="button" data-k="${s.k}" class="${a.status===s.k?'on':''}" onclick="pickStatus(this,'${id}')">${t.unplanned&&s.k==='asplanned'?'Done':s.t}</button>`).join('')}</div>
+  <div id="aBody">
+  <label>Actual time (minutes)</label><input type="number" id="aMin" min="0" value="${a.minutes??''}">
+  <label>Why I actually did it (motives)</label>${chips('aMot',D.motives,a.motives)}
+  <label>What I actually got (outcomes)</label>${chips('aOut',D.outcomes,a.outcomes)}
+  ${scale('aEff',a.effort,'Actual mental effort')}${scale('aRes',a.resistance,'Actual emotional resistance')}${scale('aSat',a.satisfaction,'Satisfaction')}
+  </div><label>Note</label><textarea id="aNote">${esc(a.note||'')}</textarea>
+  <div class="mfoot">${a.status?`<button class="btn light" onclick="clearActual('${id}')">Clear</button>`:''}<span class="spacer"></span><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveActual('${id}')">Save</button></div>`);
+}
+function pickStatus(b,id){
+  document.querySelectorAll('#aSt button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const t=D.tasks.find(x=>x.id===id),k=b.dataset.k;
+  if(k==='asplanned'&&!t.unplanned){ // copy plan into actual fields
+    document.getElementById('aMin').value=t.plan.minutes??'';
+    document.querySelectorAll('[data-chips="aMot"] .chip').forEach(c=>c.classList.toggle('on',t.plan.motives.includes(c.dataset.v)));
+    document.querySelectorAll('[data-chips="aOut"] .chip').forEach(c=>c.classList.toggle('on',t.plan.outcomes.includes(c.dataset.v)));
+    [['aEff','effort'],['aRes','resistance']].forEach(([s,f])=>document.querySelectorAll(`[data-seg="${s}"] button`).forEach(x=>x.classList.toggle('on',+x.textContent===t.plan[f])));
+  }
+  if(['postponed','skipped','cancelled'].includes(k))document.getElementById('aMin').value=0;
+}
+function saveActual(id){
+  const t=D.tasks.find(x=>x.id===id),b=document.querySelector('#aSt button.on');
+  if(!b){toast('Choose a status first');return}
+  t.actual={status:b.dataset.k,minutes:document.getElementById('aMin').value===''?null:+document.getElementById('aMin').value,motives:readChips('aMot'),outcomes:readChips('aOut'),
+    effort:readSeg('aEff'),resistance:readSeg('aRes'),satisfaction:readSeg('aSat'),note:document.getElementById('aNote').value.trim(),recorded:nowISO()};
+  save();closeModal();render();toast('Actuals saved');
+}
+function clearActual(id){const t=D.tasks.find(x=>x.id===id);t.actual={motives:[],outcomes:[]};save();closeModal();render()}
+function carryPostponed(d){
+  const nd=addDays(d,1);let n=0;
+  D.tasks.filter(t=>t.date===d&&t.actual.status==='postponed'&&!t.carried).forEach(t=>{
+    D.tasks.push({id:uid(),date:nd,activityId:t.activityId,unplanned:false,created:nowISO(),carriedFrom:t.id,plan:JSON.parse(JSON.stringify(t.plan)),actual:{motives:[],outcomes:[]}});t.carried=true;n++});
+  save();render();toast(n+' task(s) moved to '+nd);
+}
+
+/* ---------- COMPARE (side by side) ---------- */
+function vCompare(m){
+  ui.cmpTo=ui.cmpTo||today();ui.cmpFrom=ui.cmpFrom||addDays(ui.cmpTo,-6);
+  const list=D.tasks.filter(t=>t.date>=ui.cmpFrom&&t.date<=ui.cmpTo).sort((a,b)=>a.date<b.date?1:-1);
+  const L=v=>v&&v.length?v.map(esc).join(', '):'—',N=v=>v==null||v===''?'—':v;
+  const row=(k,p,a)=>`<div class="k">${k}</div><div>${p}</div><div class="${p!==a&&a!=='—'?'diff':''}">${a}</div>`;
+  m.innerHTML=`<h2>Planned vs actual</h2>
+  <div class="card row"><span class="muted">From</span><input type="date" value="${ui.cmpFrom}" style="max-width:170px" onchange="ui.cmpFrom=this.value;render()">
+  <span class="muted">to</span><input type="date" value="${ui.cmpTo}" style="max-width:170px" onchange="ui.cmpTo=this.value;render()"><span class="spacer"></span><span class="muted">Highlighted = differs from plan</span></div>
+  ${list.length?list.map(t=>{const p=t.plan,a=t.actual,s=stInfo(a.status);
+    return `<div class="card"><div class="row" style="margin-bottom:8px"><b>${esc(actName(t.activityId))}</b><span class="muted">${t.date}</span><span class="spacer"></span><span class="st ${s.c}">${s.t}</span></div>
+    <div class="cmp"><div class="h"></div><div class="h">Planned</div><div class="h">Actual</div>
+    ${row('Time',t.unplanned?'(unplanned)':fmtMin(p.minutes),a.minutes==null?'—':fmtMin(a.minutes))}
+    ${row('Motives',L(p.motives),L(a.motives))}${row('Outcomes',L(p.outcomes),L(a.outcomes))}
+    ${row('Mental effort',N(p.effort),N(a.effort))}${row('Resistance',N(p.resistance),N(a.resistance))}
+    ${row('Importance / satisfaction',N(p.importance),N(a.satisfaction))}${row('Note',esc(p.note||'—'),esc(a.note||'—'))}</div></div>`}).join(''):'<div class="card empty">No tasks in this period.</div>'}`;
+}
+
+/* ---------- ANALYSIS (17 sections) ---------- */
+function vAnalysis(m){
+  const r=ui.anRange,to=today(),from=r?addDays(to,-(r-1)):'0000';
+  const T=D.tasks.filter(t=>t.date>=from&&t.date<=to),R=T.filter(t=>t.actual.status),Done=R.filter(t=>DONE_KEYS.includes(t.actual.status));
+  const sec=(n,title,body,note)=>`<div class="card"><h3>${n}. ${title}</h3>${note?`<div class="muted" style="margin-bottom:8px">${note}</div>`:''}${body}</div>`;
+  const tbl=(head,rows)=>rows.length?`<div style="overflow-x:auto"><table><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="muted">Not enough data yet.</div>';
+  const twoBars=(a,b,max)=>`<div class="bars"><div class="bar" style="width:${max?Math.round(a/max*100):0}%"></div><div class="bar b2" style="width:${max?Math.round(b/max*100):0}%"></div></div>`;
+  const leg='<div class="legend"><span><i style="background:var(--pri)"></i>Planned</span><span><i style="background:#f59e0b"></i>Actual</span></div>';
+  const byAct=f=>{const g={};f.forEach(t=>{(g[t.activityId]=g[t.activityId]||[]).push(t)});return g};
+  const out=[];
+
+  // 1 time
+  const tt=totals(T);const g1=byAct(T);const r1=Object.keys(g1).map(id=>{const x=totals(g1[id]);return [id,x.p,x.a]}).sort((a,b)=>b[1]+b[2]-a[1]-a[2]);const mx1=Math.max(1,...r1.map(x=>Math.max(x[1],x[2])));
+  out.push(sec(1,'Planned vs actual time',`<div class="sumgrid"><div class="stat"><span class="muted">Planned</span><b>${fmtMin(tt.p)}</b></div><div class="stat"><span class="muted">Actual (done tasks)</span><b>${fmtMin(tt.a)}</b></div><div class="stat"><span class="muted">Difference</span><b>${fmtMin(tt.a-tt.p)}</b></div></div>${leg}`+
+    tbl(['Activity','Planned','Actual','Diff',''],r1.map(x=>[esc(actName(x[0])),fmtMin(x[1]),fmtMin(x[2]),fmtMin(x[2]-x[1]),twoBars(x[1],x[2],mx1)]))));
+  // 2 motives, 3 outcomes
+  const cnt=(list,f)=>{const c={};list.forEach(t=>f(t).forEach(v=>c[v]=(c[v]||0)+1));return c};
+  [[2,'Planned vs actual motives','motives'],[3,'Planned vs actual outcomes','outcomes']].forEach(([n,ti,k])=>{
+    const p=cnt(R.filter(t=>!t.unplanned),t=>t.plan[k]),a=cnt(Done,t=>t.actual[k]);const keys=[...new Set([...Object.keys(p),...Object.keys(a)])].sort((x,y)=>(p[y]||0)+(a[y]||0)-(p[x]||0)-(a[x]||0));const mx=Math.max(1,...keys.map(x=>Math.max(p[x]||0,a[x]||0)));
+    out.push(sec(n,ti,leg+tbl([k==='motives'?'Motive':'Outcome','Planned (times)','Actual (times)',''],keys.map(x=>[esc(x),p[x]||0,a[x]||0,twoBars(p[x]||0,a[x]||0,mx)])),'Counts how often each was chosen in recorded tasks.'));
   });
+  // 4 effort 5 resistance
+  [[4,'Planned vs actual mental effort','effort'],[5,'Planned vs actual emotional resistance','resistance']].forEach(([n,ti,k])=>{
+    const g=byAct(Done.filter(t=>t.plan[k]&&t.actual[k]));const rows=Object.keys(g).map(id=>{const p=avg(g[id].map(t=>t.plan[k])),a=avg(g[id].map(t=>t.actual[k]));return [esc(actName(id)),f1(p),f1(a),(a-p>0?'+':'')+f1(a-p),a>p?'Harder than expected':a<p?'Easier than expected':'As expected']});
+    out.push(sec(n,ti,tbl(['Activity','Avg planned','Avg actual','Diff','Reading'],rows),'Scale 1–5, done tasks where both values were entered.'));
+  });
+  // 6 status
+  const sc={};R.forEach(t=>sc[t.actual.status]=(sc[t.actual.status]||0)+1);
+  out.push(sec(6,'How tasks ended',tbl(['Status','Tasks','Share'],STATUSES.slice(1).filter(s=>sc[s.k]).map(s=>[`<span class="st ${s.c}">${s.t}</span>`,sc[s.k],pct(sc[s.k]/R.length)]))+`<div class="muted" style="margin-top:6px">${T.length-R.length} task(s) in this period have no actuals recorded.</div>`));
+  // 7 postpone/skip by activity
+  const g7=byAct(R);out.push(sec(7,'Postponed / skipped by activity',tbl(['Activity','Recorded','Postponed','Skipped/cancelled','Rate'],Object.keys(g7).map(id=>{const l=g7[id],po=l.filter(t=>t.actual.status==='postponed').length,sk=l.filter(t=>['skipped','cancelled'].includes(t.actual.status)).length;return [esc(actName(id)),l.length,po,sk,pct((po+sk)/l.length),(po+sk)/l.length]}).sort((a,b)=>b[5]-a[5]).map(x=>x.slice(0,5)))));
+  // 8 estimation accuracy
+  const g8=byAct(Done.filter(t=>!t.unplanned&&+t.plan.minutes>0&&t.actual.minutes!=null));
+  out.push(sec(8,'Time estimate accuracy',tbl(['Activity','Tasks','Actual ÷ planned','Reading'],Object.keys(g8).map(id=>{const ra=avg(g8[id].map(t=>t.actual.minutes/t.plan.minutes));return [esc(actName(id)),g8[id].length,f1(ra)+'×',ra>1.15?'Takes longer than planned':ra<0.85?'Takes less than planned':'Well estimated']})),'1.0× means actual time matched the plan.'));
+  // 9 time share
+  const g9=byAct(Done);const tot9=Done.reduce((s,t)=>s+(+t.actual.minutes||0),0);
+  out.push(sec(9,'Where actual time went',tbl(['Activity','Actual time','Share',''],Object.keys(g9).map(id=>{const m=g9[id].reduce((s,t)=>s+(+t.actual.minutes||0),0);return [id,m]}).sort((a,b)=>b[1]-a[1]).map(([id,m])=>[esc(actName(id)),fmtMin(m),pct(tot9?m/tot9:0),`<div class="bar" style="width:${tot9?Math.round(m/tot9*100):0}%"></div>`]))));
+  // 10 planned vs unplanned
+  const up=Done.filter(t=>t.unplanned),pl=Done.filter(t=>!t.unplanned),um=up.reduce((s,t)=>s+(+t.actual.minutes||0),0),pm=pl.reduce((s,t)=>s+(+t.actual.minutes||0),0);
+  out.push(sec(10,'Planned vs unplanned activity',`<div class="sumgrid"><div class="stat"><span class="muted">From planned tasks</span><b>${fmtMin(pm)}</b>${pl.length} tasks</div><div class="stat"><span class="muted">Unplanned</span><b>${fmtMin(um)}</b>${up.length} tasks</div><div class="stat"><span class="muted">Unplanned share</span><b>${pct(pm+um?um/(pm+um):null)}</b></div></div>`));
+  // 11 satisfaction
+  const g11=byAct(Done.filter(t=>t.actual.satisfaction));
+  out.push(sec(11,'Satisfaction relative to time',tbl(['Activity','Avg satisfaction','Hours','Satisfaction per hour'],Object.keys(g11).map(id=>{const l=g11[id],s=avg(l.map(t=>t.actual.satisfaction)),h=l.reduce((x,t)=>x+(+t.actual.minutes||0),0)/60;return [esc(actName(id)),f1(s),f1(h),h?f1(l.reduce((x,t)=>x+t.actual.satisfaction,0)/h):'—']}))));
+  // 12 importance vs completion
+  out.push(sec(12,'Importance vs completion',tbl(['Importance','Recorded','Completed','Completion rate'],[5,4,3,2,1].map(i=>{const l=R.filter(t=>+t.plan.importance===i);return l.length?[i,l.length,l.filter(t=>DONE_KEYS.includes(t.actual.status)).length,pct(l.filter(t=>DONE_KEYS.includes(t.actual.status)).length/l.length)]:null}).filter(Boolean)),'Are important tasks actually getting done?'));
+  // 13 day of week
+  const dw=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],wk=dw.map(()=>({p:0,a:0,n:0}));T.forEach(t=>{const i=new Date(t.date+'T00:00:00').getDay();if(!t.unplanned)wk[i].p+=+t.plan.minutes||0;if(DONE_KEYS.includes(t.actual.status))wk[i].a+=+t.actual.minutes||0;wk[i].n++});const mx13=Math.max(1,...wk.map(w=>Math.max(w.p,w.a)));
+  out.push(sec(13,'Day-of-week pattern',leg+tbl(['Day','Tasks','Planned','Actual',''],[1,2,3,4,5,6,0].filter(i=>wk[i].n).map(i=>[dw[i],wk[i].n,fmtMin(wk[i].p),fmtMin(wk[i].a),twoBars(wk[i].p,wk[i].a,mx13)]))));
+  // 14 daily trend
+  const days=[...new Set(T.map(t=>t.date))].sort().slice(-31);const dd=days.map(d=>[d,totals(T.filter(t=>t.date===d))]);const mx14=Math.max(1,...dd.map(x=>Math.max(x[1].p,x[1].a)));
+  out.push(sec(14,'Daily trend',leg+tbl(['Date','Planned','Actual',''],dd.map(([d,x])=>[d,fmtMin(x.p),fmtMin(x.a),twoBars(x.p,x.a,mx14)])),'Up to the last 31 days with tasks in this period.'));
+  // 15 outcome fulfilment
+  const of=Done.filter(t=>!t.unplanned&&t.plan.outcomes.length);const g15=byAct(of);
+  out.push(sec(15,'Expected outcomes achieved',tbl(['Activity','Tasks','Expected outcomes achieved'],Object.keys(g15).map(id=>{let e=0,h=0;g15[id].forEach(t=>{e+=t.plan.outcomes.length;h+=t.plan.outcomes.filter(o=>t.actual.outcomes.includes(o)).length});return [esc(actName(id)),g15[id].length,pct(e?h/e:null)]})),'Share of planned outcomes that were also recorded as actual outcomes.'));
+  // 16 motive match
+  const mm=Done.filter(t=>!t.unplanned&&t.plan.motives.length&&t.actual.motives.length);const g16=byAct(mm);
+  out.push(sec(16,'Did the reason stay the same?',tbl(['Activity','Tasks','Same motives','Some overlap','Different'],Object.keys(g16).map(id=>{let s=0,o=0,d=0;g16[id].forEach(t=>{const P=t.plan.motives,A=t.actual.motives,ov=P.filter(x=>A.includes(x)).length;if(ov===P.length&&ov===A.length)s++;else if(ov)o++;else d++});return [esc(actName(id)),g16[id].length,s,o,d]})),'Compares planned motives with the motives recorded afterwards.'));
+  // 17 neglected
+  const last={};D.tasks.filter(t=>DONE_KEYS.includes(t.actual.status)).forEach(t=>{if(!last[t.activityId]||t.date>last[t.activityId])last[t.activityId]=t.date});
+  const nrows=D.activities.filter(a=>a.active).map(a=>{const l=last[a.id];const days=l?Math.round((new Date(to)-new Date(l))/864e5):null;return [a.name,l,days]}).sort((x,y)=>(y[2]??1e9)-(x[2]??1e9));
+  out.push(sec(17,'Activities you have not done lately',tbl(['Activity','Last done','Days ago'],nrows.map(x=>[esc(x[0]),x[1]||'Never',x[2]??'—'])),'Uses all your data, not just the selected period.'));
+
+  m.innerHTML=`<h2>Analysis</h2><div class="card row"><span class="muted">Period</span><div class="seg">${[[7,'7 days'],[30,'30 days'],[90,'90 days'],[0,'All time']].map(([v,t])=>`<button class="${ui.anRange===v?'on':''}" onclick="ui.anRange=${v};render()">${t}</button>`).join('')}</div>
+  <span class="spacer"></span><span class="muted">${T.length} tasks · ${R.length} with actuals</span></div>
+  ${R.length?'':'<div class="card muted">Record actuals in <b>Review</b> for a few days and these sections will fill in.</div>'}${out.join('')}`;
 }
 
-/* =====================================================================
-   VIEW: ACTIVITY LIBRARY
-   ===================================================================== */
-const lib = { q:'', status:'active', motive:'', sort:'name' };
-VIEWS.activities = () => {
-  $('#main').innerHTML = `
-  <section class="page-head">
-    <div><div class="eyebrow">Library</div><h1>Activities</h1><p class="lede">The things I generally want to do in my life.</p></div>
-    <div class="head-actions"><button class="btn primary" data-act="newActivity">+ New activity</button></div>
-  </section>
-  <div class="toolbar">
-    <input type="search" id="lib-q" placeholder="Search…" value="${esc(lib.q)}">
-    <select id="lib-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="all">All</option></select>
-    <select id="lib-motive"><option value="">Any motive</option>${sorted('motives').map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>
-    <select id="lib-sort"><option value="name">Name A–Z</option><option value="priority">Priority</option><option value="count">Most performed</option><option value="time">Most time</option><option value="recent">Recently done</option></select>
-  </div>
-  <div class="lib-grid" id="lib-grid"></div>`;
-  $('#lib-status').value = lib.status; $('#lib-motive').value = lib.motive; $('#lib-sort').value = lib.sort;
-  const upd = () => { lib.q = $('#lib-q').value; lib.status = $('#lib-status').value; lib.motive = $('#lib-motive').value; lib.sort = $('#lib-sort').value; renderLibGrid(); };
-  $('#lib-q').addEventListener('input', upd); ['#lib-status','#lib-motive','#lib-sort'].forEach(s => $(s).addEventListener('change', upd));
-  renderLibGrid();
-};
-function renderLibGrid(){
-  const q = lib.q.trim().toLowerCase();
-  let items = db.activities.filter(a =>
-    (lib.status === 'all' || (lib.status === 'active' ? a.active : !a.active)) &&
-    (!q || a.name.toLowerCase().includes(q) || (a.description||'').toLowerCase().includes(q)) &&
-    (!lib.motive || A.motives(a.id).includes(lib.motive))
-  ).map(a => ({ a, s: activityStats(a.id) }));
-  const cmp = { name:(x,y)=>x.a.name.localeCompare(y.a.name), priority:(x,y)=>(y.a.defaultPriority||0)-(x.a.defaultPriority||0), count:(x,y)=>y.s.performed-x.s.performed, time:(x,y)=>y.s.totalMin-x.s.totalMin, recent:(x,y)=>(y.s.last||'').localeCompare(x.s.last||'') }[lib.sort];
-  items.sort((x,y) => cmp(x,y) || x.a.name.localeCompare(y.a.name));
-  $('#lib-grid').innerHTML = items.length ? items.map(({a,s}) => {
-    const mot = s.topMotives.length ? names('motives', s.topMotives) : names('motives', A.motives(a.id)).slice(0,3);
-    const out = s.topOutcomes.length ? names('outcomes', s.topOutcomes) : names('outcomes', A.outcomes(a.id)).slice(0,3);
-    return `<div class="acard ${a.active?'':'inactive'}" data-act="openActivity" data-id="${a.id}">
-      <h3><span>${esc(a.name)}</span>${badge('P', a.defaultPriority, 'General priority')}</h3>
-      ${a.description ? `<div class="desc">${esc(a.description)}</div>` : ''}
-      <div class="row">${s.performed ? `Done <b>${s.performed}×</b> · <b>${fmtMin(s.totalMin)}</b> total${s.last ? ' · last ' + fmtShort(s.last) : ''}` : 'Not done yet'}${a.active ? '' : ' · <b>Inactive</b>'}</div>
-      <div>${mot.map(x => `<span class="mini m">${esc(x)}</span>`).join('')}</div>
-      <div>${out.map(x => `<span class="mini o">${esc(x)}</span>`).join('')}</div>
-      <div class="row">${s.topMotives.length ? 'Most common motives & outcomes from what you did' : 'General motives & outcomes'}</div>
-      ${a.active ? `<div class="foot"><button class="btn sm" data-act="planActivity" data-id="${a.id}">Plan tomorrow</button><button class="btn sm ghost" data-act="unplannedActivity" data-id="${a.id}">I did this today</button></div>` : ''}
-    </div>`; }).join('') : `<div class="empty card" style="grid-column:1/-1"><div class="big">No activities match.</div></div>`;
+/* ---------- ACTIVITIES ---------- */
+function vActivities(m){
+  const acts=D.activities.slice().sort((a,b)=>(b.active-a.active)||a.name.localeCompare(b.name));
+  m.innerHTML=`<h2>Activities</h2><div class="row" style="margin-bottom:10px"><span class="muted">Your own list — changes here don't affect other users.</span><span class="spacer"></span><button class="btn sm" onclick="editAct()">+ New activity</button></div>
+  ${acts.length?acts.map(a=>`<div class="task" onclick="editAct('${a.id}')"><div style="flex:1"><div class="nm">${esc(a.name)} ${a.active?'':'<span class="st st0">Inactive</span>'}</div>
+  <div class="muted">${esc(a.category||'')} · default ${fmtMin(a.minutes)} · importance ${a.importance??'—'} · ${D.tasks.filter(t=>t.activityId===a.id).length} tasks</div></div></div>`).join(''):'<div class="card empty">No activities. Add one to get started.</div>'}`;
+}
+function editAct(id){
+  const a=id?actById(id):{name:'',category:'',minutes:30,importance:3,effort:3,resistance:3,motives:[],outcomes:[],notes:'',active:true,history:[]};
+  const hist=(a.history||[]).slice().reverse().slice(0,30);
+  openModal(`<h3>${id?'Edit activity':'New activity'}</h3>
+  <div class="grid2"><div><label>Name</label><input type="text" id="acName" value="${esc(a.name)}"></div><div><label>Category</label><input type="text" id="acCat" value="${esc(a.category||'')}"></div></div>
+  <label>Default time (minutes)</label><input type="number" id="acMin" min="0" value="${a.minutes??''}">
+  <label>Default motives</label>${chips('acMot',D.motives,a.motives)}<label>Default outcomes</label>${chips('acOut',D.outcomes,a.outcomes)}
+  ${scale('acImp',a.importance,'Default importance')}${scale('acEff',a.effort,'Default mental effort')}${scale('acRes',a.resistance,'Default emotional resistance')}
+  <label>Notes</label><textarea id="acNotes">${esc(a.notes||'')}</textarea>
+  <label><input type="checkbox" id="acActive" ${a.active?'checked':''}> Active (shows when planning)</label>
+  ${id?`<label>Reason for change (optional, saved in history)</label><input type="text" id="acWhy">`:''}
+  ${hist.length?`<details style="margin-top:12px"><summary class="muted">Change history (${a.history.length})</summary>${tbl2(hist)}</details>`:''}
+  <div class="mfoot">${id?`<button class="btn danger" onclick="delAct('${id}')">Delete</button>`:''}<span class="spacer"></span><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveAct('${id||''}')">Save</button></div>`);
+}
+function tbl2(h){return `<table><tr><th>When</th><th>Field</th><th>Old</th><th>New</th><th>Note</th></tr>${h.map(x=>`<tr><td>${new Date(x.at).toLocaleString()}</td><td>${esc(x.field)}</td><td>${esc(x.old)}</td><td>${esc(x.new)}</td><td>${esc(x.note||'')}</td></tr>`).join('')}</table>`}
+function saveAct(id){
+  const v={name:document.getElementById('acName').value.trim(),category:document.getElementById('acCat').value.trim(),minutes:+document.getElementById('acMin').value||0,
+    motives:readChips('acMot'),outcomes:readChips('acOut'),importance:readSeg('acImp'),effort:readSeg('acEff'),resistance:readSeg('acRes'),notes:document.getElementById('acNotes').value.trim(),active:document.getElementById('acActive').checked};
+  if(!v.name){toast('Enter a name');return}
+  if(D.activities.some(a=>a.id!==id&&a.name.toLowerCase()===v.name.toLowerCase())){toast('An activity with that name already exists');return}
+  if(id){const a=actById(id),why=document.getElementById('acWhy').value.trim();
+    Object.keys(v).forEach(k=>{const o=Array.isArray(a[k])?a[k].join(', '):String(a[k]??''),n=Array.isArray(v[k])?v[k].join(', '):String(v[k]??'');if(o!==n)a.history.push({at:nowISO(),field:k,old:o,new:n,note:why})});
+    Object.assign(a,v);
+  }else D.activities.push(Object.assign({id:uid(),created:nowISO(),history:[]},v));
+  save();closeModal();render();toast('Activity saved');
+}
+function delAct(id){
+  const n=D.tasks.filter(t=>t.activityId===id).length;
+  if(!confirm(`Delete "${actName(id)}"${n?` and its ${n} task(s)`:''}? This only affects ${viewing?esc(viewing.username)+"'s":'your'} account and cannot be undone.`))return;
+  D.activities=D.activities.filter(a=>a.id!==id);D.tasks=D.tasks.filter(t=>t.activityId!==id);save();closeModal();render();toast('Activity deleted');
 }
 
-/* =====================================================================
-   VIEW: ACTIVITY DETAIL
-   ===================================================================== */
-VIEWS.activity = (id) => {
-  const a = byId('activities', id);
-  if (!a){ $('#main').innerHTML = `<div class="card empty"><div class="big">Activity not found.</div><a class="btn" href="#/activities">Back to library</a></div>`; return; }
-  const s = activityStats(id), sc = db.settings.scales;
-  const tasks = db.tasks.filter(t => t.activityId === id).sort((x,y) => y.date.localeCompare(x.date) || (x.order??0)-(y.order??0));
-  const hist = db.activityHistory.filter(h => h.activityId === id).sort((x,y) => y.at.localeCompare(x.at));
-  const groups = []; hist.forEach(h => { const g = groups.find(g => g.changeId === h.changeId); g ? g.items.push(h) : groups.push({ changeId:h.changeId, at:h.at, note:h.note, items:[h] }); });
-  $('#main').innerHTML = `
-  <p><a href="#/activities">← Activities</a></p>
-  <section class="page-head">
-    <div><div class="eyebrow">Activity${a.active ? '' : ' · inactive'}</div><h1>${esc(a.name)}</h1>${a.description ? `<p class="lede">${esc(a.description)}</p>` : ''}</div>
-    <div class="head-actions">
-      ${a.active ? `<button class="btn primary" data-act="planActivity" data-id="${id}">Plan tomorrow</button><button class="btn" data-act="unplannedActivity" data-id="${id}">I did this today</button>` : ''}
-      <button class="btn" data-act="editActivity" data-id="${id}">Edit</button>
-    </div>
-  </section>
-  <section class="card">
-    <h2 style="margin-bottom:.7rem">General profile</h2>
-    <div class="kv">
-      <div><div class="k">Priority</div><div class="v">${a.defaultPriority ?? '–'}/5 <span class="muted small">${esc(a.defaultPriority ? sc.priority[a.defaultPriority-1] : '')}</span></div></div>
-      <div><div class="k">Usual time</div><div class="v">${fmtMin(a.defaultTimeMin)}</div></div>
-      <div><div class="k">Mental effort</div><div class="v">${a.defaultMental ?? '–'}/5 <span class="muted small">${esc(a.defaultMental ? sc.mental[a.defaultMental-1] : '')}</span></div></div>
-      <div><div class="k">Emotional resistance</div><div class="v">${a.defaultResistance ?? '–'}/5</div></div>
-    </div>
-    <div style="margin-top:.9rem"><div class="field-label">General motives</div>${names('motives', A.motives(id)).map(x => `<span class="mini m">${esc(x)}</span>`).join('') || '<span class="muted small">None</span>'}</div>
-    <div style="margin-top:.6rem"><div class="field-label">General outcomes</div>${names('outcomes', A.outcomes(id)).map(x => `<span class="mini o">${esc(x)}</span>`).join('') || '<span class="muted small">None</span>'}</div>
-    <p class="muted small" style="margin:.9rem 0 0">Created ${fmtStamp(a.createdAt)} · Last modified ${fmtStamp(a.modifiedAt)}</p>
-  </section>
-  <div class="stats">
-    ${stat('Times done', s.performed)}${stat('Total time', s.totalMin ? fmtMin(s.totalMin) : '—')}
-    ${stat('Tasks created', s.tasks)}${stat('Postponed', s.postponed)}
-  </div>
-  ${s.topMotives.length ? `<section class="card"><div class="field-label">Most common motives when actually done</div>${names('motives', s.topMotives).map(x => `<span class="mini m">${esc(x)}</span>`).join('')}
-     <div class="field-label" style="margin-top:.6rem">Most common outcomes</div>${names('outcomes', s.topOutcomes).map(x => `<span class="mini o">${esc(x)}</span>`).join('')}</section>` : ''}
-  <section class="card">
-    <h2 style="margin-bottom:.6rem">Related tasks</h2>
-    ${tasks.length ? `<div class="table-wrap"><table class="simple"><thead><tr><th>Date</th><th>Task</th><th>Status</th><th>Plan</th><th>Actual</th><th>P plan/act</th></tr></thead><tbody>
-      ${tasks.map(t => `<tr><td><a href="#/review/${t.date}">${fmtShort(t.date)}</a></td><td><a href="javascript:void 0" data-act="openTask" data-id="${t.id}">${esc(t.title || '—')}</a>${t.isUnplanned ? unplTag : ''}</td><td>${statusPill(t)}</td><td>${fmtMin(t.planTimeMin)}</td><td>${fmtMin(t.actTimeMin)}</td><td>${t.planPriority ?? '–'} / ${t.actPriority ?? '–'}</td></tr>`).join('')}
-    </tbody></table></div>` : '<p class="muted">No tasks yet.</p>'}
-  </section>
-  <section class="card">
-    <h2 style="margin-bottom:.8rem">Change history</h2>
-    ${groups.map(g => `<div class="hist-group"><div class="hist-when">${fmtStamp(g.at)}</div>
-      ${g.items.map(h => h.field === 'created' ? `<div class="hist-line">Activity created${h.note ? ' — ' + esc(h.note) : ''}</div>` :
-        `<div class="hist-line"><b>${FIELD_LABELS[h.field] || esc(h.field)}:</b> <s>${esc(fmtHistVal(h.field, h.oldValue))}</s> → ${esc(fmtHistVal(h.field, h.newValue))}</div>`).join('')}
-      ${g.note && g.items[0].field !== 'created' ? `<div class="hist-note">“${esc(g.note)}”</div>` : ''}</div>`).join('') || '<p class="muted">No changes recorded.</p>'}
-  </section>
-  ${!tasks.length ? `<p style="text-align:right"><button class="btn ghost danger sm" data-act="deleteActivity" data-id="${id}">Delete activity</button></p>` :
-    `<p class="muted small" style="text-align:right">Activities with tasks can be deactivated (Edit → Active) but not deleted, so history stays meaningful.</p>`}`;
-};
-
-/* =====================================================================
-   VIEW: SETTINGS / MASTERS
-   ===================================================================== */
-VIEWS.settings = () => {
-  const s = db.settings;
-  const scaleNames = { priority:'Priority', mental:'Mental effort', resistance:'Emotional resistance', satisfaction:'Satisfaction' };
-  $('#main').innerHTML = `
-  <section class="page-head"><div><div class="eyebrow">Settings</div><h1>Masters &amp; preferences</h1></div></section>
-  ${masterSection('motives', 'Motives', 'Why I might do something. Rename freely; deactivate instead of deleting once used.')}
-  ${masterSection('outcomes', 'Outcomes', 'What I might get from something.')}
-  <section class="card">
-    <h2>Scale definitions</h2><p class="muted small">Labels shown for each 1–5 value.</p>
-    ${Object.keys(scaleNames).map(k => `<div class="field"><span>${scaleNames[k]}</span><div class="scale-edit">${s.scales[k].map((l,i) =>
-      `<label>${i+1}<input type="text" class="scale-input" data-kind="${k}" data-i="${i}" value="${esc(l)}"></label>`).join('')}</div></div>`).join('')}
-  </section>
-  <section class="card">
-    <h2>Preferences</h2>
-    <div class="setting-row"><div>Appearance</div><select id="set-theme"><option value="auto">Match device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
-    <div class="setting-row"><div>Hours available per day <div class="muted small">Optional — shows unallocated time when planning</div></div><input type="number" id="set-cap" min="0" max="24" step="0.5" value="${esc(s.dayCapacityHours)}" placeholder="e.g. 6"></div>
-    <div class="setting-row"><div>PIN lock <div class="muted small">${s.pinHash ? 'On' : 'Off'} — a simple privacy screen for this device, not strong security</div></div>
-      <div>${s.pinHash ? '<button class="btn sm" data-act="setPin">Change PIN</button> <button class="btn sm ghost" data-act="removePin">Turn off</button>' : '<button class="btn sm" data-act="setPin">Set a PIN</button>'}</div></div>
-  </section>
-  <section class="card">
-    <h2>Your data</h2>
-    <p class="muted small">Everything is stored only in this browser on this device. Export a backup regularly — clearing browser data would erase it.
-      Last backup: <b>${s.lastBackupAt ? fmtStamp(s.lastBackupAt) : 'never'}</b>.</p>
-    <div class="head-actions">
-      <button class="btn primary" data-act="exportJSON">Export backup (.json)</button>
-      <button class="btn" data-act="importJSON">Restore from backup…</button>
-      <button class="btn" data-act="exportCSV">Export tasks (.csv)</button>
-    </div>
-    <p class="muted small" style="margin-top:.8rem">${db.activities.length} activities · ${db.tasks.length} tasks · ${db.activityHistory.length} history entries · Viana v${APP_VERSION}</p>
-    <button class="btn sm ghost danger" data-act="resetData">Erase everything and start fresh…</button>
-  </section>`;
-  $('#set-theme').value = s.theme;
-};
-function masterSection(tbl, title, help){
-  return `<section class="card" data-master="${tbl}">
-    <h2>${title}</h2><p class="muted small">${help}</p>
-    ${sorted(tbl).map((x,i,arr) => { const n = usageCount(tbl, x.id); return `<div class="mrow ${x.active?'':'off'}" data-tbl="${tbl}" data-id="${x.id}">
-      <input type="text" class="m-name" value="${esc(x.name)}" aria-label="Name">
-      <input type="text" class="m-desc" value="${esc(x.description)}" placeholder="Description (optional)" aria-label="Description">
-      <span class="usage">${n ? `used ${n}×` : 'unused'}</span>
-      <label><input type="checkbox" class="m-active" ${x.active?'checked':''}> Active</label>
-      <span class="ord"><button class="icon-btn" data-act="moveMaster" data-dir="-1" ${i===0?'disabled':''} aria-label="Up">↑</button><button class="icon-btn" data-act="moveMaster" data-dir="1" ${i===arr.length-1?'disabled':''} aria-label="Down">↓</button>${n ? '' : `<button class="icon-btn" data-act="deleteMaster" aria-label="Delete" title="Delete (only possible while unused)">✕</button>`}</span>
-    </div>`; }).join('')}
-    <div class="addrow"><input type="text" class="m-new" placeholder="Add a new ${title.toLowerCase().slice(0,-1)}…"><button class="btn" data-act="addMaster" data-tbl="${tbl}">Add</button></div>
-  </section>`;
+/* ---------- SETTINGS ---------- */
+function vSettings(m){
+  m.innerHTML=`<h2>Settings</h2>
+  <div class="card"><h3>Planning</h3><label>Hours available per day (optional)</label><input type="number" min="0" max="24" style="max-width:160px" value="${D.settings.hoursPerDay||''}" onchange="D.settings.hoursPerDay=this.value;save();toast('Saved')"></div>
+  <div class="card"><h3>Motives</h3>${listEditor('motives')}</div>
+  <div class="card"><h3>Outcomes</h3>${listEditor('outcomes')}</div>
+  <div class="card"><h3>My data</h3><div class="row"><button class="btn sm light" onclick="exportCSV()">Export tasks (CSV)</button><button class="btn sm light" onclick="exportJSON()">Download backup</button>
+  <label class="btn sm light" style="margin:0;color:var(--ink)">Restore backup<input type="file" accept=".json" class="hidden" onchange="importJSON(this)"></label></div></div>
+  ${viewing?'':`<div class="card"><h3>Change password</h3>${S.isAdmin?'<div class="muted">The admin password is fixed (2409).</div>':`
+  <div class="grid2"><div><label>Current password</label><input type="password" id="cpOld"></div><div><label>New password</label><input type="password" id="cpNew"></div></div>
+  <button class="btn sm" style="margin-top:10px" onclick="changePw()">Update password</button>`}</div>`}
+  <div class="card muted">Storage: <b>${Store.mode==='cloud'?'Cloud (Firebase) — same login works on any device':'This browser only (local mode)'}</b> · Viana 2.0</div>`;
 }
-
-/* ---------- Backup / import / CSV ---------- */
-function exportJSON(){
-  db.settings.lastBackupAt = nowISO(); persist();
-  download(`viana-backup-${todayStr()}.json`, JSON.stringify(db, null, 2), 'application/json');
-  toast('Backup downloaded');
+function listEditor(k){
+  return D[k].map((x,i)=>`<span class="chip">${esc(x)} <a href="#" onclick="renameItem('${k}',${i});return false" title="Rename">✎</a> <a href="#" onclick="removeItem('${k}',${i});return false" title="Remove" style="color:var(--bad)">✕</a></span>`).join('')+
+  `<div class="row" style="margin-top:8px"><input type="text" id="new_${k}" placeholder="Add new…" style="max-width:240px"><button class="btn sm" onclick="addItem('${k}')">Add</button></div>`;
 }
-function importJSON(file){
-  const r = new FileReader();
-  r.onload = () => {
-    try {
-      const data = JSON.parse(r.result);
-      if (!data.schemaVersion || !TABLES.every(k => Array.isArray(data[k]))) throw new Error('This does not look like a Viana backup.');
-      if (!confirm(`Replace ALL current data with this backup?\n\n${data.activities.length} activities, ${data.tasks.length} tasks.`)) return;
-      db = data; migrate(); persist(); applyTheme(); toast('Backup restored'); rerender();
-    } catch(e){ alert('Could not restore: ' + e.message); }
-  };
-  r.readAsText(file);
-}
+function addItem(k){const v=document.getElementById('new_'+k).value.trim();if(!v)return;if(D[k].includes(v)){toast('Already in the list');return}D[k].push(v);save();render()}
+function renameItem(k,i){const o=D[k][i],n=(prompt('Rename',o)||'').trim();if(!n||n===o)return;D[k][i]=n;
+  const f=k;D.activities.forEach(a=>a[f]=a[f].map(x=>x===o?n:x));D.tasks.forEach(t=>{t.plan[f]=t.plan[f].map(x=>x===o?n:x);t.actual[f]=t.actual[f].map(x=>x===o?n:x)});save();render()}
+function removeItem(k,i){if(!confirm(`Remove "${D[k][i]}" from the list? Past tasks keep it.`))return;D[k].splice(i,1);save();render()}
+async function changePw(){const o=document.getElementById('cpOld').value,n=document.getElementById('cpNew').value;if(n.length<4){toast('New password must be at least 4 characters');return}
+  try{await Store.changePassword(S.id,o,n);toast('Password updated');render()}catch(e){toast(e.message)}}
+function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function exportCSV(){
-  const cols = ['date','activity','activity_name_at_creation','task','unplanned','status','plan_time_min','actual_time_min','plan_mental','actual_mental','plan_resistance','actual_resistance','plan_priority','actual_priority','satisfaction','planned_motives','actual_motives','planned_outcomes','actual_outcomes','plan_notes','actual_notes','carried_from_date','created_at','modified_at'];
-  const q = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; };
-  const rows = db.tasks.slice().sort((a,b) => a.date.localeCompare(b.date) || (a.order??0)-(b.order??0)).map(t => [
-    t.date, actName(t), t.activityNameAtCreation, t.title, t.isUnplanned ? 'yes' : 'no', STATUS[t.status]?.label,
-    t.planTimeMin, t.actTimeMin, t.planMental, t.actMental, t.planResistance, t.actResistance, t.planPriority, t.actPriority, t.actSatisfaction,
-    names('motives',T.motives(t.id,'planned')).join('; '), names('motives',T.motives(t.id,'actual')).join('; '),
-    names('outcomes',T.outcomes(t.id,'planned')).join('; '), names('outcomes',T.outcomes(t.id,'actual')).join('; '),
-    t.planNotes, t.actNotes, t.carriedFromTaskId ? byId('tasks', t.carriedFromTaskId)?.date : '', t.createdAt, t.modifiedAt].map(q).join(','));
-  download(`viana-tasks-${todayStr()}.csv`, '\ufeff' + [cols.join(','), ...rows].join('\n'), 'text/csv');
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const h=['Date','Activity','Unplanned','Planned min','Planned motives','Planned outcomes','Importance','Planned effort','Planned resistance','Plan note','Status','Actual min','Actual motives','Actual outcomes','Actual effort','Actual resistance','Satisfaction','Actual note'];
+  const rows=D.tasks.slice().sort((a,b)=>a.date<b.date?-1:1).map(t=>[t.date,actName(t.activityId),t.unplanned?'Yes':'',t.plan.minutes,t.plan.motives.join('; '),t.plan.outcomes.join('; '),t.plan.importance,t.plan.effort,t.plan.resistance,t.plan.note,stInfo(t.actual.status).t,t.actual.minutes,t.actual.motives.join('; '),t.actual.outcomes.join('; '),t.actual.effort,t.actual.resistance,t.actual.satisfaction,t.actual.note]);
+  download(`viana-tasks-${(viewing||S).username}-${today()}.csv`,[h,...rows].map(r=>r.map(q).join(',')).join('\n'),'text/csv');
 }
+function exportJSON(){download(`viana-backup-${(viewing||S).username}-${today()}.json`,JSON.stringify(D,null,1),'application/json')}
+function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.activities||!d.tasks)throw 0;
+  if(!confirm('Replace all data in this account with the backup?'))return;D=normalise(d);save();render();toast('Backup restored')}catch(e){toast('That file is not a Viana backup')}};r.readAsText(f)}
 
-/* ---------- PIN lock ---------- */
-async function hashPin(p){
-  const s = 'viana:' + p;
-  if (window.crypto?.subtle){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return 's:' + [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
-  let h = 5381; for (const c of s) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0; return 'f:' + h.toString(16);
+/* ---------- ADMIN ---------- */
+async function vAdmin(m){
+  if(!S.isAdmin){go('today');return}
+  m.innerHTML='<h2>Admin</h2><div class="card muted">Loading users…</div>';
+  let users=[];try{users=await Store.listUsers()}catch(e){m.innerHTML=`<h2>Admin</h2><div class="card err">${esc(Store.friendly?Store.friendly(e):e.message)}</div>`;return}
+  if(tab!=='admin')return;
+  m.innerHTML=`<h2>Admin</h2>
+  <div class="card"><h3>Users (${users.length})</h3><div class="muted" style="margin-bottom:8px">Open a user's data to view, edit or delete any activity, task or entry. Everything you change is saved to their account.</div>
+  ${users.length?`<div style="overflow-x:auto"><table><tr><th>Username</th><th>Created</th><th>Tasks</th><th>Status</th><th></th></tr>
+  ${users.sort((a,b)=>a.username.localeCompare(b.username)).map(u=>`<tr><td><b>${esc(u.username)}</b></td><td>${u.created?new Date(u.created).toLocaleDateString():''}</td><td>${u.tasks}</td><td>${u.disabled?'<span class="st st5">Disabled</span>':'<span class="st st1">Active</span>'}</td>
+  <td><div class="row"><button class="btn sm" onclick="viewUser('${u.id}','${esc(u.username)}')">Open data</button>
+  ${Store.canResetPasswords?`<button class="btn sm light" onclick="adminReset('${u.id}','${esc(u.username)}')">Reset password</button>`:''}
+  <button class="btn sm light" onclick="adminDisable('${u.id}',${!u.disabled})">${u.disabled?'Enable':'Disable'}</button>
+  <button class="btn sm danger" onclick="adminDelete('${u.id}','${esc(u.username)}')">Delete</button></div></td></tr>`).join('')}</table></div>`:'<div class="muted">No users have created accounts yet.</div>'}</div>
+  ${Store.mode==='cloud'?'<div class="card muted">Cloud mode: deleting a user removes their data. To remove their login completely or reset a password, use Firebase console → Authentication → Users.</div>':''}`;
 }
-function showLock(){
-  const lock = $('#lock'); lock.hidden = false; const inp = $('#lock-pin'); inp.focus();
-  const tryIt = async () => {
-    if (await hashPin(inp.value) === db.settings.pinHash){ sessionStorage.setItem('viana.unlocked','1'); lock.hidden = true; inp.value=''; }
-    else { $('#lock-msg').textContent = 'That PIN didn’t match.'; inp.select(); }
-  };
-  $('#lock-go').onclick = tryIt; inp.onkeydown = e => { if (e.key === 'Enter') tryIt(); };
-}
-
-function applyTheme(){
-  const t = db.settings.theme;
-  if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = t;
-}
+async function viewUser(id,name){try{await flushSave()}catch(e){}viewing={id,username:name};D=await Store.load(id);tab='today';render();toast('Now viewing '+name)}
+async function stopViewing(){try{await flushSave()}catch(e){}viewing=null;D=await Store.load(S.id);tab='admin';render()}
+async function adminReset(id,name){const p=prompt(`New password for ${name} (min 4 characters):`);if(!p)return;if(p.length<4){toast('Too short');return}await Store.resetPassword(id,p);toast('Password reset for '+name)}
+async function adminDisable(id,v){await Store.setDisabled(id,v);toast(v?'User disabled':'User enabled');render()}
+async function adminDelete(id,name){if(!confirm(`Delete user "${name}" and ALL their data? This cannot be undone.`))return;await Store.deleteUser(id);toast('User deleted');render()}
 
 /* =====================================================================
-   EVENT DELEGATION
+   START
    ===================================================================== */
-const fireChange = el => el.dispatchEvent(new CustomEvent('viana:change', { bubbles: true }));
-const ACTIONS = {
-  goDate: el => go(`#/${el.dataset.view}/${el.dataset.date}`),
-  openTask: el => openTaskEditor({ taskId: el.dataset.id, tab: el.dataset.tab }),
-  addPlanned: el => openActivityPicker({ date: el.dataset.date, unplanned: false }),
-  addUnplanned: el => openActivityPicker({ date: el.dataset.date, unplanned: true }),
-  quickPlan: el => openTaskEditor({ activityId: el.dataset.aid, date: el.dataset.date }),
-  planActivity: el => openTaskEditor({ activityId: el.dataset.id, date: addDays(todayStr(),1) }),
-  unplannedActivity: el => openTaskEditor({ activityId: el.dataset.id, date: todayStr(), unplanned: true }),
-  quickDone: el => { const t = byId('tasks', el.dataset.id); setTaskStatus(t, 'done'); toast('Marked done — plan copied to actual'); rerender(); },
-  startTask: el => { const t = byId('tasks', el.dataset.id); setTaskStatus(t, 'in_progress'); rerender(); },
-  moveTask: el => {
-    const t = byId('tasks', el.dataset.id), list = tasksOn(t.date), i = list.indexOf(t), j = i + +el.dataset.dir;
-    if (j < 0 || j >= list.length) return;
-    [list[i], list[j]] = [list[j], list[i]]; list.forEach((x,k) => x.order = k); persist(); rerender();
-  },
-  removeTask: el => {
-    const t = byId('tasks', el.dataset.id);
-    if (!confirm(hasActuals(t) ? 'This task has recorded actuals. Remove it from the day anyway? (The activity stays.)' : `Remove “${actName(t)}” from this day? The activity stays in your library.`)) return;
-    deleteTask(t.id); persist(); toast('Removed from plan'); rerender();
-  },
-  carryOver: el => openCarryOver(el.dataset.date),
-  setStatus: el => { const card = el.closest('.review-card'); const t = byId('tasks', card.dataset.task); saveReviewCardQuiet(card); setTaskStatus(t, el.dataset.s); refreshReviewCard(t.id); toast(statusLabel(t.status, t.isUnplanned)); },
-  copyPlanTags: el => {
-    const card = el.closest('.review-card'), t = byId('tasks', card.dataset.task);
-    setTaskTags(t.id, 'actual', T.motives(t.id,'planned'), T.outcomes(t.id,'planned')); persist(); refreshReviewCard(t.id);
-    $(`.review-card[data-task="${t.id}"] details`).open = true; toast('Copied from plan');
-  },
-  carryOne: el => {
-    const card = el.closest('.review-card'), t = byId('tasks', card.dataset.task), d = $('.carry-date', card).value;
-    if (!d) return toast('Pick a date'); carryTask(t, d); persist(); refreshReviewCard(t.id); toast(`Added to ${fmtShort(d)}`);
-  },
-  newActivity: () => openActivityForm(null),
-  editActivity: el => openActivityForm(el.dataset.id),
-  openActivity: (el, e) => { if (e.target.closest('button')) return; go(`#/activity/${el.dataset.id}`); },
-  deleteActivity: el => {
-    const a = byId('activities', el.dataset.id);
-    if (db.tasks.some(t => t.activityId === a.id)) return toast('This activity has tasks — deactivate it instead');
-    if (!confirm(`Delete “${a.name}” permanently?`)) return;
-    db.activities = db.activities.filter(x => x.id !== a.id);
-    ['activityMotives','activityOutcomes','activityHistory'].forEach(k => db[k] = db[k].filter(r => r.activityId !== a.id));
-    persist(); toast('Deleted'); go('#/activities');
-  },
-  addMaster: el => {
-    const tbl = el.dataset.tbl, inp = el.parentElement.querySelector('.m-new'), name = inp.value.trim();
-    if (!name) return;
-    if (db[tbl].some(x => x.name.toLowerCase() === name.toLowerCase())) return toast('That already exists');
-    db[tbl].push({ id: (tbl==='motives'?'mot_':'out_') + uid(), name, description:'', active:true, order: Math.max(-1, ...db[tbl].map(x=>x.order??0)) + 1 });
-    persist(); toast('Added'); rerender();
-  },
-  moveMaster: el => {
-    const row = el.closest('.mrow'), tbl = row.dataset.tbl, list = sorted(tbl), i = list.findIndex(x => x.id === row.dataset.id), j = i + +el.dataset.dir;
-    if (j < 0 || j >= list.length) return; [list[i], list[j]] = [list[j], list[i]]; list.forEach((x,k) => x.order = k); persist(); rerender();
-  },
-  deleteMaster: el => {
-    const row = el.closest('.mrow'), tbl = row.dataset.tbl;
-    if (usageCount(tbl, row.dataset.id)) return toast('In use — deactivate instead');
-    db[tbl] = db[tbl].filter(x => x.id !== row.dataset.id); persist(); rerender();
-  },
-  exportJSON: () => exportJSON(),
-  importJSON: () => $('#import-file').click(),
-  exportCSV: () => exportCSV(),
-  resetData: () => {
-    const v = prompt('This erases ALL activities, tasks and history on this device and restores the sample activities.\nExport a backup first.\n\nType ERASE to confirm:');
-    if (v !== 'ERASE') return;
-    const theme = db.settings.theme; db = seedDB(); db.settings.theme = theme; persist(); toast('Started fresh'); go('#/today');
-  },
-  setPin: async () => {
-    const p = prompt('Choose a PIN (4+ characters). If you forget it, the only fix is clearing this site’s data — so keep a backup.');
-    if (p == null) return; if (p.length < 4) return toast('PIN too short');
-    if (prompt('Type the PIN again to confirm') !== p) return toast('PINs didn’t match');
-    db.settings.pinHash = await hashPin(p); persist(); sessionStorage.setItem('viana.unlocked','1'); toast('PIN set'); rerender();
-  },
-  removePin: () => { if (!confirm('Turn off the PIN lock?')) return; db.settings.pinHash = ''; persist(); toast('PIN removed'); rerender(); },
-};
-function saveReviewCardQuiet(card){
-  // persist any typed-but-not-blurred values before a re-render
-  const t = byId('tasks', card.dataset.task); const m = readDur(card, 'act-time');
-  if (!Number.isNaN(m)) t.actTimeMin = m;
-  t.actNotes = $('[data-field="actNotes"]', card).value.trim();
-}
-
-document.addEventListener('click', e => {
-  const chip = e.target.closest('.chips .chip[data-id]');
-  if (chip){ chip.classList.toggle('on'); fireChange(chip); return; }
-  const sb = e.target.closest('.scale button');
-  if (sb){
-    const sc = sb.parentElement, v = sc.dataset.value === sb.dataset.v ? '' : sb.dataset.v, labels = db.settings.scales[sc.dataset.kind];
-    sc.dataset.value = v; $$('button', sc).forEach(b => b.classList.toggle('on', b.dataset.v === v));
-    $('.scale-label', sc).innerHTML = v ? esc(labels[v-1]) : '<span class="muted">not set</span>';
-    fireChange(sc); return;
-  }
-  const qb = e.target.closest('.dur .quick button');
-  if (qb){ const inp = $('input', qb.closest('.dur')); inp.value = fmtMin(+qb.dataset.m); inp.classList.remove('invalid'); fireChange(inp); return; }
-  const el = e.target.closest('[data-act]');
-  if (el && ACTIONS[el.dataset.act]){ if (el.tagName === 'A') e.preventDefault(); ACTIONS[el.dataset.act](el, e); }
-});
-document.addEventListener('viana:change', e => { const card = e.target.closest('.review-card'); if (card) saveReviewCard(card); });
-document.addEventListener('change', e => {
-  const el = e.target;
-  if (el.id === 'import-file'){ if (el.files[0]) importJSON(el.files[0]); el.value = ''; return; }
-  if (el.classList.contains('date-pick') && el.value) return go(`#/${el.dataset.view}/${el.value}`);
-  const card = el.closest('.review-card');
-  if (card){
-    if (el.dataset.field === 'status'){ const t = byId('tasks', card.dataset.task); saveReviewCardQuiet(card); setTaskStatus(t, el.value); refreshReviewCard(t.id); toast('Status updated'); }
-    else saveReviewCard(card);
-    return;
-  }
-  const row = el.closest('.mrow');
-  if (row){
-    const item = byId(row.dataset.tbl, row.dataset.id);
-    if (el.classList.contains('m-name')){
-      const n = el.value.trim();
-      if (!n || db[row.dataset.tbl].some(x => x.id !== item.id && x.name.toLowerCase() === n.toLowerCase())){ el.value = item.name; return toast(n ? 'That name already exists' : 'Name can’t be empty'); }
-      item.name = n; toast('Renamed');
+(async function start(){
+  const pill=document.getElementById('modePill');
+  const cfg=window.VIANA_FIREBASE_CONFIG;
+  if(cfg&&cfg.apiKey&&!/PASTE|YOUR_/i.test(cfg.apiKey)){
+    try{
+      const v='10.12.2',b=`https://www.gstatic.com/firebasejs/${v}/`;
+      await loadScript(b+'firebase-app-compat.js');await loadScript(b+'firebase-auth-compat.js');await loadScript(b+'firebase-firestore-compat.js');
+      Store=CloudStore;
+      const s=await Store.init();
+      pill.textContent='☁ Cloud mode — sign in from any device';
+      if(s){S=s;await enterApp();}
+      return;
+    }catch(e){
+      console.error(e);Store=LocalStore;
+      pill.innerHTML='<span style="color:var(--bad)">Could not connect to Firebase ('+esc(e.message||e)+'). Using this browser only.</span>';
     }
-    if (el.classList.contains('m-desc')){ item.description = el.value.trim(); toast('Saved'); }
-    if (el.classList.contains('m-active')){ item.active = el.checked; row.classList.toggle('off', !el.checked); toast(el.checked ? 'Activated' : 'Deactivated — kept for history'); }
-    return persist();
-  }
-  if (el.classList.contains('scale-input')){ db.settings.scales[el.dataset.kind][+el.dataset.i] = el.value.trim() || defaultSettings().scales[el.dataset.kind][+el.dataset.i]; persist(); return toast('Saved'); }
-  if (el.id === 'set-theme'){ db.settings.theme = el.value; persist(); applyTheme(); return; }
-  if (el.id === 'set-cap'){ db.settings.dayCapacityHours = el.value; persist(); return toast('Saved'); }
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && $('#modal-root').innerHTML) closeModal();
-  if (e.key === 'Enter' && e.target.classList?.contains('m-new')) e.target.parentElement.querySelector('[data-act="addMaster"]').click();
-});
-
-/* =====================================================================
-   BOOT
-   ===================================================================== */
-loadDB();
-applyTheme();
-renderNav();
-window.addEventListener('hashchange', () => { route(); window.scrollTo(0,0); });
-route();
-if (db.settings.pinHash && !sessionStorage.getItem('viana.unlocked')) showLock();
-if (navigator.storage?.persist) navigator.storage.persist().catch(()=>{});
+  }else pill.textContent='Local mode — data is saved in this browser only';
+  const s=await LocalStore.init();if(s){S=s;await enterApp()}
+})();
 </script>
 </body>
 </html>
