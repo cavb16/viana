@@ -1,215 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Viana — Activity & Time Planning</title>
-<meta name="viana-version" content="2.0-login">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Viana — how I want to spend my time</title>
+<meta name="viana-version" content="2.1">
+<meta name="theme-color" content="#5b7f6a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%235b7f6a'/%3E%3Cpath d='M20 22l12 22 12-22' stroke='%23fff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
-:root{--bg:#f6f7fb;--card:#fff;--ink:#1d2433;--muted:#6b7385;--line:#e3e6ee;--pri:#4f46e5;--pri2:#eef0ff;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--r:12px}
+/* ============ Theme (from version 1) ============ */
+:root{
+  --bg:#f6f4ef;--surface:#ffffff;--surface-2:#fbfaf7;--text:#2b2d2a;--muted:#767870;--border:#e6e2d8;
+  --accent:#5b7f6a;--accent-ink:#ffffff;--accent-soft:#e7efe9;--accent-2:#8a6f9e;--accent-2-soft:#f0eaf4;
+  --good:#5b7f6a;--mid:#b88a3e;--mid-soft:#f6eedf;--low:#9a8f86;--info:#4f7896;--info-soft:#e4edf3;--danger:#b4574c;--danger-soft:#f6e5e2;
+  --radius:14px;--shadow:0 1px 2px rgba(40,40,30,.05),0 4px 16px rgba(40,40,30,.05);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#1a1c1a;--surface:#232623;--surface-2:#1f221f;--text:#e7e5df;--muted:#9b9e95;--border:#353a34;
+  --accent:#8db89b;--accent-ink:#152018;--accent-soft:#2a372e;--accent-2:#b79bcb;--accent-2-soft:#342c3a;
+  --good:#8db89b;--mid:#d6aa5e;--mid-soft:#3a3122;--low:#8d857e;--info:#86a9c4;--info-soft:#24313b;--danger:#d98479;--danger-soft:#3a2724;--shadow:none}}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
-button,input,select,textarea{font:inherit}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body.modal-open{overflow:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
+h1{font-size:1.9rem;line-height:1.2}h2{font-size:1.25rem}h3{font-size:1.05rem}
+input,select,textarea,button{font:inherit;color:inherit}
+input[type=text],input[type=date],input[type=number],input[type=password],input[type=search],select,textarea{
+  width:100%;padding:.55rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+input:disabled{opacity:.5}
+textarea{resize:vertical;min-height:2.6rem}
+.invalid{border-color:var(--danger)!important}
+.muted{color:var(--muted)}.small{font-size:.85rem}
 .hidden{display:none!important}
-/* auth */
-#auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.authbox{background:var(--card);width:100%;max-width:380px;border-radius:16px;padding:28px;box-shadow:0 10px 30px rgba(30,40,80,.08)}
-.logo{font-size:30px;font-weight:800;color:var(--pri);text-align:center;letter-spacing:.5px}
-.sub{text-align:center;color:var(--muted);margin:4px 0 20px;font-size:13px}
-.tabs2{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:18px}
-.tabs2 button{flex:1;border:0;background:none;padding:9px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:600}
-.tabs2 button.on{background:#fff;color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.08)}
-label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px;font-weight:600}
-input[type=text],input[type=password],input[type=number],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
-textarea{min-height:64px;resize:vertical}
-.btn{border:0;background:var(--pri);color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:600}
-.btn.full{width:100%;margin-top:16px}
-.btn.ghost{background:var(--pri2);color:var(--pri)}
-.btn.light{background:#fff;color:var(--ink);border:1px solid var(--line)}
-.btn.danger{background:#fee2e2;color:var(--bad)}
-.btn.sm{padding:6px 10px;font-size:13px}
-.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:10px}
-.modepill{font-size:12px;text-align:center;color:var(--muted);margin-top:14px}
-/* app */
-header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
-.hrow{display:flex;align-items:center;gap:10px;padding:10px 16px;max-width:1100px;margin:0 auto}
-.hrow .logo{font-size:22px;text-align:left}
-.who{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
-.badge{background:var(--pri2);color:var(--pri);padding:3px 8px;border-radius:20px;font-size:12px;font-weight:700}
-nav{display:flex;gap:4px;overflow-x:auto;padding:0 12px 8px;max-width:1100px;margin:0 auto;scrollbar-width:none}
-nav button{border:0;background:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:600;white-space:nowrap}
-nav button.on{background:var(--pri2);color:var(--pri)}
-.viewas{background:#fff7ed;color:#9a3412;padding:8px 16px;font-size:13px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
-main{max-width:1100px;margin:0 auto;padding:16px}
-h2{margin:4px 0 14px;font-size:20px}
-h3{margin:0 0 10px;font-size:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .spacer{flex:1}
-.muted{color:var(--muted);font-size:13px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.task{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:8px;cursor:pointer}
-.task:hover{border-color:var(--pri)}
-.task .nm{font-weight:600}
-.chip{display:inline-block;padding:4px 10px;border-radius:20px;border:1px solid var(--line);font-size:12px;margin:2px;background:#fff;cursor:pointer;user-select:none}
-.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.st{font-size:12px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
-.st0{background:#f1f5f9;color:#64748b}.st1{background:#dcfce7;color:#166534}.st2{background:#e0f2fe;color:#075985}.st3{background:#fef9c3;color:#854d0e}.st4{background:#ffedd5;color:#9a3412}.st5{background:#fee2e2;color:#991b1b}.st6{background:#f3e8ff;color:#6b21a8}
-.seg{display:flex;gap:4px;flex-wrap:wrap}
-.seg button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;cursor:pointer;font-size:13px}
-.seg button.on{background:var(--pri);border-color:var(--pri);color:#fff}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--muted);font-weight:600;background:#fafbfd}
-.bar{height:8px;border-radius:4px;background:var(--pri);min-width:2px}
-.bar.b2{background:#f59e0b}
-.bars{display:flex;flex-direction:column;gap:3px;min-width:120px}
-.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}
-.stat b{display:block;font-size:20px}
-.cmp{display:grid;grid-template-columns:110px 1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
-.cmp div{padding:7px 10px;border-bottom:1px solid var(--line)}
-.cmp .h{background:#fafbfd;font-weight:700;color:var(--muted)}
-.cmp .k{color:var(--muted);font-weight:600;background:#fafbfd}
-.diff{background:#fffbeb}
-.legend{font-size:12px;color:var(--muted);display:flex;gap:12px;margin-bottom:8px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
-/* modal */
-#modal{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
-#modal.hidden{display:none}
-.mbox{background:#fff;width:100%;max-width:620px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px}
-@media(min-width:700px){#modal{align-items:center}.mbox{border-radius:16px}}
-.mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;position:sticky;bottom:-18px;background:#fff;padding:10px 0}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:60;opacity:0;transition:.25s;pointer-events:none}
-#toast.show{opacity:1}
-.empty{text-align:center;color:var(--muted);padding:24px}
-@media(max-width:600px){.grid2{grid-template-columns:1fr}.cmp{grid-template-columns:90px 1fr 1fr}main{padding:12px}}
+.err{color:var(--danger);font-size:.88rem;min-height:1.2em;margin-top:.5rem}
+.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+
+/* ============ Login ============ */
+#auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.authbox{width:100%;max-width:380px}
+.authlogo{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin-bottom:1.4rem;text-align:center}
+.authlogo .brand-dot{width:52px;height:52px}
+.authlogo .brand-dot svg{width:26px;height:26px}
+.authlogo h1{font-size:2.2rem}
+.tabs{display:flex;gap:.3rem;background:var(--surface-2);border:1px solid var(--border);padding:.25rem;border-radius:12px;margin-bottom:1rem}
+.tabs button{flex:1;border:none;background:transparent;padding:.5rem;border-radius:9px;cursor:pointer;font-weight:600;color:var(--muted)}
+.tabs button.on{background:var(--surface);box-shadow:var(--shadow);color:var(--accent)}
+.modepill{font-size:.8rem;text-align:center;color:var(--muted);margin-top:1rem}
+.ver{font-size:.75rem;text-align:center;color:var(--muted);margin-top:.4rem}
+
+/* ============ Layout ============ */
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.topbar-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.7rem 1.2rem .3rem}
+.brand{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.brand-dot{width:22px;height:22px;border-radius:50%;background:var(--accent);display:inline-grid;place-items:center;flex:none}
+.brand-dot svg{width:12px;height:12px;stroke:var(--accent-ink);stroke-width:3;fill:none}
+.who{margin-left:auto;display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--muted)}
+.mode{font-size:.75rem;padding:.12rem .55rem;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
+.mode.local{background:var(--mid-soft);color:var(--mid)}
+.adminb{font-size:.7rem;font-weight:700;padding:.12rem .5rem;border-radius:999px;background:var(--accent);color:var(--accent-ink)}
+nav.nav{max-width:1040px;margin:0 auto;display:flex;gap:.25rem;padding:.2rem 1rem .55rem;overflow-x:auto;scrollbar-width:none}
+nav.nav a{display:flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border-radius:999px;color:var(--muted);font-weight:500;cursor:pointer;white-space:nowrap}
+nav.nav a:hover{text-decoration:none;color:var(--text);background:var(--surface)}
+nav.nav a.active{color:var(--accent);background:var(--accent-soft)}
+nav.nav svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#botnav{display:none}
+.viewas{background:var(--mid-soft);color:var(--mid);padding:.55rem 1rem;font-size:.88rem;display:flex;gap:.6rem;align-items:center;justify-content:center;flex-wrap:wrap}
+main{max-width:1040px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
+@media (max-width:760px){
+  .topbar{backdrop-filter:none;background:var(--bg)}
+  .topbar-in{padding:.6rem 1rem}
+  #topnav{display:none}
+  #botnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--border);justify-content:space-around;padding:.3rem .1rem calc(.3rem + env(safe-area-inset-bottom));overflow:visible}
+  #botnav a{flex-direction:column;gap:.1rem;font-size:.62rem;padding:.35rem .2rem;border-radius:10px;flex:1;min-width:0}
+  main{padding:1.1rem .9rem 6.5rem}
+  h1{font-size:1.55rem}
+  .who .uname,.mode .mtx{display:none}
+}
+
+/* ============ Components ============ */
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.eyebrow{text-transform:uppercase;letter-spacing:.09em;font-size:.72rem;font-weight:600;color:var(--accent)}
+.lede{color:var(--muted);margin:.3rem 0 0}
+.head-actions{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.1rem 1.2rem;margin-bottom:1rem}
+.card.soft{background:var(--surface-2);box-shadow:none}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.7rem;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;padding:.55rem 1rem;border-radius:999px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-weight:500;white-space:nowrap;transition:background .15s,border-color .15s;color:var(--text)}
+.btn:hover{border-color:var(--accent);text-decoration:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger)}.btn.danger:hover{border-color:var(--danger)}
+.btn.sm{padding:.3rem .75rem;font-size:.85rem}
+.btn.full{width:100%;margin-top:1rem;padding:.65rem}
+.btn:disabled{opacity:.45;cursor:default}
+.icon-btn{border:1px solid transparent;background:transparent;width:32px;height:32px;border-radius:50%;cursor:pointer;display:inline-grid;place-items:center;color:var(--muted);font-size:1.1rem}
+.icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1rem}
+.stats.s3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:760px){.stats,.stats.s3{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1rem}
+.stat .label{font-size:.78rem;color:var(--muted)}
+.stat .value{font-family:var(--serif);font-size:1.45rem;font-weight:600;line-height:1.3}
+.stat .sub{font-size:.78rem;color:var(--muted)}
+.empty{text-align:center;padding:2rem 1rem;color:var(--muted)}
+.empty .big{font-family:var(--serif);font-size:1.15rem;color:var(--text);margin-bottom:.3rem}
+.empty .btn{margin:.8rem .25rem 0}
+.pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.12rem .6rem;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.pill.good{background:var(--accent-soft);color:var(--good);border-color:transparent}
+.pill.mid{background:var(--mid-soft);color:var(--mid);border-color:transparent}
+.pill.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.pill.low{color:var(--low)}
+.pill.bad{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.apill{display:inline-block;font-size:.75rem;font-weight:600;padding:.08rem .55rem;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.tag-unpl{display:inline-block;font-size:.7rem;font-weight:600;padding:.08rem .5rem;border-radius:999px;background:var(--accent-2-soft);color:var(--accent-2)}
+.mini{display:inline-block;font-size:.72rem;padding:.08rem .5rem;border-radius:999px;margin:.15rem .25rem 0 0}
+.mini.m{background:var(--accent-soft);color:var(--accent)}
+.mini.o{background:var(--accent-2-soft);color:var(--accent-2)}
+.badge{display:inline-flex;align-items:center;gap:.15rem;font-size:.72rem;padding:.05rem .4rem;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted);font-variant-numeric:tabular-nums}
+.badge b{color:var(--text);font-weight:600}
+
+/* Task rows */
+.tlist{display:flex;flex-direction:column}
+.trow{display:flex;align-items:center;gap:.8rem;padding:.8rem .3rem;border-bottom:1px solid var(--border);cursor:pointer;border-radius:8px;transition:background .12s}
+.trow:hover{background:var(--surface-2)}
+.trow:last-child{border-bottom:none}
+.trow .dot{width:10px;height:10px;border-radius:50%;flex:none;border:2px solid var(--border)}
+.trow.s-good .dot{background:var(--good);border-color:var(--good)}
+.trow.s-mid .dot{background:var(--mid);border-color:var(--mid)}
+.trow.s-info .dot{background:var(--info);border-color:var(--info)}
+.trow.s-low .dot{background:var(--low);border-color:var(--low)}
+.trow.s-bad .dot{background:var(--danger);border-color:var(--danger)}
+.tmain{flex:1;min-width:0}
+.tname{font-weight:600}
+.tsub{color:var(--muted);font-size:.9rem}
+.tmeta{font-size:.8rem;color:var(--muted);margin-top:.2rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.datenav{display:flex;align-items:center;gap:.35rem}
+.datenav input[type=date]{width:auto}
+.toolbar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.toolbar select{width:auto;padding:.35rem .6rem;border-radius:999px;font-size:.85rem}
+
+/* Fields, chips, scales, durations */
+.field{display:block;margin-bottom:1rem}
+.field>span,.field-label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.35rem}
+.field em{font-weight:400;font-style:normal;opacity:.8}
+.req{color:var(--danger)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+@media (max-width:600px){.grid2{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.3rem .7rem;font-size:.83rem;cursor:pointer;transition:all .12s;color:var(--text);user-select:none}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chips[data-chips*="Out"] .chip.on{background:var(--accent-2);border-color:var(--accent-2);color:#fff}
+.chip.static{cursor:default}
+.chip.cm{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.chip.cp{color:var(--muted);text-decoration:line-through}
+.chip.cx{background:var(--mid-soft);border-color:transparent;color:var(--mid)}
+.scale{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.scale button{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-weight:600;font-variant-numeric:tabular-nums}
+.scale button:hover{border-color:var(--accent)}
+.scale button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.scale-label{font-size:.82rem;color:var(--text);margin-left:.4rem;font-weight:500}
+.scale-label.none{color:var(--muted);font-weight:400}
+.dur{display:flex;flex-direction:column;gap:.35rem}
+.dur input{max-width:220px}
+.dur .quick{display:flex;gap:.25rem;flex-wrap:wrap}
+.dur .quick button{border:1px solid var(--border);background:transparent;border-radius:7px;padding:.12rem .45rem;font-size:.75rem;cursor:pointer;color:var(--muted)}
+.dur .quick button:hover{border-color:var(--accent);color:var(--accent)}
+.hint{font-size:.85rem;color:var(--muted);background:var(--surface-2);border:1px dashed var(--border);border-radius:10px;padding:.5rem .7rem;margin:0 0 1rem}
+.status-row{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.8rem}
+.status-row .sbtn{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.32rem .8rem;font-size:.85rem;cursor:pointer}
+.status-row .sbtn:hover{border-color:var(--sc)}
+.status-row .sbtn.on{background:var(--sc);color:#fff;border-color:var(--sc)}
+
+/* Activity picker (version 1 style) */
+.picker{border:1px solid var(--border);border-radius:12px;padding:.6rem;background:var(--surface-2)}
+.picker.invalid{border-color:var(--danger)}
+.picker-list{display:flex;flex-direction:column;max-height:300px;overflow-y:auto;margin-top:.5rem}
+.picker-item{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.6rem .5rem;border-radius:10px;cursor:pointer;border:none;background:transparent;text-align:left;width:100%}
+.picker-item:hover{background:var(--accent-soft)}
+.picker-item .badges{display:flex;gap:.25rem;flex:none}
+.picked{display:flex;align-items:center;gap:.8rem;padding:.2rem .3rem}
+.picked .aname{font-family:var(--serif);font-size:1.2rem;font-weight:600}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(20,22,20,.45);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:4vh 1rem;overflow-y:auto;animation:fade .15s}
+.modal{background:var(--bg);border-radius:18px;width:100%;max-width:700px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:rise .18s}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;padding:1rem 1.2rem .4rem}
+.modal-body{padding:.6rem 1.2rem 1rem}
+.modal-foot{display:flex;gap:.5rem;align-items:center;padding:.8rem 1.2rem 1.1rem;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--bg);border-radius:0 0 18px 18px;flex-wrap:wrap}
+@media (max-width:600px){.overlay{padding:0}.modal{border-radius:0;min-height:100%}.modal-foot{border-radius:0}}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{transform:translateY(12px);opacity:0}}
+
+/* Charts */
+.legend{font-size:.78rem;color:var(--muted);display:flex;gap:1rem;margin-bottom:.6rem;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
+.pr{display:grid;grid-template-columns:160px 1fr;gap:.8rem;align-items:center;padding:.5rem 0;border-bottom:1px dashed var(--border)}
+.pr:last-child{border-bottom:none}
+.prl{font-size:.85rem;font-weight:600}
+.prl small{display:block;font-weight:400;color:var(--muted);font-size:.75rem}
+.pb{display:flex;align-items:center;gap:.5rem;height:16px}
+.pb+.pb{margin-top:4px}
+.pb i{display:block;height:10px;border-radius:5px;transition:width .4s}
+.pb span{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.bp{background:var(--accent)}.ba{background:var(--mid)}
+.bars{display:flex;flex-direction:column;gap:3px;min-width:110px}
+.bar{height:8px;border-radius:4px;background:var(--accent);min-width:2px}
+.bar.b2{background:var(--mid)}
+.donutw{display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap}
+.donut{width:130px;height:130px;border-radius:50%;display:grid;place-items:center;flex:none}
+.donut i{width:84px;height:84px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-style:normal;text-align:center;font-size:.75rem;color:var(--muted)}
+.donut i b{display:block;font-family:var(--serif);font-size:1.4rem;color:var(--text)}
+.dleg{display:flex;flex-direction:column;gap:.3rem;font-size:.85rem}
+.dleg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.45rem}
+.cgrid{display:grid;grid-template-columns:1.2fr 1fr;gap:1rem}
+.tc{display:grid;grid-template-columns:1.2fr 1fr;gap:1.2rem}
+@media (max-width:760px){.cgrid,.tc{grid-template-columns:1fr}.pr{grid-template-columns:110px 1fr}}
+table.simple{width:100%;border-collapse:collapse;font-size:.88rem}
+table.simple th{text-align:left;font-weight:600;color:var(--muted);font-size:.78rem;padding:.4rem .5rem;border-bottom:1px solid var(--border)}
+table.simple td{padding:.5rem;border-bottom:1px solid var(--border);vertical-align:middle}
+table.simple tr:last-child td{border-bottom:none}
+.table-wrap{overflow-x:auto}
+
+/* Filters */
+.filters{display:flex;gap:.8rem;align-items:flex-end;flex-wrap:wrap}
+.filters .f{display:flex;flex-direction:column}
+.filters .f>label{font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.3rem}
+.filters input[type=date]{width:auto;padding:.4rem .6rem}
+.seg{display:inline-flex;gap:.25rem;flex-wrap:wrap}
+.seg button{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.32rem .75rem;font-size:.82rem;cursor:pointer}
+.seg button:hover{border-color:var(--accent)}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ms{position:relative}
+.msbtn{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:.42rem .75rem;cursor:pointer;min-width:220px;text-align:left;display:flex;justify-content:space-between;gap:.6rem}
+.mspanel{position:absolute;top:calc(100% + 6px);left:0;z-index:15;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.15);padding:.4rem;width:290px;max-height:340px;overflow:auto}
+.mspanel label{display:flex;align-items:center;gap:.55rem;padding:.42rem .5rem;border-radius:8px;cursor:pointer;font-size:.9rem}
+.mspanel label:hover{background:var(--accent-soft)}
+.mspanel input{accent-color:var(--accent);width:16px;height:16px}
+.mspanel .all{border-bottom:1px solid var(--border);font-weight:600;margin-bottom:.2rem;padding-bottom:.55rem}
+@media (max-width:760px){.filters .f,.filters .ms{flex:1 1 140px}.filters input[type=date],.msbtn{width:100%;min-width:0}}
+
+/* Activities */
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.8rem}
+.acard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;gap:.4rem;cursor:pointer;transition:border-color .15s,transform .15s}
+.acard:hover{border-color:var(--accent);transform:translateY(-1px)}
+.acard.inactive{opacity:.6}
+.acard h3{display:flex;justify-content:space-between;gap:.5rem}
+.acard .desc{font-size:.85rem;color:var(--muted)}
+.acard .meta{font-size:.8rem;color:var(--muted)}
+.notice{border-radius:12px;padding:.75rem 1rem;font-size:.9rem;margin-bottom:1rem}
+.notice.warn{background:var(--mid-soft);color:var(--text)}
+.notice.ok{background:var(--accent-soft);color:var(--text)}
+.mrow{display:flex;gap:.5rem;align-items:center;padding:.35rem 0;border-bottom:1px solid var(--border)}
+.mrow span{flex:1}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--text);color:var(--bg);padding:.55rem 1rem;border-radius:999px;font-size:.88rem;opacity:0;pointer-events:none;transition:all .2s;z-index:100}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:760px){#toast{bottom:84px}}
+details summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--accent)}
 </style>
 <!-- Firebase settings (optional). If this file is missing or empty, Viana runs in local mode. -->
-<script src="firebase-config.js" onerror="window.VIANA_FIREBASE_CONFIG=null"></script>
+<script src="firebase-config.js" onerror="window.__vianaCfgMissing=true"></script>
 </head>
 <body>
 
-<!-- ============ LOGIN PAGE ============ -->
+<!-- =================== LOGIN =================== -->
 <section id="auth">
   <div class="authbox">
-    <div class="logo">Viana</div>
-    <div class="sub">Personal Activity &amp; Time Planning</div>
-    <div class="tabs2">
-      <button id="tabIn" class="on" onclick="authTab('in')">Sign in</button>
-      <button id="tabUp" onclick="authTab('up')">Create account</button>
-    </div>
-    <form id="authForm" onsubmit="return doAuth(event)">
-      <label for="aUser">Username</label>
-      <input type="text" id="aUser" autocomplete="username" required>
-      <label for="aPass">Password</label>
-      <input type="password" id="aPass" autocomplete="current-password" required>
-      <div id="aPass2Wrap" class="hidden">
-        <label for="aPass2">Confirm password</label>
-        <input type="password" id="aPass2" autocomplete="new-password">
+    <div class="authlogo"><span class="brand-dot"><svg viewBox="0 0 24 24"><path d="M6 7l6 11 6-11" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <h1>Viana</h1><div class="muted">How I want to spend my time</div></div>
+    <div class="card">
+      <div class="tabs">
+        <button id="tabIn" class="on" type="button" onclick="authTab('in')">Sign in</button>
+        <button id="tabUp" type="button" onclick="authTab('up')">Create account</button>
       </div>
-      <button class="btn full" id="authBtn" type="submit">Sign in</button>
-      <div class="err" id="authErr"></div>
-    </form>
+      <form id="authForm" onsubmit="return doAuth(event)">
+        <div class="field"><span>Username</span><input type="text" id="aUser" autocomplete="username" autocapitalize="off" required></div>
+        <div class="field"><span>Password</span><input type="password" id="aPass" autocomplete="current-password" required></div>
+        <div class="field hidden" id="aPass2Wrap"><span>Confirm password</span><input type="password" id="aPass2" autocomplete="new-password"></div>
+        <button class="btn primary full" id="authBtn" type="submit">Sign in</button>
+        <div class="err" id="authErr"></div>
+      </form>
+    </div>
     <div class="modepill" id="modePill">Loading…</div>
+    <div class="ver">Viana version 2.1</div>
   </div>
 </section>
 
-<!-- ============ APP ============ -->
+<!-- =================== APP =================== -->
 <section id="app" class="hidden">
-  <header>
-    <div class="hrow">
-      <div class="logo">Viana</div>
-      <div class="who"><span id="whoName"></span><span id="whoBadge" class="badge hidden">ADMIN</span>
-        <button class="btn light sm" onclick="signOut()">Sign out</button></div>
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" onclick="go('today')" style="cursor:pointer"><span class="brand-dot"><svg viewBox="0 0 24 24"><path d="M6 7l6 11 6-11" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Viana</a>
+      <div class="who">
+        <span id="modeTag" class="mode"></span>
+        <span id="adminTag" class="adminb hidden">ADMIN</span>
+        <span class="uname" id="whoName"></span>
+        <button class="btn sm" onclick="signOut()">Sign out</button>
+      </div>
     </div>
-    <div id="viewAs" class="viewas hidden"></div>
-    <nav id="nav"></nav>
+    <nav class="nav" id="topnav"></nav>
   </header>
+  <div id="viewAs" class="viewas hidden"></div>
   <main id="main"></main>
+  <nav class="nav" id="botnav"></nav>
 </section>
 
-<div id="modal" class="hidden" onclick="if(event.target===this)closeModal()"><div class="mbox" id="mbox"></div></div>
-<div id="toast"></div>
+<div id="modal-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 'use strict';
 /* =====================================================================
-   CONSTANTS & DEFAULTS
+   CONSTANTS
    ===================================================================== */
+const VERSION='2.1';
 const ADMIN_USER='ADMIN', ADMIN_PASS='2409';
 const STATUSES=[
-  {k:'',        t:'Not recorded',          c:'st0'},
-  {k:'asplanned',t:'Completed as planned', c:'st1'},
-  {k:'differently',t:'Completed differently',c:'st2'},
-  {k:'partial', t:'Partially done',        c:'st3'},
-  {k:'postponed',t:'Postponed',            c:'st4'},
-  {k:'skipped', t:'Skipped',               c:'st5'},
-  {k:'cancelled',t:'Cancelled',            c:'st6'}
+  {k:'',            t:'Not recorded',          tone:'',    col:'#cfcac0'},
+  {k:'asplanned',   t:'Completed as planned',  tone:'good',col:'#5b7f6a'},
+  {k:'differently', t:'Completed differently', tone:'info',col:'#4f7896'},
+  {k:'partial',     t:'Partially done',        tone:'mid', col:'#b88a3e'},
+  {k:'postponed',   t:'Postponed',             tone:'mid', col:'#d29b5b'},
+  {k:'skipped',     t:'Skipped',               tone:'bad', col:'#b4574c'},
+  {k:'cancelled',   t:'Cancelled',             tone:'low', col:'#9a8f86'}
 ];
 const DONE_KEYS=['asplanned','differently','partial'];
-const DEF_MOTIVES=['Because I want to','Relaxation','Learning','Health','Connection','Duty / obligation','Personal growth','Fun','Sense of achievement','Habit'];
-const DEF_OUTCOMES=['Felt rested','Gained knowledge','Improved a skill','Felt fitter','Closer relationships','Got it done','Enjoyment','Clarity of mind','Nothing in particular'];
+const NOT_DONE=['postponed','skipped','cancelled'];
+/* Rating meanings (same wording as version 1) */
+const SCALES={
+  importance:  {label:'Priority',             d:['Very low','Low','Medium','High','Very high']},
+  effort:      {label:'Mental effort',        d:['Very low','Low','Moderate','High','Very high']},
+  resistance:  {label:'Emotional resistance', d:['No resistance — I really want to','Very little resistance','Neutral','Reluctant',"Very high — I strongly don't want to"]},
+  satisfaction:{label:'Satisfaction',         d:['Very low','Low','Okay','Good','Very good']}
+};
+/* Motives and outcomes from version 1 */
+const DEF_MOTIVES=['Resolve / remove something bothering me','Maintain / take care of something','Enjoyment','Fun / entertainment','Relaxation / restoration','Personal growth','Career development','Learning / knowledge','Creativity / creating something','Relationships / connection','Experience','Travel','Exploration','Culture / understanding','Financial benefit','Health / wellbeing','Luxury / indulgence','Contribution / helping others','Because I want to'];
+const DEF_OUTCOMES=['Fun','Entertainment','Relaxation','Mental clarity','Emotional wellbeing','Stress reduction','Knowledge','Understanding','Personal growth','Career benefit','Skill development','Confidence','Sense of accomplishment','Creativity','Connection','Physical wellbeing','Financial benefit','New experience','Cultural understanding','Reduced mental clutter','Problem solved','Something created','Because I enjoy the experience itself'];
+/* Activities from version 1: [name, description, priority, minutes, mental, resistance, motives, outcomes] */
 const DEF_ACTS=[
- ['Watch movies','Leisure',120,2,1,1,['Relaxation','Fun'],['Enjoyment','Felt rested']],
- ['Read books','Learning',45,4,3,2,['Learning','Because I want to'],['Gained knowledge']],
- ['Exercise','Health',45,5,3,4,['Health'],['Felt fitter']],
- ['Travel','Leisure',240,3,2,2,['Fun','Because I want to'],['Enjoyment']],
- ['Learn programming','Learning',60,4,4,3,['Learning','Personal growth'],['Improved a skill']],
- ['Learn mathematics','Learning',60,4,5,4,['Learning','Personal growth'],['Improved a skill']],
- ['Journaling','Reflection',15,3,2,2,['Personal growth'],['Clarity of mind']],
- ['Spend time with family','Relationships',90,5,1,1,['Connection'],['Closer relationships']],
- ['Meet friends','Relationships',120,3,1,1,['Connection','Fun'],['Closer relationships','Enjoyment']],
- ['Meditation','Health',20,4,2,3,['Health','Relaxation'],['Clarity of mind']],
- ['Cooking','Home',60,3,2,2,['Duty / obligation','Fun'],['Got it done']],
- ['Household chores','Home',45,3,2,3,['Duty / obligation'],['Got it done']],
- ['Music','Leisure',30,2,1,1,['Relaxation','Because I want to'],['Enjoyment']],
- ['Walk','Health',30,3,1,2,['Health','Relaxation'],['Felt fitter','Felt rested']],
- ['Office work outside hours','Work',60,3,4,4,['Duty / obligation'],['Got it done']]
+  ['Watch Movies','Films of any kind — entertainment, documentaries, classics.',2,120,1,1,['Enjoyment','Fun / entertainment','Culture / understanding','Exploration','Because I want to'],['Entertainment','Relaxation','Cultural understanding','Because I enjoy the experience itself']],
+  ['Watch Series','An episode or a few of a show I am following.',2,60,1,1,['Fun / entertainment','Relaxation / restoration','Because I want to'],['Entertainment','Relaxation']],
+  ['Read Books','Fiction or non-fiction, paper or screen.',4,45,3,2,['Learning / knowledge','Personal growth','Enjoyment'],['Knowledge','Understanding','Personal growth']],
+  ['Exercise','Walk, workout, yoga, sport.',4,45,2,3,['Health / wellbeing','Maintain / take care of something'],['Physical wellbeing','Stress reduction','Mental clarity']],
+  ['Travel','Trips near or far.',3,480,2,2,['Travel','Experience','Exploration'],['New experience','Cultural understanding']],
+  ['Learn a Skill','Deliberate practice of something new.',4,60,4,3,['Personal growth','Learning / knowledge','Career development'],['Skill development','Confidence']],
+  ['Personal Project','Something I am building or making for myself.',3,90,4,2,['Creativity / creating something','Personal growth','Because I want to'],['Something created','Sense of accomplishment','Creativity']],
+  ['Journaling','Writing things down to think clearly.',3,15,2,2,['Personal growth','Relaxation / restoration'],['Mental clarity','Emotional wellbeing','Reduced mental clutter']],
+  ['Spend Time With Friends','Meeting, calling or doing something together.',4,120,1,1,['Relationships / connection','Enjoyment'],['Connection','Emotional wellbeing','Fun']],
+  ['Spend Time With Family','Unhurried time with family.',5,120,1,1,['Relationships / connection','Maintain / take care of something'],['Connection','Emotional wellbeing']],
+  ['Explore a New Place','A new street, café, museum, park or town.',3,180,2,2,['Exploration','Experience'],['New experience']],
+  ['Learn About History','Books, videos, places, podcasts.',3,60,3,2,['Learning / knowledge','Culture / understanding'],['Knowledge','Understanding','Cultural understanding']],
+  ['Learn About Culture','Food, music, languages, traditions.',3,60,2,1,['Culture / understanding','Exploration'],['Cultural understanding','Understanding']],
+  ['Home Maintenance','Repairs, cleaning, organising.',3,60,2,4,['Maintain / take care of something','Resolve / remove something bothering me'],['Problem solved','Reduced mental clutter','Sense of accomplishment']],
+  ['Personal Administration','Bills, paperwork, banking, appointments.',4,30,3,4,['Resolve / remove something bothering me','Maintain / take care of something','Financial benefit'],['Problem solved','Reduced mental clutter']]
 ];
+const LISTS_VERSION=4;
+
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const nowISO=()=>new Date().toISOString();
-const dstr=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10)};
+const dstr=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const today=()=>dstr(new Date());
 const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return dstr(d)};
+const dayDiff=s=>Math.round((new Date(s+'T00:00:00')-new Date(today()+'T00:00:00'))/864e5);
+const relLabel=s=>{const d=dayDiff(s);return d===0?'Today':d===1?'Tomorrow':d===-1?'Yesterday':d>1?`In ${d} days`:`${-d} days ago`};
+const fmtLong=s=>new Date(s+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const nice=s=>new Date(s+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmtMin=m=>{m=Math.round(+m||0);const h=Math.floor(Math.abs(m)/60),r=Math.abs(m)%60;return (m<0?'-':'')+(h?h+'h ':'')+(r||!h?r+'m':'')};
-const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
-const f1=v=>v==null?'—':(Math.round(v*10)/10).toString();
-const pct=v=>v==null?'—':Math.round(v*100)+'%';
-const stInfo=k=>STATUSES.find(s=>s.k===(k||''))||STATUSES[0];
-
-function defaultData(){
-  return {version:2,created:nowISO(),
-    activities:DEF_ACTS.map(a=>({id:uid(),name:a[0],category:a[1],minutes:a[2],importance:a[3],effort:a[4],resistance:a[5],motives:a[6],outcomes:a[7],notes:'',active:true,created:nowISO(),history:[]})),
-    tasks:[],motives:DEF_MOTIVES.slice(),outcomes:DEF_OUTCOMES.slice(),settings:{hoursPerDay:''}};
+function fmtMin(m){if(m===null||m===undefined||m===''||isNaN(+m))return '—';m=Math.round(+m);const neg=m<0;m=Math.abs(m);const h=Math.floor(m/60),r=m%60;return (neg?'-':'')+(h?(r?`${h}h ${r}m`:`${h}h`):`${r}m`)}
+/* Accepts "90", "1:30", "1h", "1h 30m", "1.5h", "45m". Returns minutes, null if blank, NaN if not understood. */
+function parseDuration(s){
+  s=String(s??'').trim().toLowerCase();if(!s)return null;let m;
+  if(/^\d+$/.test(s))return +s;
+  if((m=s.match(/^(\d+):(\d{1,2})$/)))return +m[1]*60+ +m[2];
+  m=s.match(/^(?:(\d+(?:\.\d+)?)\s*h(?:r|rs|our|ours)?)?\s*(?:(\d+)\s*m(?:in|ins|inute|inutes)?)?$/);
+  if(m&&(m[1]||m[2]))return Math.round(parseFloat(m[1]||0)*60+parseInt(m[2]||0,10));
+  return NaN;
 }
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const f1=v=>v==null||isNaN(v)?'—':(Math.round(v*10)/10).toString();
+const pct=v=>v==null||isNaN(v)?'—':Math.round(v*100)+'%';
+const stInfo=k=>STATUSES.find(s=>s.k===(k||''))||STATUSES[0];
+const stIdx=k=>Math.max(0,STATUSES.findIndex(s=>s.k===(k||'')));
+const stLabel=t=>t.unplanned&&t.actual.status==='asplanned'?'Done':stInfo(t.actual.status).t;
+const scaleTxt=(kind,v)=>v?`${v} · ${SCALES[kind].d[v-1]}`:'—';
+
+function makeActivities(){
+  const t=nowISO();
+  return DEF_ACTS.map(a=>({id:uid(),name:a[0],description:a[1],importance:a[2],minutes:a[3],effort:a[4],resistance:a[5],motives:a[6].slice(),outcomes:a[7].slice(),active:true,created:t,history:[]}));
+}
+function defaultData(){
+  return {version:2,listsVersion:LISTS_VERSION,created:nowISO(),activities:makeActivities(),tasks:[],motives:DEF_MOTIVES.slice(),outcomes:DEF_OUTCOMES.slice(),settings:{hoursPerDay:''}};
+}
+let normalisedChanged=false;
 function normalise(d){
   d=d&&typeof d==='object'?d:defaultData();
-  d.activities=d.activities||[];d.tasks=d.tasks||[];d.motives=d.motives||DEF_MOTIVES.slice();d.outcomes=d.outcomes||DEF_OUTCOMES.slice();d.settings=d.settings||{};
-  d.activities.forEach(a=>{a.history=a.history||[];a.motives=a.motives||[];a.outcomes=a.outcomes||[];if(a.active===undefined)a.active=true});
+  d.activities=d.activities||[];d.tasks=d.tasks||[];d.motives=d.motives||[];d.outcomes=d.outcomes||[];d.settings=d.settings||{};
+  if((d.listsVersion||0)<LISTS_VERSION){
+    /* One-time upgrade: add every version-1 motive, outcome and activity that is missing. Nothing the user made is removed. */
+    DEF_MOTIVES.forEach(m=>{if(!d.motives.includes(m))d.motives.push(m)});
+    DEF_OUTCOMES.forEach(o=>{if(!d.outcomes.includes(o))d.outcomes.push(o)});
+    const have=new Set(d.activities.map(a=>a.name.toLowerCase()));
+    makeActivities().forEach(a=>{if(!have.has(a.name.toLowerCase()))d.activities.push(a)});
+    d.listsVersion=LISTS_VERSION;normalisedChanged=true;
+  }
+  d.activities.forEach(a=>{a.history=a.history||[];a.motives=a.motives||[];a.outcomes=a.outcomes||[];if(a.active===undefined)a.active=true;if(a.description==null)a.description=a.notes||''});
   d.tasks.forEach(t=>{t.plan=t.plan||{};t.actual=t.actual||{};t.plan.motives=t.plan.motives||[];t.plan.outcomes=t.plan.outcomes||[];t.actual.motives=t.actual.motives||[];t.actual.outcomes=t.actual.outcomes||[]});
   return d;
 }
 
 /* =====================================================================
-   PASSWORD HASHING (local mode)
+   PASSWORDS (local mode)
    ===================================================================== */
 async function hashPw(salt,pw){
   const s=salt+'|'+pw;
-  if(window.crypto&&crypto.subtle){
-    const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
-    return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
-  }
+  if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
   let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return 'f'+(h>>>0).toString(16);
 }
 
 /* =====================================================================
-   STORAGE: LOCAL (this browser only)
+   LOCAL STORE — this browser only
    ===================================================================== */
 const LocalStore={
-  mode:'local',
-  K_USERS:'viana2_users', K_SESS:'viana2_session',
+  mode:'local',canResetPasswords:true,
+  K_USERS:'viana2_users',K_SESS:'viana2_session',
   users(){try{return JSON.parse(localStorage.getItem(this.K_USERS))||{}}catch(e){return {}}},
   putUsers(u){localStorage.setItem(this.K_USERS,JSON.stringify(u))},
   async init(){const s=sessionStorage.getItem(this.K_SESS);return s?JSON.parse(s):null},
@@ -217,10 +437,10 @@ const LocalStore={
   async signUp(username,pw){
     const key=username.toLowerCase();
     if(key===ADMIN_USER.toLowerCase())throw new Error('That username is reserved.');
-    const u=this.users(); if(u[key])throw new Error('That username is already taken.');
-    const salt=uid(); u[key]={username,salt,hash:await hashPw(salt,pw),created:nowISO(),disabled:false};
-    this.putUsers(u); localStorage.setItem('viana2_data_'+key,JSON.stringify(defaultData()));
-    const s={id:key,username,isAdmin:false}; this.remember(s); return s;
+    const u=this.users();if(u[key])throw new Error('That username is already taken.');
+    const salt=uid();u[key]={username,salt,hash:await hashPw(salt,pw),created:nowISO(),disabled:false};
+    this.putUsers(u);localStorage.setItem('viana2_data_'+key,JSON.stringify(defaultData()));
+    const s={id:key,username,isAdmin:false};this.remember(s);return s;
   },
   async signIn(username,pw){
     if(username.toUpperCase()===ADMIN_USER){
@@ -237,83 +457,85 @@ const LocalStore={
   async save(id,data){localStorage.setItem('viana2_data_'+id,JSON.stringify(data))},
   async listUsers(){
     const u=this.users();
-    return Object.keys(u).map(k=>{let n=0;try{n=(JSON.parse(localStorage.getItem('viana2_data_'+k))||{}).tasks.length}catch(e){}
+    return Object.keys(u).map(k=>{let n=0;try{n=(JSON.parse(localStorage.getItem('viana2_data_'+k))||{tasks:[]}).tasks.length}catch(e){}
       return {id:k,username:u[k].username,created:u[k].created,disabled:!!u[k].disabled,tasks:n}});
   },
   async setDisabled(id,v){const u=this.users();if(u[id]){u[id].disabled=v;this.putUsers(u)}},
   async deleteUser(id){const u=this.users();delete u[id];this.putUsers(u);localStorage.removeItem('viana2_data_'+id)},
   async resetPassword(id,pw){const u=this.users();if(!u[id])return;u[id].salt=uid();u[id].hash=await hashPw(u[id].salt,pw);this.putUsers(u)},
   async changePassword(id,oldpw,newpw){
-    const u=this.users(),r=u[id];if(!r)throw new Error('Admin password is fixed and cannot be changed here.');
+    const u=this.users(),r=u[id];if(!r)throw new Error('The admin password is fixed.');
     if(r.hash!==await hashPw(r.salt,oldpw))throw new Error('Current password is incorrect.');
     r.salt=uid();r.hash=await hashPw(r.salt,newpw);this.putUsers(u);
-  },
-  canResetPasswords:true
+  }
 };
 
 /* =====================================================================
-   STORAGE: CLOUD (Firebase Auth + Firestore) — used when firebase-config.js is filled in
+   CLOUD STORE — Firebase Auth + Firestore
    ===================================================================== */
 const EMAIL_DOMAIN='@viana.app';
-const cloudPw=p=>p+'#viana';   // Firebase needs 6+ characters; this lets short passwords like 2409 work
+const cloudPw=p=>p+'#viana';
 const CloudStore={
   mode:'cloud',canResetPasswords:false,
-  async init(){
-    const cfg=window.VIANA_FIREBASE_CONFIG;
+  async init(cfg){
     firebase.initializeApp(cfg);
     this.auth=firebase.auth();this.db=firebase.firestore();
     await this.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
     const user=await new Promise(r=>{const un=this.auth.onAuthStateChanged(u=>{un();r(u)})});
     if(!user)return null;
-    return this.sessionFor(user);
+    try{return await this.sessionFor(user)}catch(e){return null}
   },
   async sessionFor(user){
     const isAdmin=user.email===ADMIN_USER.toLowerCase()+EMAIL_DOMAIN;
     const ref=this.db.collection('users').doc(user.uid);
-    let snap=await ref.get();
-    if(!snap.exists){
-      const uname=isAdmin?ADMIN_USER:(user.displayName||user.email.replace(EMAIL_DOMAIN,''));
-      await ref.set({username:uname,created:nowISO(),disabled:false,isAdmin,data:JSON.stringify(defaultData())});
+    let snap;
+    try{
       snap=await ref.get();
-    }
+      if(!snap.exists){ /* also repairs an account whose record was not written at sign-up */
+        const uname=isAdmin?ADMIN_USER:(user.displayName||user.email.replace(EMAIL_DOMAIN,''));
+        await ref.set({username:uname,created:nowISO(),disabled:false,isAdmin,data:JSON.stringify(defaultData())});
+        snap=await ref.get();
+      }
+    }catch(e){throw new Error(this.friendly(e))}
     const d=snap.data();
     if(d.disabled&&!isAdmin){await this.auth.signOut();throw new Error('This account has been disabled by the admin.')}
     return {id:user.uid,username:d.username,isAdmin};
   },
   friendly(e){
-    const c=e&&e.code||'';
+    const c=(e&&e.code)||'';
     if(/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c))return 'Incorrect username or password.';
     if(/email-already-in-use/.test(c))return 'That username is already taken.';
-    if(/network/.test(c))return 'No internet connection. Please try again.';
+    if(/network|unavailable/.test(c))return 'No internet connection. Please try again.';
     if(/operation-not-allowed/.test(c))return 'Email/Password sign-in is not enabled in Firebase (Authentication → Sign-in method).';
-    if(/permission-denied/.test(c))return 'Firestore rules are blocking access. Paste firestore.rules into Firebase and publish.';
-    return e.message||String(e);
+    if(/permission-denied|insufficient/.test(c))return 'Firebase security rules are blocking this. Paste the latest firestore.rules into Firebase → Firestore → Rules and press Publish.';
+    if(/unauthorized-domain/.test(c))return 'This website is not in Firebase → Authentication → Settings → Authorized domains.';
+    if(/too-many-requests/.test(c))return 'Too many attempts. Wait a few minutes and try again.';
+    return (e&&e.message)||String(e);
   },
   async signUp(username,pw){
     if(username.toUpperCase()===ADMIN_USER)throw new Error('That username is reserved.');
     if(!/^[A-Za-z0-9._-]+$/.test(username))throw new Error('Use only letters, numbers, dot, dash or underscore in the username.');
+    let cr;
+    try{cr=await this.auth.createUserWithEmailAndPassword(username.toLowerCase()+EMAIL_DOMAIN,cloudPw(pw))}catch(e){throw new Error(this.friendly(e))}
     try{
-      const cr=await this.auth.createUserWithEmailAndPassword(username.toLowerCase()+EMAIL_DOMAIN,cloudPw(pw));
       await cr.user.updateProfile({displayName:username});
       await this.db.collection('users').doc(cr.user.uid).set({username,created:nowISO(),disabled:false,isAdmin:false,data:JSON.stringify(defaultData())});
-      return {id:cr.user.uid,username,isAdmin:false};
-    }catch(e){throw new Error(this.friendly(e))}
+    }catch(e){throw new Error('Your login was created but your record could not be saved: '+this.friendly(e))}
+    return {id:cr.user.uid,username,isAdmin:false};
   },
   async signIn(username,pw){
     const isAdmin=username.toUpperCase()===ADMIN_USER;
     if(isAdmin&&pw!==ADMIN_PASS)throw new Error('Incorrect username or password.');
     const email=username.toLowerCase()+EMAIL_DOMAIN;
-    try{
-      const cr=await this.auth.signInWithEmailAndPassword(email,cloudPw(pw));
-      return await this.sessionFor(cr.user);
-    }catch(e){
-      if(isAdmin&&!/disabled/.test(e.message||'')){ // first ever admin sign-in creates the admin login
-        try{const cr=await this.auth.createUserWithEmailAndPassword(email,cloudPw(pw));return await this.sessionFor(cr.user)}
-        catch(e2){throw new Error(this.friendly(e2.code&&/email-already-in-use/.test(e2.code)?e:e2))}
-      }
-      if(e instanceof Error&&!e.code)throw e;
-      throw new Error(this.friendly(e));
+    let cr;
+    try{cr=await this.auth.signInWithEmailAndPassword(email,cloudPw(pw))}
+    catch(e){
+      if(isAdmin){ /* first-ever admin sign-in creates the admin login */
+        try{cr=await this.auth.createUserWithEmailAndPassword(email,cloudPw(pw))}
+        catch(e2){throw new Error(this.friendly(/email-already-in-use/.test(e2.code||'')?e:e2))}
+      }else throw new Error(this.friendly(e));
     }
+    return await this.sessionFor(cr.user);
   },
   async signOut(){await this.auth.signOut()},
   async load(id){const s=await this.db.collection('users').doc(id).get();if(!s.exists)return normalise(null);let d=null;try{d=JSON.parse(s.data().data)}catch(e){}return normalise(d)},
@@ -321,7 +543,7 @@ const CloudStore={
   async listUsers(){
     const q=await this.db.collection('users').get();const out=[];
     q.forEach(doc=>{const d=doc.data();if(d.isAdmin)return;let n=0;try{n=JSON.parse(d.data).tasks.length}catch(e){}
-      out.push({id:doc.id,username:d.username,created:d.created,disabled:!!d.disabled,tasks:n})});
+      out.push({id:doc.id,username:d.username,created:d.created,updated:d.updated,disabled:!!d.disabled,tasks:n})});
     return out;
   },
   async setDisabled(id,v){await this.db.collection('users').doc(id).set({disabled:v},{merge:true})},
@@ -333,30 +555,56 @@ const CloudStore={
     catch(e){throw new Error(this.friendly(e))}
   }
 };
-
 let Store=LocalStore;
-function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Could not load '+src));document.head.appendChild(s)})}
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Could not load Firebase from the internet'));document.head.appendChild(s)})}
 
-/* =====================================================================
-   APP STATE
-   ===================================================================== */
-let S=null;          // session {id, username, isAdmin}
-let D=null;          // data currently on screen
-let viewing=null;    // {id, username} when admin views another user's data
-let tab='today';
-let saveTimer=null;
-const ui={planDate:null,reviewDate:null,cmpFrom:null,cmpTo:null,anRange:30,adminUsers:null};
-
-function dataOwner(){return viewing?viewing.id:S.id}
-function save(){
-  clearTimeout(saveTimer);
-  saveTimer=setTimeout(async()=>{try{await Store.save(dataOwner(),D)}catch(e){toast('Save failed: '+(e.message||e))}},250);
+/* Finds the Firebase settings however firebase-config.js was written */
+async function findConfig(){
+  const ok=c=>c&&typeof c==='object'&&c.apiKey&&!/PASTE|YOUR_/i.test(c.apiKey)?c:null;
+  let c=ok(window.VIANA_FIREBASE_CONFIG)||ok(window.firebaseConfig)||ok(window.FIREBASE_CONFIG);
+  try{if(!c&&typeof firebaseConfig!=='undefined')c=ok(firebaseConfig)}catch(e){}
+  try{if(!c&&typeof FIREBASE_CONFIG!=='undefined')c=ok(FIREBASE_CONFIG)}catch(e){}
+  if(c)return c;
+  /* Last resort: read the file text (handles the "import …" snippet copied from the Firebase console) */
+  if(window.__vianaCfgMissing||location.protocol==='file:')return null;
+  try{
+    const r=await fetch('firebase-config.js',{cache:'no-store'});if(!r.ok)return null;
+    const txt=(await r.text()).replace(/\/\/.*$/gm,'').replace(/\/\*[\s\S]*?\*\//g,'');
+    const out={};['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId','measurementId'].forEach(k=>{
+      const m=txt.match(new RegExp('["\']?'+k+'["\']?\\s*:\\s*["\']([^"\']+)["\']'));if(m)out[k]=m[1]});
+    return ok(out)&&out.projectId?out:null;
+  }catch(e){return null}
 }
-async function flushSave(){if(saveTimer){clearTimeout(saveTimer);saveTimer=null;await Store.save(dataOwner(),D)}}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
 
 /* =====================================================================
-   AUTH UI
+   STATE
+   ===================================================================== */
+let S=null,D=null,viewing=null,tab='today';
+let saveTimer=null,pending=null;
+const ui={planDate:null,reviewDate:null,reviewSort:'status',cmpFrom:null,cmpTo:null,cmpActs:null,msOpen:false,
+  anFrom:null,anTo:null,anAll:false,adminUsers:[],libQ:'',libStatus:'active'};
+const dataOwner=()=>viewing?viewing.id:S.id;
+function save(){
+  pending={owner:dataOwner(),data:D};
+  if(Store.mode==='local'){flushSave();return}
+  clearTimeout(saveTimer);saveTimer=setTimeout(flushSave,400);
+}
+async function flushSave(){
+  clearTimeout(saveTimer);saveTimer=null;
+  if(!pending)return;const p=pending;pending=null;
+  try{await Store.save(p.owner,p.data)}catch(e){toast('Could not save: '+(Store.friendly?Store.friendly(e):e.message))}
+}
+let toastTimer;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2000)}
+window.addEventListener('pagehide',()=>{flushSave()});
+/* Cloud mode: pick up changes made on another device when you return to this tab */
+document.addEventListener('visibilitychange',async()=>{
+  if(document.visibilityState!=='visible'||!S||Store.mode!=='cloud'||pending||document.getElementById('modal-root').innerHTML)return;
+  try{const fresh=await Store.load(dataOwner());if(JSON.stringify(fresh)!==JSON.stringify(D)){D=fresh;render()}}catch(e){}
+});
+
+/* =====================================================================
+   AUTH
    ===================================================================== */
 let authMode='in';
 function authTab(m){
@@ -389,16 +637,22 @@ async function doAuth(ev){
   return false;
 }
 async function enterApp(){
-  viewing=null;D=await Store.load(S.id);tab='today';
+  viewing=null;normalisedChanged=false;D=await Store.load(S.id);tab='today';
+  if(normalisedChanged)save();
   document.getElementById('auth').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('whoName').textContent=S.username;
-  document.getElementById('whoBadge').classList.toggle('hidden',!S.isAdmin);
+  document.getElementById('adminTag').classList.toggle('hidden',!S.isAdmin);
+  const mt=document.getElementById('modeTag');
+  mt.innerHTML=Store.mode==='cloud'?'☁<span class="mtx"> Synced</span>':'📱<span class="mtx"> This device only</span>';
+  mt.className='mode'+(Store.mode==='cloud'?'':' local');
+  mt.title=Store.mode==='cloud'?'Saved to Firebase – available on any device':'Saved only in this browser. Fill in firebase-config.js to sync.';
   render();
 }
 async function signOut(){
-  try{await flushSave()}catch(e){}
-  await Store.signOut();S=null;D=null;viewing=null;
+  await flushSave();
+  try{await Store.signOut()}catch(e){}
+  S=null;D=null;viewing=null;closeModal();
   document.getElementById('app').classList.add('hidden');
   document.getElementById('auth').classList.remove('hidden');
   authTab('in');
@@ -407,348 +661,565 @@ async function signOut(){
 /* =====================================================================
    RENDER
    ===================================================================== */
+const IC={
+  today:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  plan:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  review:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  compare:'<path d="M6 20V10M12 20V4M18 20v-7"/>',
+  analysis:'<path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/>',
+  activities:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  settings:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  admin:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'
+};
 const TABS=[['today','Today'],['plan','Plan'],['review','Review'],['compare','Compare'],['analysis','Analysis'],['activities','Activities'],['settings','Settings']];
 function render(){
+  if(!S)return;
   const tabs=TABS.slice();if(S.isAdmin)tabs.push(['admin','Admin']);
-  document.getElementById('nav').innerHTML=tabs.map(([k,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')">${t}</button>`).join('');
+  const nav=tabs.map(([k,t])=>`<a class="${tab===k?'active':''}" onclick="go('${k}')"><svg viewBox="0 0 24 24">${IC[k]}</svg><span>${t}</span></a>`).join('');
+  document.getElementById('topnav').innerHTML=nav;document.getElementById('botnav').innerHTML=nav;
   const va=document.getElementById('viewAs');
-  if(viewing){va.classList.remove('hidden');va.innerHTML=`Admin: you are viewing and editing <b>${esc(viewing.username)}</b>'s data <button class="btn sm light" onclick="stopViewing()">Back to my data</button>`}
+  if(viewing){va.classList.remove('hidden');va.innerHTML=`Admin: you are viewing and editing <b>${esc(viewing.username)}</b>'s data <button class="btn sm" onclick="stopViewing()">Back to my data</button>`}
   else va.classList.add('hidden');
   const m=document.getElementById('main');
   ({today:vToday,plan:vPlan,review:vReview,compare:vCompare,analysis:vAnalysis,activities:vActivities,settings:vSettings,admin:vAdmin}[tab]||vToday)(m);
 }
-function go(t){tab=t;render();window.scrollTo(0,0)}
+function go(t){tab=t;ui.msOpen=false;render();window.scrollTo(0,0)}
 const actById=id=>D.activities.find(a=>a.id===id);
 const actName=id=>(actById(id)||{}).name||'(deleted activity)';
+const taskName=t=>t.name||actName(t.activityId);
 const tasksOn=d=>D.tasks.filter(t=>t.date===d);
-
+function sortTasks(list,mode){
+  const imp=t=>+t.plan.importance||0;
+  const by={
+    status:(a,b)=>stIdx(a.actual.status)-stIdx(b.actual.status)||imp(b)-imp(a)||taskName(a).localeCompare(taskName(b)),
+    priority:(a,b)=>imp(b)-imp(a)||stIdx(a.actual.status)-stIdx(b.actual.status)||taskName(a).localeCompare(taskName(b)),
+    activity:(a,b)=>actName(a.activityId).localeCompare(actName(b.activityId))||imp(b)-imp(a),
+    name:(a,b)=>taskName(a).localeCompare(taskName(b))
+  };
+  return list.slice().sort(by[mode]||by.status);
+}
+const badge=(letter,v,title)=>`<span class="badge" title="${esc(title)}${v?': '+esc(v+' – '+(SCALES[letter==='P'?'importance':letter==='M'?'effort':'resistance'].d[v-1])):': not set'}">${letter}<b>${v??'–'}</b></span>`;
+const stPill=t=>{const s=stInfo(t.actual.status);return `<span class="pill ${s.tone}">${esc(stLabel(t))}</span>`};
 function taskRow(t,click){
   const s=stInfo(t.actual.status);
-  const act=t.actual.status&&t.actual.minutes!=null&&t.actual.minutes!==''?` · actual ${fmtMin(t.actual.minutes)}`:'';
-  return `<div class="task" onclick="${click}('${t.id}')"><div style="flex:1"><div class="nm">${esc(actName(t.activityId))}${t.unplanned?' <span class="st st6">Unplanned</span>':''}</div>
-  <div class="muted">${t.unplanned?'':'planned '+fmtMin(t.plan.minutes)}${act}${t.plan.note?' · '+esc(t.plan.note):''}</div></div><span class="st ${s.c}">${s.t}</span></div>`;
+  const meta=[`<span class="apill">${esc(actName(t.activityId))}</span>`];
+  if(t.unplanned)meta.push('<span class="tag-unpl">Unplanned</span>');else meta.push('Plan '+fmtMin(t.plan.minutes));
+  if(DONE_KEYS.includes(t.actual.status)&&t.actual.minutes!=null)meta.push('Actual '+fmtMin(t.actual.minutes));
+  if(!t.unplanned&&t.plan.importance)meta.push(`Priority: ${esc(SCALES.importance.d[t.plan.importance-1])}`);
+  return `<div class="trow s-${s.tone}" onclick="${click}('${t.id}')"><span class="dot"></span><div class="tmain"><div class="tname">${esc(taskName(t))}</div>
+    <div class="tmeta">${meta.join('<span>·</span>')}</div></div>${stPill(t)}</div>`;
 }
 function totals(list){let p=0,a=0;list.forEach(t=>{if(!t.unplanned)p+=+t.plan.minutes||0;if(DONE_KEYS.includes(t.actual.status))a+=+t.actual.minutes||0});return {p,a}}
+const stat=(label,value,sub='')=>`<div class="stat"><div class="label">${label}</div><div class="value">${value}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;
+const emptyBox=(big,txt,extra='')=>`<div class="empty"><div class="big">${big}</div>${txt}${extra?`<div>${extra}</div>`:''}</div>`;
+function dateNav(key,val){
+  return `<div class="datenav"><button class="icon-btn" onclick="ui.${key}=addDays(ui.${key},-1);render()" aria-label="Previous day">‹</button>
+  <input type="date" value="${val}" onchange="ui.${key}=this.value||today();render()">
+  <button class="icon-btn" onclick="ui.${key}=addDays(ui.${key},1);render()" aria-label="Next day">›</button>
+  ${val!==today()?`<button class="btn sm ghost" onclick="ui.${key}=today();render()">Today</button>`:''}</div>`;
+}
 
 /* ---------- TODAY ---------- */
 function vToday(m){
-  const d=today(),list=tasksOn(d),tt=totals(list),done=list.filter(t=>DONE_KEYS.includes(t.actual.status)).length;
-  m.innerHTML=`<h2>Today <span class="muted">${new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}</span></h2>
-  <div class="sumgrid"><div class="stat"><span class="muted">Planned</span><b>${fmtMin(tt.p)}</b></div><div class="stat"><span class="muted">Actual so far</span><b>${fmtMin(tt.a)}</b></div>
-  <div class="stat"><span class="muted">Tasks done</span><b>${done} / ${list.length}</b></div></div>
-  <div class="row" style="margin-bottom:10px"><b>Today's tasks</b><span class="spacer"></span><button class="btn sm ghost" onclick="ui.planDate=today();go('plan')">+ Plan a task</button><button class="btn sm" onclick="ui.reviewDate=today();go('review')">Record actuals</button></div>
-  ${list.length?list.map(t=>taskRow(t,'openActual')).join(''):'<div class="card empty">Nothing planned for today. Use <b>Plan</b> to add tasks.</div>'}`;
+  const d=today(),list=sortTasks(tasksOn(d),'status'),tt=totals(list);
+  const done=list.filter(t=>DONE_KEYS.includes(t.actual.status)).length,left=list.filter(t=>!t.actual.status).length;
+  const h=new Date().getHours(),greet=h<5?'Late night':h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  const tm=tasksOn(addDays(d,1));
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Today</div><h1>${fmtLong(d)}</h1><p class="lede">${greet}, ${esc((viewing||S).username)}. How would you like to spend today?</p></div>
+    <div class="head-actions"><button class="btn" onclick="openUnplanned('${d}')">+ Something unplanned</button><button class="btn primary" onclick="ui.reviewDate=today();go('review')">Review the day</button></div></section>
+  <div class="stats">${stat('Planned time',fmtMin(tt.p),`${list.filter(t=>!t.unplanned).length} planned task(s)`)}${stat('Actual time',tt.a?fmtMin(tt.a):'—','where recorded')}
+    ${stat('Completed',`${done}<span class="muted" style="font-size:1rem"> / ${list.length}</span>`)}${stat('Not yet recorded',left)}</div>
+  <section class="card"><div class="card-head"><h2>Today's tasks</h2><button class="btn sm ghost" onclick="openPlan(null,today())">+ Plan a task</button></div>
+    ${list.length?`<div class="tlist">${list.map(t=>taskRow(t,'openActual')).join('')}</div>`:emptyBox('Nothing planned for today.','That\'s fine too. You can plan a little, or record what you do as you go.',`<button class="btn" onclick="openPlan(null,today())">Plan today</button><button class="btn" onclick="openUnplanned(today())">Record something I did</button>`)}</section>
+  <section class="card soft"><div class="card-head" style="margin:0"><div><div class="eyebrow">Tomorrow</div><div>${tm.length?`${tm.length} task(s) · ${fmtMin(totals(tm).p)} planned`:'<span class="muted">Not planned yet</span>'}</div></div>
+    <button class="btn primary" onclick="ui.planDate=addDays(today(),1);go('plan')">Plan tomorrow →</button></div></section>`;
 }
 
 /* ---------- PLAN ---------- */
 function vPlan(m){
-  const d=ui.planDate||(ui.planDate=addDays(today(),1)),list=tasksOn(d).filter(t=>!t.unplanned),tt=totals(list);
-  const hrs=+D.settings.hoursPerDay||0;
-  m.innerHTML=`<h2>Plan</h2>
-  <div class="card row"><button class="btn sm light" onclick="ui.planDate=addDays(ui.planDate,-1);render()">◀</button>
-  <input type="date" value="${d}" style="max-width:180px" onchange="ui.planDate=this.value||today();render()">
-  <button class="btn sm light" onclick="ui.planDate=addDays(ui.planDate,1);render()">▶</button><span class="spacer"></span>
-  <span class="muted">Planned <b>${fmtMin(tt.p)}</b>${hrs?` of ${hrs}h available (${fmtMin(hrs*60-tt.p)} free)`:''}</span></div>
-  <div class="row" style="margin-bottom:10px"><b>Tasks for ${d}</b><span class="spacer"></span><button class="btn sm" onclick="newTask('${d}')">+ Add task</button></div>
-  ${list.length?list.map(t=>taskRow(t,'editPlan')).join(''):'<div class="card empty">No tasks planned for this day yet.</div>'}`;
+  const d=ui.planDate||(ui.planDate=addDays(today(),1)),list=sortTasks(tasksOn(d).filter(t=>!t.unplanned),'priority'),tt=totals(list);
+  const cap=(+D.settings.hoursPerDay||0)*60;
+  const fav=D.activities.filter(a=>a.active).map(a=>({a,n:D.tasks.filter(t=>t.activityId===a.id).length})).sort((x,y)=>y.n-x.n||(y.a.importance||0)-(x.a.importance||0)||x.a.name.localeCompare(y.a.name)).slice(0,8).map(x=>x.a);
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Plan · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1><p class="lede">How do I want to spend this day?</p></div>${dateNav('planDate',d)}</section>
+  <section class="card"><div class="card-head"><h2>Planned</h2><button class="btn primary" onclick="openPlan(null,ui.planDate)">+ Add a task</button></div>
+    ${list.length?`<div class="tlist">${list.map(t=>taskRow(t,'openPlan')).join('')}</div>`:emptyBox('An open day.','Add a few things you would like to give time to.')}
+    ${fav.length?`<div style="margin-top:.9rem"><div class="field-label">Quick add</div><div class="chips">${fav.map(a=>`<button class="chip" onclick="openPlan(null,ui.planDate,'${a.id}')">+ ${esc(a.name)}</button>`).join('')}</div></div>`:''}</section>
+  ${list.length?`<section class="card"><h2 style="margin-bottom:.6rem">Time allocation</h2>
+    ${list.map(t=>`<div class="row" style="justify-content:space-between;color:var(--muted);padding:.15rem 0"><span>${esc(taskName(t))} <span class="small">· ${esc(actName(t.activityId))}</span></span><span>${fmtMin(t.plan.minutes)}</span></div>`).join('')}
+    <div class="row" style="justify-content:space-between;border-top:1px solid var(--border);margin-top:.4rem;padding-top:.5rem;font-weight:600"><span>Total planned</span><span>${fmtMin(tt.p)}</span></div>
+    ${cap?`<div class="row muted" style="justify-content:space-between"><span>Of ${fmtMin(cap)} available</span><span>${tt.p<=cap?fmtMin(cap-tt.p)+' unallocated':fmtMin(tt.p-cap)+' over'}</span></div>`:''}</section>`:''}`;
 }
-function chips(name,all,sel){return `<div data-chips="${name}">`+all.map(x=>`<span class="chip ${sel.includes(x)?'on':''}" data-v="${esc(x)}" onclick="this.classList.toggle('on')">${esc(x)}</span>`).join('')+`</div>`}
-function readChips(name){return [...document.querySelectorAll(`[data-chips="${name}"] .chip.on`)].map(c=>c.dataset.v)}
-function scale(name,val,lbl){return `<label>${lbl}</label><div class="seg" data-seg="${name}">`+[1,2,3,4,5].map(n=>`<button type="button" class="${+val===n?'on':''}" onclick="segPick(this)">${n}</button>`).join('')+`</div>`}
-function segPick(b){const on=b.classList.contains('on');b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('on'));if(!on)b.classList.add('on')}
-function readSeg(name){const b=document.querySelector(`[data-seg="${name}"] button.on`);return b?+b.textContent:null}
-function openModal(h){document.getElementById('mbox').innerHTML=h;document.getElementById('modal').classList.remove('hidden')}
-function closeModal(){document.getElementById('modal').classList.add('hidden')}
 
-function newTask(date){
-  const acts=D.activities.filter(a=>a.active);
-  if(!acts.length){toast('Create an activity first.');return}
-  openModal(`<h3>Add task for ${date}</h3><label>Activity</label>
-  <select id="ntAct">${acts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>
-  <div class="mfoot"><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="createTask('${date}')">Next</button></div>`);
+/* ---------- form helpers ---------- */
+const field=(label,inner,cls='')=>`<div class="field ${cls}"><span>${label}</span>${inner}</div>`;
+function chips(name,all,sel){
+  const extra=sel.filter(x=>!all.includes(x));
+  return `<div class="chips" data-chips="${name}">`+[...all,...extra].map(x=>`<span class="chip ${sel.includes(x)?'on':''}" data-v="${esc(x)}" onclick="this.classList.toggle('on')">${esc(x)}</span>`).join('')+`</div>`;
 }
-function createTask(date,unplanned){
-  const a=actById(document.getElementById('ntAct').value);
-  const t={id:uid(),date,activityId:a.id,unplanned:!!unplanned,created:nowISO(),
-    plan:unplanned?{motives:[],outcomes:[]}:{minutes:a.minutes,motives:a.motives.slice(),outcomes:a.outcomes.slice(),importance:a.importance,effort:a.effort,resistance:a.resistance,note:''},
-    actual:{motives:[],outcomes:[]}};
-  D.tasks.push(t);save();closeModal();render();
-  unplanned?openActual(t.id):editPlan(t.id);
+function readChips(name){return [...document.querySelectorAll(`[data-chips="${name}"] .chip.on`)].map(c=>c.dataset.v)}
+function setChips(name,list){document.querySelectorAll(`[data-chips="${name}"] .chip`).forEach(c=>c.classList.toggle('on',list.includes(c.dataset.v)))}
+function scale(name,kind,val){
+  const sc=SCALES[kind];
+  return `<div class="scale" data-seg="${name}" data-kind="${kind}">`+[1,2,3,4,5].map(n=>
+    `<button type="button" class="${+val===n?'on':''}" title="${n} · ${esc(sc.d[n-1])}" onclick="segPick(this)">${n}</button>`).join('')+
+    `<span class="scale-label ${val?'':'none'}">${val?esc(sc.d[val-1]):'not set'}</span></div>`;
 }
-function editPlan(id){
-  const t=D.tasks.find(x=>x.id===id);if(!t)return;const p=t.plan;
-  openModal(`<h3>Plan: ${esc(actName(t.activityId))}</h3><div class="muted">${t.date} · values copied from the activity; changing them here affects this task only.</div>
-  <div class="grid2"><div><label>Date</label><input type="date" id="pDate" value="${t.date}"></div><div><label>Planned time (minutes)</label><input type="number" id="pMin" min="0" value="${p.minutes??''}"></div></div>
-  <label>Why I'm doing it (motives)</label>${chips('pMot',D.motives,p.motives)}
-  <label>What I expect to get (outcomes)</label>${chips('pOut',D.outcomes,p.outcomes)}
-  ${scale('pImp',p.importance,'Importance (1 low – 5 high)')}${scale('pEff',p.effort,'Expected mental effort')}${scale('pRes',p.resistance,'Expected emotional resistance')}
-  <label>Note</label><textarea id="pNote">${esc(p.note||'')}</textarea>
-  <div class="mfoot"><button class="btn danger" onclick="delTask('${id}')">Delete</button><span class="spacer"></span><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="savePlan('${id}')">Save</button></div>`);
+function segPick(b){const on=b.classList.contains('on'),box=b.parentNode;box.querySelectorAll('button').forEach(x=>x.classList.remove('on'));if(!on)b.classList.add('on');setDesc(box)}
+function setDesc(box){const v=readSeg(box.dataset.seg),el=box.querySelector('.scale-label');el.textContent=v?SCALES[box.dataset.kind].d[v-1]:'not set';el.classList.toggle('none',!v)}
+function readSeg(name){const b=document.querySelector(`[data-seg="${name}"] button.on`);return b?+b.textContent:null}
+function setSeg(name,v){const box=document.querySelector(`[data-seg="${name}"]`);if(!box)return;box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.textContent===+v));setDesc(box)}
+function dur(id,min){
+  return `<div class="dur"><input type="text" id="${id}" placeholder="e.g. 90, 1:30, 1h 30m" value="${min!=null&&min!==''?fmtMin(min):''}" oninput="this.classList.remove('invalid')">
+  <div class="quick">${[15,30,45,60,90,120,180].map(m=>`<button type="button" onclick="setDur('${id}',${m})">${fmtMin(m)}</button>`).join('')}</div></div>`;
+}
+function setDur(id,m){const el=document.getElementById(id);el.value=m==null||m===''?'':fmtMin(m);el.classList.remove('invalid')}
+function readDur(id){const el=document.getElementById(id);const v=parseDuration(el.value);el.classList.toggle('invalid',Number.isNaN(v));return v}
+
+/* ---------- modal ---------- */
+function openModal(title,sub,body,footer){
+  const root=document.getElementById('modal-root');
+  root.innerHTML=`<div class="overlay"><div class="modal" role="dialog" aria-modal="true"><div class="modal-head"><div style="min-width:0">${title}${sub?`<div class="muted small">${sub}</div>`:''}</div><button class="icon-btn" onclick="closeModal()" aria-label="Close">✕</button></div>
+  <div class="modal-body">${body}</div>${footer?`<div class="modal-foot">${footer}</div>`:''}</div></div>`;
+  const ov=root.querySelector('.overlay');ov.addEventListener('mousedown',e=>{if(e.target===ov)closeModal()});
+  document.body.classList.add('modal-open');
+}
+function closeModal(){document.getElementById('modal-root').innerHTML='';document.body.classList.remove('modal-open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+/* ---------- activity picker (version 1 style list) ---------- */
+let pk={id:null,onPick:null};
+function renderPicker(open){
+  const box=document.getElementById('pkBox');if(!box)return;
+  const cur=pk.id&&actById(pk.id);
+  if(!open&&cur){
+    box.innerHTML=`<div class="picker"><div class="picked"><div style="flex:1;min-width:0"><div class="aname">${esc(cur.name)}</div>${cur.description?`<div class="muted small">${esc(cur.description)}</div>`:''}</div>
+    <button type="button" class="btn sm" onclick="renderPicker(true)">Change</button></div></div>`;return;
+  }
+  const acts=D.activities.filter(a=>a.active||a.id===pk.id).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!acts.length){box.innerHTML='<div class="picker muted">You have no active activities. Create one in the <b>Activities</b> tab first.</div>';return}
+  box.innerHTML=`<div class="picker"><input type="search" placeholder="Search activities…" autocomplete="off" oninput="filterPicker(this.value)">
+  <div class="picker-list" id="pkList">${acts.map(a=>`<button type="button" class="picker-item" data-q="${esc((a.name+' '+(a.description||'')).toLowerCase())}" onclick="pickAct('${a.id}')">
+    <span><b>${esc(a.name)}</b>${a.description?`<br><span class="muted small">${esc(a.description)}</span>`:''}</span>
+    <span class="badges">${a.minutes?`<span class="badge">${fmtMin(a.minutes)}</span>`:''}${badge('P',a.importance,'Priority')}</span></button>`).join('')}</div></div>`;
+}
+function filterPicker(q){q=q.trim().toLowerCase();document.querySelectorAll('#pkList .picker-item').forEach(b=>b.classList.toggle('hidden',!!q&&!b.dataset.q.includes(q)))}
+function pickAct(id){pk.id=id;renderPicker(false);if(pk.onPick)pk.onPick(actById(id))}
+
+/* ---------- plan task (new + edit) ---------- */
+function openPlan(id,date,presetAct){
+  const t=id?D.tasks.find(x=>x.id===id):null;if(id&&!t)return;
+  const p=t?t.plan:{motives:[],outcomes:[]};
+  pk={id:t?t.activityId:(presetAct||null),onPick:t?null:fillDefaults};
+  openModal(`<h2>${t?'Planned task':'Add to plan'}</h2>`,t?fmtLong(t.date):'Name the task and pick the activity it belongs to',
+  `${field('Task name <span class="req">*</span>',`<input type="text" id="tName" maxlength="80" placeholder="e.g. Finish chapter 3, Evening walk by the beach" value="${esc(t?t.name||'':'')}" oninput="this.classList.remove('invalid')">`)}
+   ${field('Activity <span class="req">*</span>','<div id="pkBox"></div>')}
+   <p class="hint">${t?'Changes here affect this task only — the activity itself won’t change.':'Pre-filled from the activity’s defaults. Change anything for this particular day.'}</p>
+   <div class="grid2">${field('Date',`<input type="date" id="tDate" value="${t?t.date:date}">`)}${field('Planned time',dur('tMin',p.minutes))}</div>
+   ${field('Why this, this time? <em>— motives</em>',chips('pMot',D.motives,p.motives))}
+   ${field('What I hope to get from it <em>— outcomes</em>',chips('pOut',D.outcomes,p.outcomes))}
+   ${field('Priority of this, today',scale('pImp','importance',p.importance))}
+   <div class="grid2">${field('Planned mental effort',scale('pEff','effort',p.effort))}${field('Expected emotional resistance',scale('pRes','resistance',p.resistance))}</div>
+   ${field('Notes',`<textarea id="tNote" rows="2" placeholder="Anything about the plan">${esc(p.note||'')}</textarea>`)}
+   <div class="err" id="tErr"></div>`,
+  `${t?`<button class="btn ghost danger" onclick="delTask('${id}')">Remove from plan</button>`:''}<span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="savePlan(${t?`'${id}'`:'null'})">${t?'Save':'Add to plan'}</button>`);
+  renderPicker(!pk.id);
+  if(!t&&pk.id)fillDefaults(actById(pk.id));
+  if(window.innerWidth>760)document.getElementById('tName').focus();
+}
+function fillDefaults(a){
+  if(!a)return;
+  setDur('tMin',a.minutes);setChips('pMot',a.motives);setChips('pOut',a.outcomes);
+  setSeg('pImp',a.importance);setSeg('pEff',a.effort);setSeg('pRes',a.resistance);
 }
 function savePlan(id){
-  const t=D.tasks.find(x=>x.id===id);
-  t.date=document.getElementById('pDate').value||t.date;
-  Object.assign(t.plan,{minutes:+document.getElementById('pMin').value||0,motives:readChips('pMot'),outcomes:readChips('pOut'),importance:readSeg('pImp'),effort:readSeg('pEff'),resistance:readSeg('pRes'),note:document.getElementById('pNote').value.trim()});
-  t.updated=nowISO();save();closeModal();render();toast('Plan saved');
+  const nameEl=document.getElementById('tName'),name=nameEl.value.trim(),err=document.getElementById('tErr');
+  if(!name){nameEl.classList.add('invalid');err.textContent='Please give the task a name.';nameEl.focus();return}
+  if(!pk.id){document.querySelector('#pkBox .picker').classList.add('invalid');err.textContent='Please choose an activity.';return}
+  const mins=readDur('tMin');if(Number.isNaN(mins)){err.textContent='Planned time not understood — try 90, 1:30 or 1h 30m.';return}
+  const plan={minutes:mins||0,motives:readChips('pMot'),outcomes:readChips('pOut'),importance:readSeg('pImp'),effort:readSeg('pEff'),resistance:readSeg('pRes'),note:document.getElementById('tNote').value.trim()};
+  const date=document.getElementById('tDate').value||today();
+  if(id){const t=D.tasks.find(x=>x.id===id);Object.assign(t,{name,date,activityId:pk.id,updated:nowISO()});Object.assign(t.plan,plan)}
+  else D.tasks.push({id:uid(),name,date,activityId:pk.id,unplanned:false,created:nowISO(),plan,actual:{motives:[],outcomes:[]}});
+  save();closeModal();render();toast(id?'Saved':'Added to plan');
 }
-function delTask(id){if(!confirm('Delete this task?'))return;D.tasks=D.tasks.filter(x=>x.id!==id);save();closeModal();render();toast('Task deleted')}
+function delTask(id){if(!confirm('Remove this task? The activity stays in your library.'))return;D.tasks=D.tasks.filter(x=>x.id!==id);save();closeModal();render();toast('Removed')}
 
-/* ---------- REVIEW (actuals only) ---------- */
+/* ---------- REVIEW ---------- */
 function vReview(m){
-  const d=ui.reviewDate||(ui.reviewDate=today()),list=tasksOn(d),pend=list.filter(t=>!t.actual.status).length;
-  const post=list.filter(t=>t.actual.status==='postponed'&&!t.carried).length;
-  m.innerHTML=`<h2>Review</h2>
-  <div class="card row"><button class="btn sm light" onclick="ui.reviewDate=addDays(ui.reviewDate,-1);render()">◀</button>
-  <input type="date" value="${d}" style="max-width:180px" onchange="ui.reviewDate=this.value||today();render()">
-  <button class="btn sm light" onclick="ui.reviewDate=addDays(ui.reviewDate,1);render()">▶</button><span class="spacer"></span><span class="muted">${pend} not yet recorded</span></div>
-  <div class="row" style="margin-bottom:10px"><b>Tap an activity to record what actually happened</b><span class="spacer"></span>
-  ${post?`<button class="btn sm light" onclick="carryPostponed('${d}')">Move ${post} postponed to next day</button>`:''}
-  <button class="btn sm ghost" onclick="newUnplanned('${d}')">+ Unplanned task</button></div>
-  ${list.length?list.map(t=>taskRow(t,'openActual')).join(''):'<div class="card empty">No tasks on this day.</div>'}`;
+  const d=ui.reviewDate||(ui.reviewDate=today()),all=tasksOn(d),list=sortTasks(all,ui.reviewSort);
+  const tt=totals(all),pend=all.filter(t=>!t.actual.status).length,post=all.filter(t=>t.actual.status==='postponed'&&!t.carried).length,unpl=all.filter(t=>t.unplanned);
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">End-of-day review · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1><p class="lede">What actually happened? Tap a task to record it.</p></div>${dateNav('reviewDate',d)}</section>
+  <div class="stats">${stat('Planned',fmtMin(tt.p))}${stat('Actually spent',tt.a?fmtMin(tt.a):'—')}${stat('Reviewed',`${all.length-pend}<span class="muted" style="font-size:1rem"> / ${all.length}</span>`)}${stat('Unplanned',unpl.length)}</div>
+  <section class="card"><div class="card-head"><h2>Tasks</h2><div class="toolbar"><span class="muted small">Sort by</span>
+    <select onchange="ui.reviewSort=this.value;render()">${[['status','Status, then priority'],['priority','Priority'],['activity','Activity'],['name','Task name']].map(([v,t])=>`<option value="${v}" ${ui.reviewSort===v?'selected':''}>${t}</option>`).join('')}</select>
+    ${post?`<button class="btn sm" onclick="carryPostponed('${d}')">Move ${post} postponed to next day</button>`:''}</div></div>
+    ${list.length?`<div class="tlist">${list.map(t=>taskRow(t,'openActual')).join('')}</div>`:emptyBox('Nothing was planned for this day.','Record anything you did — unplanned time counts too.')}</section>
+  <div class="card soft row" style="justify-content:space-between"><div><b>Did something that wasn't planned?</b><div class="muted small">Spontaneous activities are part of real life, not failures.</div></div>
+    <button class="btn" onclick="openUnplanned('${d}')">+ Add unplanned task</button></div>`;
 }
-function newUnplanned(date){
-  openModal(`<h3>Unplanned task on ${date}</h3><label>Activity</label>
-  <select id="ntAct">${D.activities.filter(a=>a.active).map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>
-  <div class="mfoot"><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="createTask('${date}',true)">Next</button></div>`);
+function openUnplanned(date){
+  pk={id:null,onPick:null};
+  openModal('<h2>What did you do?</h2>',fmtLong(date),
+   `${field('Task name <span class="req">*</span>','<input type="text" id="uName" maxlength="80" placeholder="What did you do?" oninput="this.classList.remove(\'invalid\')">')}
+    ${field('Activity <span class="req">*</span>','<div id="pkBox"></div>')}<div class="err" id="uErr"></div>`,
+   `<span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="createUnplanned('${date}')">Next</button>`);
+  renderPicker(true);
 }
+function createUnplanned(date){
+  const el=document.getElementById('uName'),name=el.value.trim(),err=document.getElementById('uErr');
+  if(!name){el.classList.add('invalid');err.textContent='Please give the task a name.';return}
+  if(!pk.id){document.querySelector('#pkBox .picker').classList.add('invalid');err.textContent='Please choose an activity.';return}
+  const t={id:uid(),name,date,activityId:pk.id,unplanned:true,created:nowISO(),plan:{motives:[],outcomes:[]},actual:{motives:[],outcomes:[]}};
+  D.tasks.push(t);save();render();openActual(t.id);
+}
+const HINTS={
+  asplanned:'Filled in from your plan. Change anything that turned out different.',
+  differently:'Plan details cleared — enter what actually happened.',
+  partial:'Your planned motives are kept. Enter the time you spent and what you got.',
+  postponed:'Time set to 0. You can still note how resistant you felt.',
+  skipped:'Time set to 0. You can still note how resistant you felt.',
+  cancelled:'Time set to 0. Add a note on why, if you like.',
+  unplanned:'Enter what you did.'
+};
+let actTask=null;
 function openActual(id){
-  const t=D.tasks.find(x=>x.id===id);if(!t)return;const a=t.actual;
-  openModal(`<h3>${esc(actName(t.activityId))}</h3><div class="muted">${t.date} — record what actually happened</div>
-  <label>Status</label><div class="seg" id="aSt">${STATUSES.slice(1).filter(s=>!(t.unplanned&&s.k!=='asplanned'&&s.k!=='partial'&&s.k!=='differently')).map(s=>`<button type="button" data-k="${s.k}" class="${a.status===s.k?'on':''}" onclick="pickStatus(this,'${id}')">${t.unplanned&&s.k==='asplanned'?'Done':s.t}</button>`).join('')}</div>
-  <div id="aBody">
-  <label>Actual time (minutes)</label><input type="number" id="aMin" min="0" value="${a.minutes??''}">
-  <label>Why I actually did it (motives)</label>${chips('aMot',D.motives,a.motives)}
-  <label>What I actually got (outcomes)</label>${chips('aOut',D.outcomes,a.outcomes)}
-  ${scale('aEff',a.effort,'Actual mental effort')}${scale('aRes',a.resistance,'Actual emotional resistance')}${scale('aSat',a.satisfaction,'Satisfaction')}
-  </div><label>Note</label><textarea id="aNote">${esc(a.note||'')}</textarea>
-  <div class="mfoot">${a.status?`<button class="btn light" onclick="clearActual('${id}')">Clear</button>`:''}<span class="spacer"></span><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveActual('${id}')">Save</button></div>`);
+  const t=D.tasks.find(x=>x.id===id);if(!t)return;actTask=t;const a=t.actual;
+  const sts=t.unplanned?[['asplanned','Done'],['partial','Partly']]:STATUSES.slice(1).map(s=>[s.k,s.t]);
+  openModal(`<div class="eyebrow">${esc(actName(t.activityId))}${t.unplanned?' · unplanned':''}</div><h2>${esc(taskName(t))}</h2>`,
+   `${fmtLong(t.date)}${t.unplanned?'':` · Plan ${fmtMin(t.plan.minutes)}`}`,
+   `${field('How did it go?',`<div class="status-row" id="aSt">${sts.map(([k,l])=>`<button type="button" class="sbtn ${a.status===k?'on':''}" data-k="${k}" style="--sc:${stInfo(k).col}" onclick="pickStatus(this)">${l}</button>`).join('')}</div>`)}
+    <p class="hint hidden" id="aHint"></p>
+    <div id="fTime">${field('Actual time',dur('aMin',a.minutes))}</div>
+    <div id="fMot">${field('Why I actually did it <em>— motives</em>',chips('aMot',D.motives,a.motives))}</div>
+    <div id="fOut">${field('What I actually got from it <em>— outcomes</em>',chips('aOut',D.outcomes,a.outcomes))}</div>
+    <div class="grid2"><div id="fEff">${field('Actual mental effort',scale('aEff','effort',a.effort))}</div><div id="fRes">${field('Actual emotional resistance',scale('aRes','resistance',a.resistance))}</div></div>
+    <div id="fSat">${field('Satisfaction <em>optional</em>',scale('aSat','satisfaction',a.satisfaction))}</div>
+    ${field('Notes',`<textarea id="aNote" rows="2" placeholder="What happened?">${esc(a.note||'')}</textarea>`)}
+    <div class="err" id="aErr"></div>`,
+   `${a.status?`<button class="btn ghost" onclick="clearActual('${id}')">Clear</button>`:''}${t.unplanned?`<button class="btn ghost danger" onclick="delTask('${id}')">Delete</button>`:`<button class="btn ghost" onclick="closeModal();openPlan('${id}')">Edit plan</button>`}
+    <span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveActual('${id}')">Save</button>`);
+  showFields(a.status,false);
 }
-function pickStatus(b,id){
-  document.querySelectorAll('#aSt button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-  const t=D.tasks.find(x=>x.id===id),k=b.dataset.k;
-  if(k==='asplanned'&&!t.unplanned){ // copy plan into actual fields
-    document.getElementById('aMin').value=t.plan.minutes??'';
-    document.querySelectorAll('[data-chips="aMot"] .chip').forEach(c=>c.classList.toggle('on',t.plan.motives.includes(c.dataset.v)));
-    document.querySelectorAll('[data-chips="aOut"] .chip').forEach(c=>c.classList.toggle('on',t.plan.outcomes.includes(c.dataset.v)));
-    [['aEff','effort'],['aRes','resistance']].forEach(([s,f])=>document.querySelectorAll(`[data-seg="${s}"] button`).forEach(x=>x.classList.toggle('on',+x.textContent===t.plan[f])));
+function showFields(k,withHint){
+  const off=NOT_DONE.includes(k);
+  ['fTime','fMot','fOut','fEff','fSat'].forEach(f=>document.getElementById(f).classList.toggle('hidden',off));
+  const h=document.getElementById('aHint');
+  if(withHint&&k){h.textContent=actTask.unplanned?HINTS.unplanned:HINTS[k];h.classList.remove('hidden')}else h.classList.add('hidden');
+}
+/* Every status choice resets the actual fields to suit that status */
+function pickStatus(b){
+  document.querySelectorAll('#aSt .sbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const t=actTask,p=t.plan,k=b.dataset.k;
+  let v={min:null,mot:[],out:[],eff:null,res:null};
+  if(!t.unplanned){
+    if(k==='asplanned')v={min:p.minutes??null,mot:p.motives,out:p.outcomes,eff:p.effort,res:p.resistance};
+    else if(k==='partial')v.mot=p.motives;
   }
-  if(['postponed','skipped','cancelled'].includes(k))document.getElementById('aMin').value=0;
+  if(NOT_DONE.includes(k))v.min=0;
+  setDur('aMin',v.min);setChips('aMot',v.mot);setChips('aOut',v.out);setSeg('aEff',v.eff);setSeg('aRes',v.res);setSeg('aSat',null);
+  document.getElementById('aErr').textContent='';
+  showFields(k,true);
 }
 function saveActual(id){
-  const t=D.tasks.find(x=>x.id===id),b=document.querySelector('#aSt button.on');
-  if(!b){toast('Choose a status first');return}
-  t.actual={status:b.dataset.k,minutes:document.getElementById('aMin').value===''?null:+document.getElementById('aMin').value,motives:readChips('aMot'),outcomes:readChips('aOut'),
-    effort:readSeg('aEff'),resistance:readSeg('aRes'),satisfaction:readSeg('aSat'),note:document.getElementById('aNote').value.trim(),recorded:nowISO()};
-  save();closeModal();render();toast('Actuals saved');
+  const t=D.tasks.find(x=>x.id===id),b=document.querySelector('#aSt .sbtn.on'),err=document.getElementById('aErr');
+  if(!b){err.textContent='Choose how it went first.';return}
+  const k=b.dataset.k,off=NOT_DONE.includes(k);
+  let mins=off?0:readDur('aMin');if(Number.isNaN(mins)){err.textContent='Time not understood — try 90, 1:30 or 1h 30m.';return}
+  t.actual={status:k,minutes:mins,motives:off?[]:readChips('aMot'),outcomes:off?[]:readChips('aOut'),
+    effort:off?null:readSeg('aEff'),resistance:readSeg('aRes'),satisfaction:off?null:readSeg('aSat'),note:document.getElementById('aNote').value.trim(),recorded:nowISO()};
+  save();closeModal();render();toast('Saved');
 }
-function clearActual(id){const t=D.tasks.find(x=>x.id===id);t.actual={motives:[],outcomes:[]};save();closeModal();render()}
+function clearActual(id){const t=D.tasks.find(x=>x.id===id);t.actual={motives:[],outcomes:[]};save();closeModal();render();toast('Cleared')}
 function carryPostponed(d){
   const nd=addDays(d,1);let n=0;
   D.tasks.filter(t=>t.date===d&&t.actual.status==='postponed'&&!t.carried).forEach(t=>{
-    D.tasks.push({id:uid(),date:nd,activityId:t.activityId,unplanned:false,created:nowISO(),carriedFrom:t.id,plan:JSON.parse(JSON.stringify(t.plan)),actual:{motives:[],outcomes:[]}});t.carried=true;n++});
-  save();render();toast(n+' task(s) moved to '+nd);
+    D.tasks.push({id:uid(),name:t.name,date:nd,activityId:t.activityId,unplanned:false,created:nowISO(),carriedFrom:t.id,plan:JSON.parse(JSON.stringify(t.plan)),actual:{motives:[],outcomes:[]}});t.carried=true;n++});
+  save();render();toast(n+' task(s) moved to '+nice(nd));
 }
 
-/* ---------- COMPARE (side by side) ---------- */
+/* ---------- chart helpers ---------- */
+const LEG='<div class="legend"><span><i style="background:var(--accent)"></i>Planned</span><span><i style="background:var(--mid)"></i>Actual</span></div>';
+function pairRow(label,p,a,max,fp,fa,sub){
+  const w=v=>v==null||!max?0:Math.max(2,Math.round(v/max*100));
+  return `<div class="pr"><div class="prl">${label}${sub?`<small>${sub}</small>`:''}</div><div>
+   <div class="pb"><i class="bp" style="width:${w(p)}%"></i><span>${p==null?'—':fp(p)}</span></div>
+   <div class="pb"><i class="ba" style="width:${w(a)}%"></i><span>${a==null?'—':(fa||fp)(a)}</span></div></div></div>`;
+}
+function donut(counts,total,label){
+  let acc=0;const segs=STATUSES.filter(s=>counts[s.k]).map(s=>{const from=acc;acc+=counts[s.k]/total*100;return `${s.col} ${from}% ${acc}%`});
+  return `<div class="donutw"><div class="donut" style="background:${total?`conic-gradient(${segs.join(',')})`:'var(--accent-soft)'}"><i><span><b>${total}</b>${label}</span></i></div>
+  <div class="dleg">${STATUSES.filter(s=>counts[s.k]).map(s=>`<span><i style="background:${s.col}"></i>${s.t}: <b>${counts[s.k]}</b></span>`).join('')||'<span class="muted">No tasks</span>'}</div></div>`;
+}
+function rangeFilters(fk,tk,disabled){
+  return `<div class="f"><label>From</label><input type="date" value="${ui[fk]}" ${disabled?'disabled':''} onchange="ui.${fk}=this.value||today();if(ui.${fk}>ui.${tk})ui.${tk}=ui.${fk};${fk==='anFrom'?'ui.anAll=false;':''}render()"></div>
+  <div class="f"><label>To</label><input type="date" value="${ui[tk]}" ${disabled?'disabled':''} onchange="ui.${tk}=this.value||today();if(ui.${tk}<ui.${fk})ui.${fk}=ui.${tk};${fk==='anFrom'?'ui.anAll=false;':''}render()"></div>`;
+}
+function presets(fk,tk,isAn){
+  const t=today(),ms=t.slice(0,8)+'01';
+  const ps=[['Today',t,t],['Last 7 days',addDays(t,-6),t],['Last 30 days',addDays(t,-29),t],['This month',ms,t]];
+  const allOn=isAn?ui.anAll:false;
+  return `<div class="f"><label>Quick range</label><div class="seg">${ps.map(([l,f,to])=>`<button class="${!allOn&&ui[fk]===f&&ui[tk]===to?'on':''}" onclick="ui.${fk}='${f}';ui.${tk}='${to}';${isAn?'ui.anAll=false;':''}render()">${l}</button>`).join('')}
+  <button class="${allOn?'on':''}" onclick="${isAn?'ui.anAll=true;render()':'setAllTimeCmp()'}">All time</button></div></div>`;
+}
+function setAllTimeCmp(){const ds=D.tasks.map(t=>t.date).sort();ui.cmpFrom=ds[0]||today();ui.cmpTo=ds.length&&ds[ds.length-1]>today()?ds[ds.length-1]:today();render()}
+
+/* ---------- COMPARE ---------- */
+function actMulti(){
+  const acts=D.activities.slice().sort((a,b)=>a.name.localeCompare(b.name)),sel=ui.cmpActs;
+  const n=sel?sel.length:acts.length,lbl=!sel?`All activities (${acts.length})`:n===0?'No activities':n===1?esc(actName(sel[0])):`${n} activities`;
+  return `<div class="f ms" id="msWrap"><label>Activities</label><button class="msbtn" onclick="ui.msOpen=!ui.msOpen;render()"><span>${lbl}</span><span>▾</span></button>
+  ${ui.msOpen?`<div class="mspanel"><label class="all"><input type="checkbox" ${!sel?'checked':''} onchange="ui.cmpActs=this.checked?null:[];render()"> All activities</label>
+  ${acts.map(a=>`<label><input type="checkbox" ${!sel||sel.includes(a.id)?'checked':''} onchange="toggleCmpAct('${a.id}',this.checked)"> ${esc(a.name)}</label>`).join('')}</div>`:''}</div>`;
+}
+function toggleCmpAct(id,on){
+  const all=D.activities.map(a=>a.id);let s=ui.cmpActs?ui.cmpActs.slice():all.slice();
+  s=on?[...new Set([...s,id])]:s.filter(x=>x!==id);
+  ui.cmpActs=all.every(x=>s.includes(x))?null:s;render();
+}
+document.addEventListener('mousedown',e=>{if(ui.msOpen&&!e.target.closest('#msWrap')){ui.msOpen=false;if(S)render()}});
 function vCompare(m){
-  ui.cmpTo=ui.cmpTo||today();ui.cmpFrom=ui.cmpFrom||addDays(ui.cmpTo,-6);
-  const list=D.tasks.filter(t=>t.date>=ui.cmpFrom&&t.date<=ui.cmpTo).sort((a,b)=>a.date<b.date?1:-1);
-  const L=v=>v&&v.length?v.map(esc).join(', '):'—',N=v=>v==null||v===''?'—':v;
-  const row=(k,p,a)=>`<div class="k">${k}</div><div>${p}</div><div class="${p!==a&&a!=='—'?'diff':''}">${a}</div>`;
-  m.innerHTML=`<h2>Planned vs actual</h2>
-  <div class="card row"><span class="muted">From</span><input type="date" value="${ui.cmpFrom}" style="max-width:170px" onchange="ui.cmpFrom=this.value;render()">
-  <span class="muted">to</span><input type="date" value="${ui.cmpTo}" style="max-width:170px" onchange="ui.cmpTo=this.value;render()"><span class="spacer"></span><span class="muted">Highlighted = differs from plan</span></div>
-  ${list.length?list.map(t=>{const p=t.plan,a=t.actual,s=stInfo(a.status);
-    return `<div class="card"><div class="row" style="margin-bottom:8px"><b>${esc(actName(t.activityId))}</b><span class="muted">${t.date}</span><span class="spacer"></span><span class="st ${s.c}">${s.t}</span></div>
-    <div class="cmp"><div class="h"></div><div class="h">Planned</div><div class="h">Actual</div>
-    ${row('Time',t.unplanned?'(unplanned)':fmtMin(p.minutes),a.minutes==null?'—':fmtMin(a.minutes))}
-    ${row('Motives',L(p.motives),L(a.motives))}${row('Outcomes',L(p.outcomes),L(a.outcomes))}
-    ${row('Mental effort',N(p.effort),N(a.effort))}${row('Resistance',N(p.resistance),N(a.resistance))}
-    ${row('Importance / satisfaction',N(p.importance),N(a.satisfaction))}${row('Note',esc(p.note||'—'),esc(a.note||'—'))}</div></div>`}).join(''):'<div class="card empty">No tasks in this period.</div>'}`;
+  ui.cmpFrom=ui.cmpFrom||today();ui.cmpTo=ui.cmpTo||today();
+  if(ui.cmpActs)ui.cmpActs=ui.cmpActs.filter(id=>actById(id));
+  const list=sortTasks(D.tasks.filter(t=>t.date>=ui.cmpFrom&&t.date<=ui.cmpTo&&(!ui.cmpActs||ui.cmpActs.includes(t.activityId))),'status').sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
+  const rec=list.filter(t=>t.actual.status),done=list.filter(t=>DONE_KEYS.includes(t.actual.status)),planned=list.filter(t=>!t.unplanned);
+  const tt=totals(list),cnt={};list.forEach(t=>{const k=t.actual.status||'';cnt[k]=(cnt[k]||0)+1});
+  const eff=done.filter(t=>!t.unplanned&&t.plan.effort&&t.actual.effort),res=rec.filter(t=>!t.unplanned&&t.plan.resistance&&t.actual.resistance),sat=done.filter(t=>!t.unplanned&&t.plan.importance&&t.actual.satisfaction);
+  const am=(l,s,k)=>avg(l.map(t=>+t[s][k]));
+  const range=ui.cmpFrom===ui.cmpTo?fmtLong(ui.cmpFrom):`${nice(ui.cmpFrom)} – ${nice(ui.cmpTo)}`;
+  const g={};list.forEach(t=>{(g[t.activityId]=g[t.activityId]||[]).push(t)});
+  const ta=Object.keys(g).map(id=>[id,totals(g[id])]).sort((a,b)=>b[1].p+b[1].a-a[1].p-a[1].a),mxT=Math.max(1,...ta.map(x=>Math.max(x[1].p,x[1].a)));
+  const sF=kind=>v=>f1(v)+' · '+SCALES[kind].d[Math.min(4,Math.max(0,Math.round(v)-1))];
+  const pDone=planned.filter(t=>DONE_KEYS.includes(t.actual.status));
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Compare</div><h1>Planned vs actual</h1><p class="lede">${range}</p></div></section>
+  <section class="card"><div class="filters">${rangeFilters('cmpFrom','cmpTo',false)}${presets('cmpFrom','cmpTo',false)}${actMulti()}</div></section>
+  ${!list.length?`<section class="card">${emptyBox('No tasks here.','Nothing matches these dates and activities.')}</section>`:`
+  <div class="stats">${stat('Tasks',list.length)}${stat('Recorded',rec.length)}${stat('Planned time',fmtMin(tt.p))}${stat('Actual time',fmtMin(tt.a))}</div>
+  <div class="cgrid">
+   <section class="card"><h2 style="margin-bottom:.6rem">Averages: plan vs reality</h2>${LEG}
+    ${pairRow('Time per task',avg(pDone.map(t=>+t.plan.minutes||0)),avg(pDone.filter(t=>t.actual.minutes!=null).map(t=>+t.actual.minutes)),Math.max(1,...pDone.map(t=>Math.max(+t.plan.minutes||0,+t.actual.minutes||0))),fmtMin,null,'completed tasks')}
+    ${pairRow('Mental effort',am(eff,'plan','effort'),am(eff,'actual','effort'),5,sF('effort'),null,eff.length+' task(s)')}
+    ${pairRow('Emotional resistance',am(res,'plan','resistance'),am(res,'actual','resistance'),5,sF('resistance'),null,res.length+' task(s)')}
+    ${pairRow('Priority → satisfaction',am(sat,'plan','importance'),am(sat,'actual','satisfaction'),5,sF('importance'),sF('satisfaction'),sat.length+' task(s)')}</section>
+   <section class="card"><h2 style="margin-bottom:.8rem">How tasks ended</h2>${donut(cnt,list.length,'tasks')}</section>
+  </div>
+  <section class="card"><h2 style="margin-bottom:.6rem">Time by activity</h2>${LEG}${ta.map(([id,x])=>pairRow(esc(actName(id)),x.p,x.a,mxT,fmtMin)).join('')}</section>
+  <div class="card-head" style="margin-top:1.4rem"><h2>Task by task</h2><span class="muted small">Chips: <span class="chip static cm">in plan and actual</span> <span class="chip static cp">planned only</span> <span class="chip static cx">actual only</span></span></div>
+  ${list.map(cmpCard).join('')}`}`;
+}
+function cmpCard(t){
+  const p=t.plan,a=t.actual;
+  const sc=kind=>v=>scaleTxt(kind,v);
+  const mx=Math.max(1,+p.minutes||0,+a.minutes||0);
+  const chipsCmp=(P,A)=>{const all=[...new Set([...P,...A])];return all.length?`<div class="chips">${all.map(x=>`<span class="chip static ${P.includes(x)&&A.includes(x)?'cm':P.includes(x)?'cp':'cx'}">${esc(x)}</span>`).join('')}</div>`:'<div class="muted small">—</div>'};
+  return `<section class="card"><div class="card-head"><div style="min-width:0"><div class="tname">${esc(taskName(t))}</div><div class="tmeta"><span class="apill">${esc(actName(t.activityId))}</span><span>${nice(t.date)}</span>${t.unplanned?'<span class="tag-unpl">Unplanned</span>':''}</div></div>${stPill(t)}</div>
+  ${!a.status?`<div class="muted small">No actuals recorded yet. <a href="#" onclick="openActual('${t.id}');return false">Record now</a></div>`:`
+  <div class="tc"><div>${LEG}
+   ${pairRow('Time',t.unplanned?null:+p.minutes||0,a.minutes==null?null:+a.minutes,mx,fmtMin)}
+   ${pairRow('Mental effort',p.effort||null,a.effort||null,5,sc('effort'))}
+   ${pairRow('Resistance',p.resistance||null,a.resistance||null,5,sc('resistance'))}
+   ${pairRow('Priority → satisfaction',p.importance||null,a.satisfaction||null,5,sc('importance'),sc('satisfaction'))}</div>
+  <div><div class="field-label">Motives</div>${chipsCmp(p.motives,a.motives)}<div class="field-label" style="margin-top:.7rem">Outcomes</div>${chipsCmp(p.outcomes,a.outcomes)}
+   ${p.note||a.note?`<div class="field-label" style="margin-top:.7rem">Notes</div><div class="muted small">${p.note?'Plan: '+esc(p.note)+'<br>':''}${a.note?'Actual: '+esc(a.note):''}</div>`:''}</div></div>`}</section>`;
 }
 
-/* ---------- ANALYSIS (17 sections) ---------- */
+/* ---------- ANALYSIS ---------- */
 function vAnalysis(m){
-  const r=ui.anRange,to=today(),from=r?addDays(to,-(r-1)):'0000';
+  ui.anTo=ui.anTo||today();ui.anFrom=ui.anFrom||addDays(ui.anTo,-29);
+  const from=ui.anAll?'0000-00-00':ui.anFrom,to=ui.anAll?'9999-12-31':ui.anTo,now=today();
   const T=D.tasks.filter(t=>t.date>=from&&t.date<=to),R=T.filter(t=>t.actual.status),Done=R.filter(t=>DONE_KEYS.includes(t.actual.status));
-  const sec=(n,title,body,note)=>`<div class="card"><h3>${n}. ${title}</h3>${note?`<div class="muted" style="margin-bottom:8px">${note}</div>`:''}${body}</div>`;
-  const tbl=(head,rows)=>rows.length?`<div style="overflow-x:auto"><table><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="muted">Not enough data yet.</div>';
+  const sec=(n,title,body,note)=>`<section class="card"><h2 style="margin-bottom:${note?'.2rem':'.7rem'}">${n}. ${title}</h2>${note?`<p class="muted small" style="margin:0 0 .7rem">${note}</p>`:''}${body}</section>`;
+  const tbl=(head,rows)=>rows.length?`<div class="table-wrap"><table class="simple"><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="muted small">Not enough data yet.</div>';
   const twoBars=(a,b,max)=>`<div class="bars"><div class="bar" style="width:${max?Math.round(a/max*100):0}%"></div><div class="bar b2" style="width:${max?Math.round(b/max*100):0}%"></div></div>`;
-  const leg='<div class="legend"><span><i style="background:var(--pri)"></i>Planned</span><span><i style="background:#f59e0b"></i>Actual</span></div>';
   const byAct=f=>{const g={};f.forEach(t=>{(g[t.activityId]=g[t.activityId]||[]).push(t)});return g};
   const out=[];
-
-  // 1 time
-  const tt=totals(T);const g1=byAct(T);const r1=Object.keys(g1).map(id=>{const x=totals(g1[id]);return [id,x.p,x.a]}).sort((a,b)=>b[1]+b[2]-a[1]-a[2]);const mx1=Math.max(1,...r1.map(x=>Math.max(x[1],x[2])));
-  out.push(sec(1,'Planned vs actual time',`<div class="sumgrid"><div class="stat"><span class="muted">Planned</span><b>${fmtMin(tt.p)}</b></div><div class="stat"><span class="muted">Actual (done tasks)</span><b>${fmtMin(tt.a)}</b></div><div class="stat"><span class="muted">Difference</span><b>${fmtMin(tt.a-tt.p)}</b></div></div>${leg}`+
+  const tt=totals(T),g1=byAct(T),r1=Object.keys(g1).map(id=>{const x=totals(g1[id]);return [id,x.p,x.a]}).sort((a,b)=>b[1]+b[2]-a[1]-a[2]),mx1=Math.max(1,...r1.map(x=>Math.max(x[1],x[2])));
+  out.push(sec(1,'Planned vs actual time',`<div class="stats s3">${stat('Planned',fmtMin(tt.p))}${stat('Actual (completed)',fmtMin(tt.a))}${stat('Difference',fmtMin(tt.a-tt.p))}</div>${LEG}`+
     tbl(['Activity','Planned','Actual','Diff',''],r1.map(x=>[esc(actName(x[0])),fmtMin(x[1]),fmtMin(x[2]),fmtMin(x[2]-x[1]),twoBars(x[1],x[2],mx1)]))));
-  // 2 motives, 3 outcomes
   const cnt=(list,f)=>{const c={};list.forEach(t=>f(t).forEach(v=>c[v]=(c[v]||0)+1));return c};
   [[2,'Planned vs actual motives','motives'],[3,'Planned vs actual outcomes','outcomes']].forEach(([n,ti,k])=>{
-    const p=cnt(R.filter(t=>!t.unplanned),t=>t.plan[k]),a=cnt(Done,t=>t.actual[k]);const keys=[...new Set([...Object.keys(p),...Object.keys(a)])].sort((x,y)=>(p[y]||0)+(a[y]||0)-(p[x]||0)-(a[x]||0));const mx=Math.max(1,...keys.map(x=>Math.max(p[x]||0,a[x]||0)));
-    out.push(sec(n,ti,leg+tbl([k==='motives'?'Motive':'Outcome','Planned (times)','Actual (times)',''],keys.map(x=>[esc(x),p[x]||0,a[x]||0,twoBars(p[x]||0,a[x]||0,mx)])),'Counts how often each was chosen in recorded tasks.'));
+    const p=cnt(R.filter(t=>!t.unplanned),t=>t.plan[k]),a=cnt(Done,t=>t.actual[k]);
+    const keys=[...new Set([...Object.keys(p),...Object.keys(a)])].sort((x,y)=>(p[y]||0)+(a[y]||0)-(p[x]||0)-(a[x]||0)),mx=Math.max(1,...keys.map(x=>Math.max(p[x]||0,a[x]||0)));
+    out.push(sec(n,ti,LEG+tbl([k==='motives'?'Motive':'Outcome','Planned','Actual',''],keys.map(x=>[esc(x),p[x]||0,a[x]||0,twoBars(p[x]||0,a[x]||0,mx)])),'How often each was chosen in recorded tasks.'));
   });
-  // 4 effort 5 resistance
   [[4,'Planned vs actual mental effort','effort'],[5,'Planned vs actual emotional resistance','resistance']].forEach(([n,ti,k])=>{
-    const g=byAct(Done.filter(t=>t.plan[k]&&t.actual[k]));const rows=Object.keys(g).map(id=>{const p=avg(g[id].map(t=>t.plan[k])),a=avg(g[id].map(t=>t.actual[k]));return [esc(actName(id)),f1(p),f1(a),(a-p>0?'+':'')+f1(a-p),a>p?'Harder than expected':a<p?'Easier than expected':'As expected']});
-    out.push(sec(n,ti,tbl(['Activity','Avg planned','Avg actual','Diff','Reading'],rows),'Scale 1–5, done tasks where both values were entered.'));
+    const g=byAct(R.filter(t=>t.plan[k]&&t.actual[k]));
+    const rows=Object.keys(g).map(id=>{const p=avg(g[id].map(t=>t.plan[k])),a=avg(g[id].map(t=>t.actual[k]));return [esc(actName(id)),f1(p),f1(a),(a-p>0?'+':'')+f1(a-p),a-p>0.25?'Harder than expected':a-p<-0.25?'Easier than expected':'As expected']});
+    out.push(sec(n,ti,tbl(['Activity','Avg planned','Avg actual','Diff','Reading'],rows),`1 = ${SCALES[k].d[0]} … 5 = ${SCALES[k].d[4]}`));
   });
-  // 6 status
   const sc={};R.forEach(t=>sc[t.actual.status]=(sc[t.actual.status]||0)+1);
-  out.push(sec(6,'How tasks ended',tbl(['Status','Tasks','Share'],STATUSES.slice(1).filter(s=>sc[s.k]).map(s=>[`<span class="st ${s.c}">${s.t}</span>`,sc[s.k],pct(sc[s.k]/R.length)]))+`<div class="muted" style="margin-top:6px">${T.length-R.length} task(s) in this period have no actuals recorded.</div>`));
-  // 7 postpone/skip by activity
-  const g7=byAct(R);out.push(sec(7,'Postponed / skipped by activity',tbl(['Activity','Recorded','Postponed','Skipped/cancelled','Rate'],Object.keys(g7).map(id=>{const l=g7[id],po=l.filter(t=>t.actual.status==='postponed').length,sk=l.filter(t=>['skipped','cancelled'].includes(t.actual.status)).length;return [esc(actName(id)),l.length,po,sk,pct((po+sk)/l.length),(po+sk)/l.length]}).sort((a,b)=>b[5]-a[5]).map(x=>x.slice(0,5)))));
-  // 8 estimation accuracy
+  out.push(sec(6,'How tasks ended',donut(Object.assign({'':T.length-R.length},sc),T.length,'tasks')));
+  const g7=byAct(R);out.push(sec(7,'Postponed / skipped by activity',tbl(['Activity','Recorded','Postponed','Skipped / cancelled','Rate'],Object.keys(g7).map(id=>{const l=g7[id],po=l.filter(t=>t.actual.status==='postponed').length,sk=l.filter(t=>['skipped','cancelled'].includes(t.actual.status)).length;return [esc(actName(id)),l.length,po,sk,pct((po+sk)/l.length),(po+sk)/l.length]}).sort((a,b)=>b[5]-a[5]).map(x=>x.slice(0,5)))));
   const g8=byAct(Done.filter(t=>!t.unplanned&&+t.plan.minutes>0&&t.actual.minutes!=null));
   out.push(sec(8,'Time estimate accuracy',tbl(['Activity','Tasks','Actual ÷ planned','Reading'],Object.keys(g8).map(id=>{const ra=avg(g8[id].map(t=>t.actual.minutes/t.plan.minutes));return [esc(actName(id)),g8[id].length,f1(ra)+'×',ra>1.15?'Takes longer than planned':ra<0.85?'Takes less than planned':'Well estimated']})),'1.0× means actual time matched the plan.'));
-  // 9 time share
-  const g9=byAct(Done);const tot9=Done.reduce((s,t)=>s+(+t.actual.minutes||0),0);
-  out.push(sec(9,'Where actual time went',tbl(['Activity','Actual time','Share',''],Object.keys(g9).map(id=>{const m=g9[id].reduce((s,t)=>s+(+t.actual.minutes||0),0);return [id,m]}).sort((a,b)=>b[1]-a[1]).map(([id,m])=>[esc(actName(id)),fmtMin(m),pct(tot9?m/tot9:0),`<div class="bar" style="width:${tot9?Math.round(m/tot9*100):0}%"></div>`]))));
-  // 10 planned vs unplanned
+  const g9=byAct(Done),tot9=Done.reduce((s,t)=>s+(+t.actual.minutes||0),0);
+  out.push(sec(9,'Where actual time went',tbl(['Activity','Actual time','Share',''],Object.keys(g9).map(id=>[id,g9[id].reduce((s,t)=>s+(+t.actual.minutes||0),0)]).sort((a,b)=>b[1]-a[1]).map(([id,mm])=>[esc(actName(id)),fmtMin(mm),pct(tot9?mm/tot9:0),`<div class="bar" style="width:${tot9?Math.round(mm/tot9*100):0}%"></div>`]))));
   const up=Done.filter(t=>t.unplanned),pl=Done.filter(t=>!t.unplanned),um=up.reduce((s,t)=>s+(+t.actual.minutes||0),0),pm=pl.reduce((s,t)=>s+(+t.actual.minutes||0),0);
-  out.push(sec(10,'Planned vs unplanned activity',`<div class="sumgrid"><div class="stat"><span class="muted">From planned tasks</span><b>${fmtMin(pm)}</b>${pl.length} tasks</div><div class="stat"><span class="muted">Unplanned</span><b>${fmtMin(um)}</b>${up.length} tasks</div><div class="stat"><span class="muted">Unplanned share</span><b>${pct(pm+um?um/(pm+um):null)}</b></div></div>`));
-  // 11 satisfaction
+  out.push(sec(10,'Planned vs unplanned activity',`<div class="stats s3">${stat('From planned tasks',fmtMin(pm),pl.length+' tasks')}${stat('Unplanned',fmtMin(um),up.length+' tasks')}${stat('Unplanned share',pct(pm+um?um/(pm+um):null))}</div>`));
   const g11=byAct(Done.filter(t=>t.actual.satisfaction));
-  out.push(sec(11,'Satisfaction relative to time',tbl(['Activity','Avg satisfaction','Hours','Satisfaction per hour'],Object.keys(g11).map(id=>{const l=g11[id],s=avg(l.map(t=>t.actual.satisfaction)),h=l.reduce((x,t)=>x+(+t.actual.minutes||0),0)/60;return [esc(actName(id)),f1(s),f1(h),h?f1(l.reduce((x,t)=>x+t.actual.satisfaction,0)/h):'—']}))));
-  // 12 importance vs completion
-  out.push(sec(12,'Importance vs completion',tbl(['Importance','Recorded','Completed','Completion rate'],[5,4,3,2,1].map(i=>{const l=R.filter(t=>+t.plan.importance===i);return l.length?[i,l.length,l.filter(t=>DONE_KEYS.includes(t.actual.status)).length,pct(l.filter(t=>DONE_KEYS.includes(t.actual.status)).length/l.length)]:null}).filter(Boolean)),'Are important tasks actually getting done?'));
-  // 13 day of week
+  out.push(sec(11,'Satisfaction relative to time',tbl(['Activity','Avg satisfaction','Hours','Satisfaction per hour'],Object.keys(g11).map(id=>{const l=g11[id],s=avg(l.map(t=>t.actual.satisfaction)),h=l.reduce((x,t)=>x+(+t.actual.minutes||0),0)/60;return [esc(actName(id)),`${f1(s)} · ${esc(SCALES.satisfaction.d[Math.round(s)-1])}`,f1(h),h?f1(l.reduce((x,t)=>x+t.actual.satisfaction,0)/h):'—']}))));
+  out.push(sec(12,'Priority vs completion',tbl(['Priority','Recorded','Completed','Completion rate'],[5,4,3,2,1].map(i=>{const l=R.filter(t=>+t.plan.importance===i);if(!l.length)return null;const c=l.filter(t=>DONE_KEYS.includes(t.actual.status)).length;return [esc(scaleTxt('importance',i)),l.length,c,pct(c/l.length)]}).filter(Boolean)),'Are high-priority tasks actually getting done?'));
   const dw=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],wk=dw.map(()=>({p:0,a:0,n:0}));T.forEach(t=>{const i=new Date(t.date+'T00:00:00').getDay();if(!t.unplanned)wk[i].p+=+t.plan.minutes||0;if(DONE_KEYS.includes(t.actual.status))wk[i].a+=+t.actual.minutes||0;wk[i].n++});const mx13=Math.max(1,...wk.map(w=>Math.max(w.p,w.a)));
-  out.push(sec(13,'Day-of-week pattern',leg+tbl(['Day','Tasks','Planned','Actual',''],[1,2,3,4,5,6,0].filter(i=>wk[i].n).map(i=>[dw[i],wk[i].n,fmtMin(wk[i].p),fmtMin(wk[i].a),twoBars(wk[i].p,wk[i].a,mx13)]))));
-  // 14 daily trend
-  const days=[...new Set(T.map(t=>t.date))].sort().slice(-31);const dd=days.map(d=>[d,totals(T.filter(t=>t.date===d))]);const mx14=Math.max(1,...dd.map(x=>Math.max(x[1].p,x[1].a)));
-  out.push(sec(14,'Daily trend',leg+tbl(['Date','Planned','Actual',''],dd.map(([d,x])=>[d,fmtMin(x.p),fmtMin(x.a),twoBars(x.p,x.a,mx14)])),'Up to the last 31 days with tasks in this period.'));
-  // 15 outcome fulfilment
-  const of=Done.filter(t=>!t.unplanned&&t.plan.outcomes.length);const g15=byAct(of);
-  out.push(sec(15,'Expected outcomes achieved',tbl(['Activity','Tasks','Expected outcomes achieved'],Object.keys(g15).map(id=>{let e=0,h=0;g15[id].forEach(t=>{e+=t.plan.outcomes.length;h+=t.plan.outcomes.filter(o=>t.actual.outcomes.includes(o)).length});return [esc(actName(id)),g15[id].length,pct(e?h/e:null)]})),'Share of planned outcomes that were also recorded as actual outcomes.'));
-  // 16 motive match
-  const mm=Done.filter(t=>!t.unplanned&&t.plan.motives.length&&t.actual.motives.length);const g16=byAct(mm);
-  out.push(sec(16,'Did the reason stay the same?',tbl(['Activity','Tasks','Same motives','Some overlap','Different'],Object.keys(g16).map(id=>{let s=0,o=0,d=0;g16[id].forEach(t=>{const P=t.plan.motives,A=t.actual.motives,ov=P.filter(x=>A.includes(x)).length;if(ov===P.length&&ov===A.length)s++;else if(ov)o++;else d++});return [esc(actName(id)),g16[id].length,s,o,d]})),'Compares planned motives with the motives recorded afterwards.'));
-  // 17 neglected
+  out.push(sec(13,'Day-of-week pattern',LEG+tbl(['Day','Tasks','Planned','Actual',''],[1,2,3,4,5,6,0].filter(i=>wk[i].n).map(i=>[dw[i],wk[i].n,fmtMin(wk[i].p),fmtMin(wk[i].a),twoBars(wk[i].p,wk[i].a,mx13)]))));
+  const days=[...new Set(T.map(t=>t.date))].sort().slice(-31),dd=days.map(d=>[d,totals(T.filter(t=>t.date===d))]),mx14=Math.max(1,...dd.map(x=>Math.max(x[1].p,x[1].a)));
+  out.push(sec(14,'Daily trend',LEG+tbl(['Date','Planned','Actual',''],dd.map(([d,x])=>[nice(d),fmtMin(x.p),fmtMin(x.a),twoBars(x.p,x.a,mx14)])),'Up to the last 31 days with tasks in this period.'));
+  const g15=byAct(Done.filter(t=>!t.unplanned&&t.plan.outcomes.length));
+  out.push(sec(15,'Expected outcomes achieved',tbl(['Activity','Tasks','Achieved'],Object.keys(g15).map(id=>{let e=0,h=0;g15[id].forEach(t=>{e+=t.plan.outcomes.length;h+=t.plan.outcomes.filter(o=>t.actual.outcomes.includes(o)).length});return [esc(actName(id)),g15[id].length,pct(e?h/e:null)]})),'Share of planned outcomes that were also recorded as actual outcomes.'));
+  const g16=byAct(Done.filter(t=>!t.unplanned&&t.plan.motives.length&&t.actual.motives.length));
+  out.push(sec(16,'Did the reason stay the same?',tbl(['Activity','Tasks','Same','Some overlap','Different'],Object.keys(g16).map(id=>{let s=0,o=0,d=0;g16[id].forEach(t=>{const P=t.plan.motives,A=t.actual.motives,ov=P.filter(x=>A.includes(x)).length;if(ov===P.length&&ov===A.length)s++;else if(ov)o++;else d++});return [esc(actName(id)),g16[id].length,s,o,d]})),'Compares planned motives with the motives recorded afterwards.'));
   const last={};D.tasks.filter(t=>DONE_KEYS.includes(t.actual.status)).forEach(t=>{if(!last[t.activityId]||t.date>last[t.activityId])last[t.activityId]=t.date});
-  const nrows=D.activities.filter(a=>a.active).map(a=>{const l=last[a.id];const days=l?Math.round((new Date(to)-new Date(l))/864e5):null;return [a.name,l,days]}).sort((x,y)=>(y[2]??1e9)-(x[2]??1e9));
-  out.push(sec(17,'Activities you have not done lately',tbl(['Activity','Last done','Days ago'],nrows.map(x=>[esc(x[0]),x[1]||'Never',x[2]??'—'])),'Uses all your data, not just the selected period.'));
-
-  m.innerHTML=`<h2>Analysis</h2><div class="card row"><span class="muted">Period</span><div class="seg">${[[7,'7 days'],[30,'30 days'],[90,'90 days'],[0,'All time']].map(([v,t])=>`<button class="${ui.anRange===v?'on':''}" onclick="ui.anRange=${v};render()">${t}</button>`).join('')}</div>
-  <span class="spacer"></span><span class="muted">${T.length} tasks · ${R.length} with actuals</span></div>
-  ${R.length?'':'<div class="card muted">Record actuals in <b>Review</b> for a few days and these sections will fill in.</div>'}${out.join('')}`;
+  const nrows=D.activities.filter(a=>a.active).map(a=>{const l=last[a.id];return [a.name,l,l?Math.round((new Date(now)-new Date(l))/864e5):null]}).sort((x,y)=>(y[2]??1e9)-(x[2]??1e9));
+  out.push(sec(17,'Activities you have not done lately',tbl(['Activity','Last done','Days ago'],nrows.map(x=>[esc(x[0]),x[1]?nice(x[1]):'Never',x[2]??'—'])),'Uses all your data, not just the selected period.'));
+  const range=ui.anAll?'All time':ui.anFrom===ui.anTo?fmtLong(ui.anFrom):`${nice(ui.anFrom)} – ${nice(ui.anTo)}`;
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Analysis</div><h1>How my time really went</h1><p class="lede">${range} · ${T.length} tasks · ${R.length} recorded</p></div></section>
+  <section class="card"><div class="filters">${rangeFilters('anFrom','anTo',ui.anAll)}${presets('anFrom','anTo',true)}</div></section>
+  ${R.length?'':'<div class="notice ok">Record actuals in <b>Review</b> for a few days and these sections will fill in.</div>'}${out.join('')}`;
 }
 
 /* ---------- ACTIVITIES ---------- */
 function vActivities(m){
-  const acts=D.activities.slice().sort((a,b)=>(b.active-a.active)||a.name.localeCompare(b.name));
-  m.innerHTML=`<h2>Activities</h2><div class="row" style="margin-bottom:10px"><span class="muted">Your own list — changes here don't affect other users.</span><span class="spacer"></span><button class="btn sm" onclick="editAct()">+ New activity</button></div>
-  ${acts.length?acts.map(a=>`<div class="task" onclick="editAct('${a.id}')"><div style="flex:1"><div class="nm">${esc(a.name)} ${a.active?'':'<span class="st st0">Inactive</span>'}</div>
-  <div class="muted">${esc(a.category||'')} · default ${fmtMin(a.minutes)} · importance ${a.importance??'—'} · ${D.tasks.filter(t=>t.activityId===a.id).length} tasks</div></div></div>`).join(''):'<div class="card empty">No activities. Add one to get started.</div>'}`;
+  const q=ui.libQ.trim().toLowerCase();
+  const acts=D.activities.filter(a=>(ui.libStatus==='all'||(ui.libStatus==='active'?a.active:!a.active))&&(!q||a.name.toLowerCase().includes(q)||(a.description||'').toLowerCase().includes(q))).sort((a,b)=>a.name.localeCompare(b.name));
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Library</div><h1>Activities</h1><p class="lede">The things I generally want to do. Your list is yours alone.</p></div>
+    <div class="head-actions"><button class="btn primary" onclick="editAct()">+ New activity</button></div></section>
+  <div class="row" style="margin-bottom:1rem"><input type="search" placeholder="Search…" value="${esc(ui.libQ)}" style="flex:2;min-width:180px" oninput="ui.libQ=this.value;clearTimeout(window._lq);window._lq=setTimeout(()=>{render();const s=document.querySelector('main input[type=search]');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)">
+    <select style="flex:1;min-width:130px" onchange="ui.libStatus=this.value;render()">${[['active','Active'],['inactive','Inactive'],['all','All']].map(([v,t])=>`<option value="${v}" ${ui.libStatus===v?'selected':''}>${t}</option>`).join('')}</select></div>
+  <div class="lib-grid">${acts.length?acts.map(a=>{const n=D.tasks.filter(t=>t.activityId===a.id);const dn=n.filter(t=>DONE_KEYS.includes(t.actual.status));
+    return `<div class="acard ${a.active?'':'inactive'}" onclick="editAct('${a.id}')"><h3><span>${esc(a.name)}</span>${badge('P',a.importance,'Priority')}</h3>
+    ${a.description?`<div class="desc">${esc(a.description)}</div>`:''}
+    <div class="meta">Usual time <b>${fmtMin(a.minutes)}</b> · ${dn.length?`done ${dn.length}×`:'not done yet'}${a.active?'':' · <b>Inactive</b>'}</div>
+    <div>${a.motives.slice(0,3).map(x=>`<span class="mini m">${esc(x)}</span>`).join('')}</div><div>${a.outcomes.slice(0,3).map(x=>`<span class="mini o">${esc(x)}</span>`).join('')}</div></div>`}).join(''):`<div class="card" style="grid-column:1/-1">${emptyBox('No activities match.','')}</div>`}</div>`;
 }
 function editAct(id){
-  const a=id?actById(id):{name:'',category:'',minutes:30,importance:3,effort:3,resistance:3,motives:[],outcomes:[],notes:'',active:true,history:[]};
-  const hist=(a.history||[]).slice().reverse().slice(0,30);
-  openModal(`<h3>${id?'Edit activity':'New activity'}</h3>
-  <div class="grid2"><div><label>Name</label><input type="text" id="acName" value="${esc(a.name)}"></div><div><label>Category</label><input type="text" id="acCat" value="${esc(a.category||'')}"></div></div>
-  <label>Default time (minutes)</label><input type="number" id="acMin" min="0" value="${a.minutes??''}">
-  <label>Default motives</label>${chips('acMot',D.motives,a.motives)}<label>Default outcomes</label>${chips('acOut',D.outcomes,a.outcomes)}
-  ${scale('acImp',a.importance,'Default importance')}${scale('acEff',a.effort,'Default mental effort')}${scale('acRes',a.resistance,'Default emotional resistance')}
-  <label>Notes</label><textarea id="acNotes">${esc(a.notes||'')}</textarea>
-  <label><input type="checkbox" id="acActive" ${a.active?'checked':''}> Active (shows when planning)</label>
-  ${id?`<label>Reason for change (optional, saved in history)</label><input type="text" id="acWhy">`:''}
-  ${hist.length?`<details style="margin-top:12px"><summary class="muted">Change history (${a.history.length})</summary>${tbl2(hist)}</details>`:''}
-  <div class="mfoot">${id?`<button class="btn danger" onclick="delAct('${id}')">Delete</button>`:''}<span class="spacer"></span><button class="btn light" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveAct('${id||''}')">Save</button></div>`);
+  const a=id?actById(id):{name:'',description:'',minutes:60,importance:3,effort:3,resistance:3,motives:[],outcomes:[],active:true,history:[]};
+  const hist=(a.history||[]).slice().reverse().slice(0,40);
+  openModal(`<h2>${id?'Edit activity':'New activity'}</h2>`,'',
+   `${field('Activity name <span class="req">*</span>',`<input type="text" id="acName" maxlength="60" value="${esc(a.name)}" placeholder="e.g. Learn Tamil">`)}
+    ${field('What it means to me <em>optional</em>',`<textarea id="acDesc" rows="2">${esc(a.description||'')}</textarea>`)}
+    <p class="hint">No justification needed — “Because I want to” is a perfectly good reason.</p>
+    ${field('General motives <em>— why I might do this</em>',chips('acMot',D.motives,a.motives))}
+    ${field('General outcomes <em>— what I usually get from it</em>',chips('acOut',D.outcomes,a.outcomes))}
+    <div class="grid2">${field('Usual time',dur('acMin',a.minutes))}${field('General priority',scale('acImp','importance',a.importance))}</div>
+    <div class="grid2">${field('Mental effort',scale('acEff','effort',a.effort))}${field('Emotional resistance',scale('acRes','resistance',a.resistance))}</div>
+    ${id?`<label class="field" style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" id="acActive" ${a.active?'checked':''} style="accent-color:var(--accent);width:16px;height:16px"> Active (inactive activities are hidden from planning but keep their history)</label>
+    ${field('Change note <em>optional — why did this change?</em>','<input type="text" id="acWhy">')}`:''}
+    ${hist.length?`<details><summary>Change history (${a.history.length})</summary><div class="table-wrap" style="margin-top:.5rem"><table class="simple"><tr><th>When</th><th>Field</th><th>Old</th><th>New</th><th>Note</th></tr>${hist.map(x=>`<tr><td>${new Date(x.at).toLocaleString()}</td><td>${esc(x.field)}</td><td>${esc(x.old)}</td><td>${esc(x.new)}</td><td>${esc(x.note||'')}</td></tr>`).join('')}</table></div></details>`:''}
+    <div class="err" id="acErr"></div>`,
+   `${id?`<button class="btn ghost danger" onclick="delAct('${id}')">Delete</button>`:''}<span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveAct('${id||''}')">${id?'Save changes':'Create activity'}</button>`);
 }
-function tbl2(h){return `<table><tr><th>When</th><th>Field</th><th>Old</th><th>New</th><th>Note</th></tr>${h.map(x=>`<tr><td>${new Date(x.at).toLocaleString()}</td><td>${esc(x.field)}</td><td>${esc(x.old)}</td><td>${esc(x.new)}</td><td>${esc(x.note||'')}</td></tr>`).join('')}</table>`}
 function saveAct(id){
-  const v={name:document.getElementById('acName').value.trim(),category:document.getElementById('acCat').value.trim(),minutes:+document.getElementById('acMin').value||0,
-    motives:readChips('acMot'),outcomes:readChips('acOut'),importance:readSeg('acImp'),effort:readSeg('acEff'),resistance:readSeg('acRes'),notes:document.getElementById('acNotes').value.trim(),active:document.getElementById('acActive').checked};
-  if(!v.name){toast('Enter a name');return}
-  if(D.activities.some(a=>a.id!==id&&a.name.toLowerCase()===v.name.toLowerCase())){toast('An activity with that name already exists');return}
+  const err=document.getElementById('acErr'),mins=readDur('acMin');
+  if(Number.isNaN(mins)){err.textContent='Time not understood — try 90, 1:30 or 1h 30m.';return}
+  const v={name:document.getElementById('acName').value.trim(),description:document.getElementById('acDesc').value.trim(),minutes:mins||0,
+    motives:readChips('acMot'),outcomes:readChips('acOut'),importance:readSeg('acImp'),effort:readSeg('acEff'),resistance:readSeg('acRes'),active:id?document.getElementById('acActive').checked:true};
+  if(!v.name){document.getElementById('acName').classList.add('invalid');err.textContent='Please give the activity a name.';return}
+  if(D.activities.some(a=>a.id!==id&&a.name.toLowerCase()===v.name.toLowerCase())){err.textContent='An activity with that name already exists.';return}
   if(id){const a=actById(id),why=document.getElementById('acWhy').value.trim();
     Object.keys(v).forEach(k=>{const o=Array.isArray(a[k])?a[k].join(', '):String(a[k]??''),n=Array.isArray(v[k])?v[k].join(', '):String(v[k]??'');if(o!==n)a.history.push({at:nowISO(),field:k,old:o,new:n,note:why})});
     Object.assign(a,v);
   }else D.activities.push(Object.assign({id:uid(),created:nowISO(),history:[]},v));
-  save();closeModal();render();toast('Activity saved');
+  save();closeModal();render();toast(id?'Saved — previous values kept in history':'Activity created');
 }
 function delAct(id){
   const n=D.tasks.filter(t=>t.activityId===id).length;
-  if(!confirm(`Delete "${actName(id)}"${n?` and its ${n} task(s)`:''}? This only affects ${viewing?esc(viewing.username)+"'s":'your'} account and cannot be undone.`))return;
+  if(!confirm(`Delete "${actName(id)}"${n?` and its ${n} task(s)`:''}? This only affects ${viewing?viewing.username+"'s":'your'} account and cannot be undone.`))return;
   D.activities=D.activities.filter(a=>a.id!==id);D.tasks=D.tasks.filter(t=>t.activityId!==id);save();closeModal();render();toast('Activity deleted');
 }
 
 /* ---------- SETTINGS ---------- */
 function vSettings(m){
-  m.innerHTML=`<h2>Settings</h2>
-  <div class="card"><h3>Planning</h3><label>Hours available per day (optional)</label><input type="number" min="0" max="24" style="max-width:160px" value="${D.settings.hoursPerDay||''}" onchange="D.settings.hoursPerDay=this.value;save();toast('Saved')"></div>
-  <div class="card"><h3>Motives</h3>${listEditor('motives')}</div>
-  <div class="card"><h3>Outcomes</h3>${listEditor('outcomes')}</div>
-  <div class="card"><h3>My data</h3><div class="row"><button class="btn sm light" onclick="exportCSV()">Export tasks (CSV)</button><button class="btn sm light" onclick="exportJSON()">Download backup</button>
-  <label class="btn sm light" style="margin:0;color:var(--ink)">Restore backup<input type="file" accept=".json" class="hidden" onchange="importJSON(this)"></label></div></div>
-  ${viewing?'':`<div class="card"><h3>Change password</h3>${S.isAdmin?'<div class="muted">The admin password is fixed (2409).</div>':`
-  <div class="grid2"><div><label>Current password</label><input type="password" id="cpOld"></div><div><label>New password</label><input type="password" id="cpNew"></div></div>
-  <button class="btn sm" style="margin-top:10px" onclick="changePw()">Update password</button>`}</div>`}
-  <div class="card muted">Storage: <b>${Store.mode==='cloud'?'Cloud (Firebase) — same login works on any device':'This browser only (local mode)'}</b> · Viana 2.0</div>`;
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Settings</div><h1>Lists &amp; preferences</h1></div></section>
+  <section class="card"><h2>Planning</h2><div class="row" style="justify-content:space-between;margin-top:.5rem"><div>Hours available per day<div class="muted small">Optional — shows unallocated time when planning</div></div>
+    <input type="number" min="0" max="24" step="0.5" style="width:120px" value="${esc(D.settings.hoursPerDay||'')}" onchange="D.settings.hoursPerDay=this.value;save();toast('Saved')"></div></section>
+  <section class="card"><h2>Motives <span class="muted small">(${D.motives.length})</span></h2><p class="muted small">Why I might do something.</p>${listEditor('motives')}</section>
+  <section class="card"><h2>Outcomes <span class="muted small">(${D.outcomes.length})</span></h2><p class="muted small">What I might get from something.</p>${listEditor('outcomes')}</section>
+  <section class="card"><h2>Rating meanings</h2><div class="table-wrap" style="margin-top:.5rem"><table class="simple"><tr><th></th>${[1,2,3,4,5].map(n=>`<th>${n}</th>`).join('')}</tr>
+    ${Object.values(SCALES).map(s=>`<tr><td><b>${s.label}</b></td>${s.d.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</table></div></section>
+  <section class="card"><h2>Your data</h2><div class="head-actions" style="margin-top:.6rem"><button class="btn primary" onclick="exportJSON()">Download backup (.json)</button>
+    <label class="btn" style="cursor:pointer">Restore from backup…<input type="file" accept=".json" class="hidden" onchange="importJSON(this)"></label><button class="btn" onclick="exportCSV()">Export tasks (.csv)</button></div>
+    <p class="muted small" style="margin-top:.8rem">${D.activities.length} activities · ${D.tasks.length} tasks</p></section>
+  ${viewing?'':`<section class="card"><h2>Change password</h2>${S.isAdmin?'<p class="muted small">The admin password is fixed.</p>':`
+    <div class="grid2" style="margin-top:.6rem">${field('Current password','<input type="password" id="cpOld">')}${field('New password','<input type="password" id="cpNew">')}</div>
+    <button class="btn" onclick="changePw()">Update password</button>`}</section>`}
+  <p class="muted small" style="text-align:center">Storage: <b>${Store.mode==='cloud'?'☁ Cloud (Firebase) — same login on any device':'📱 This browser only (local mode)'}</b> · Viana version ${VERSION}</p>`;
 }
 function listEditor(k){
-  return D[k].map((x,i)=>`<span class="chip">${esc(x)} <a href="#" onclick="renameItem('${k}',${i});return false" title="Rename">✎</a> <a href="#" onclick="removeItem('${k}',${i});return false" title="Remove" style="color:var(--bad)">✕</a></span>`).join('')+
-  `<div class="row" style="margin-top:8px"><input type="text" id="new_${k}" placeholder="Add new…" style="max-width:240px"><button class="btn sm" onclick="addItem('${k}')">Add</button></div>`;
+  const defs=k==='motives'?DEF_MOTIVES:DEF_OUTCOMES,miss=defs.filter(x=>!D[k].includes(x)).length;
+  return D[k].map((x,i)=>`<div class="mrow"><span>${esc(x)}</span><button class="icon-btn" onclick="renameItem('${k}',${i})" title="Rename">✎</button><button class="icon-btn" onclick="removeItem('${k}',${i})" title="Remove">✕</button></div>`).join('')+
+  `<div class="row" style="margin-top:.7rem"><input type="text" id="new_${k}" placeholder="Add a new ${k==='motives'?'motive':'outcome'}…" style="flex:1;min-width:180px" onkeydown="if(event.key==='Enter')addItem('${k}')"><button class="btn" onclick="addItem('${k}')">Add</button>
+   ${miss?`<button class="btn ghost" onclick="restoreDefaults('${k}')">Add back ${miss} default${miss>1?'s':''}</button>`:''}</div>`;
 }
-function addItem(k){const v=document.getElementById('new_'+k).value.trim();if(!v)return;if(D[k].includes(v)){toast('Already in the list');return}D[k].push(v);save();render()}
-function renameItem(k,i){const o=D[k][i],n=(prompt('Rename',o)||'').trim();if(!n||n===o)return;D[k][i]=n;
-  const f=k;D.activities.forEach(a=>a[f]=a[f].map(x=>x===o?n:x));D.tasks.forEach(t=>{t.plan[f]=t.plan[f].map(x=>x===o?n:x);t.actual[f]=t.actual[f].map(x=>x===o?n:x)});save();render()}
+function restoreDefaults(k){(k==='motives'?DEF_MOTIVES:DEF_OUTCOMES).forEach(x=>{if(!D[k].includes(x))D[k].push(x)});save();render();toast('Defaults added')}
+function addItem(k){const v=document.getElementById('new_'+k).value.trim();if(!v)return;if(D[k].includes(v)){toast('Already in the list');return}D[k].push(v);save();render();toast('Added')}
+function renameItem(k,i){const o=D[k][i],n=(prompt('Rename',o)||'').trim();if(!n||n===o)return;if(D[k].includes(n)){toast('Already in the list');return}D[k][i]=n;
+  D.activities.forEach(a=>a[k]=a[k].map(x=>x===o?n:x));D.tasks.forEach(t=>{t.plan[k]=t.plan[k].map(x=>x===o?n:x);t.actual[k]=t.actual[k].map(x=>x===o?n:x)});save();render();toast('Renamed')}
 function removeItem(k,i){if(!confirm(`Remove "${D[k][i]}" from the list? Past tasks keep it.`))return;D[k].splice(i,1);save();render()}
 async function changePw(){const o=document.getElementById('cpOld').value,n=document.getElementById('cpNew').value;if(n.length<4){toast('New password must be at least 4 characters');return}
   try{await Store.changePassword(S.id,o,n);toast('Password updated');render()}catch(e){toast(e.message)}}
-function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function exportCSV(){
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const h=['Date','Activity','Unplanned','Planned min','Planned motives','Planned outcomes','Importance','Planned effort','Planned resistance','Plan note','Status','Actual min','Actual motives','Actual outcomes','Actual effort','Actual resistance','Satisfaction','Actual note'];
-  const rows=D.tasks.slice().sort((a,b)=>a.date<b.date?-1:1).map(t=>[t.date,actName(t.activityId),t.unplanned?'Yes':'',t.plan.minutes,t.plan.motives.join('; '),t.plan.outcomes.join('; '),t.plan.importance,t.plan.effort,t.plan.resistance,t.plan.note,stInfo(t.actual.status).t,t.actual.minutes,t.actual.motives.join('; '),t.actual.outcomes.join('; '),t.actual.effort,t.actual.resistance,t.actual.satisfaction,t.actual.note]);
-  download(`viana-tasks-${(viewing||S).username}-${today()}.csv`,[h,...rows].map(r=>r.map(q).join(',')).join('\n'),'text/csv');
+  const h=['Date','Task','Activity','Unplanned','Planned min','Planned motives','Planned outcomes','Priority','Planned effort','Planned resistance','Plan note','Status','Actual min','Actual motives','Actual outcomes','Actual effort','Actual resistance','Satisfaction','Actual note'];
+  const rows=D.tasks.slice().sort((a,b)=>a.date<b.date?-1:1).map(t=>[t.date,taskName(t),actName(t.activityId),t.unplanned?'Yes':'',t.plan.minutes,t.plan.motives.join('; '),t.plan.outcomes.join('; '),t.plan.importance,t.plan.effort,t.plan.resistance,t.plan.note,stLabel(t),t.actual.minutes,t.actual.motives.join('; '),t.actual.outcomes.join('; '),t.actual.effort,t.actual.resistance,t.actual.satisfaction,t.actual.note]);
+  download(`viana-tasks-${(viewing||S).username}-${today()}.csv`,'\ufeff'+[h,...rows].map(r=>r.map(q).join(',')).join('\n'),'text/csv');
 }
-function exportJSON(){download(`viana-backup-${(viewing||S).username}-${today()}.json`,JSON.stringify(D,null,1),'application/json')}
+function exportJSON(){download(`viana-backup-${(viewing||S).username}-${today()}.json`,JSON.stringify(D,null,1),'application/json');toast('Backup downloaded')}
 function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.activities||!d.tasks)throw 0;
-  if(!confirm('Replace all data in this account with the backup?'))return;D=normalise(d);save();render();toast('Backup restored')}catch(e){toast('That file is not a Viana backup')}};r.readAsText(f)}
+  if(!confirm('Replace all data in this account with the backup?'))return;D=normalise(d);save();render();toast('Backup restored')}catch(e){toast('That file is not a Viana backup')}};r.readAsText(f);inp.value=''}
 
 /* ---------- ADMIN ---------- */
 async function vAdmin(m){
   if(!S.isAdmin){go('today');return}
-  m.innerHTML='<h2>Admin</h2><div class="card muted">Loading users…</div>';
-  let users=[];try{users=await Store.listUsers()}catch(e){m.innerHTML=`<h2>Admin</h2><div class="card err">${esc(Store.friendly?Store.friendly(e):e.message)}</div>`;return}
+  const head=`<section class="page-head"><div><div class="eyebrow">Admin</div><h1>Users</h1></div><button class="btn" onclick="vAdmin(document.getElementById('main'))">↻ Refresh list</button></section>
+  ${Store.mode==='cloud'?'<div class="notice ok">☁ Connected to Firebase. Accounts created on any device appear here.</div>':
+  `<div class="notice warn"><b>This device is in local mode.</b> Only accounts created in this browser on this device are listed — accounts created on another device are stored on that device.
+   To see everyone in one list, put your Firebase details in <code>firebase-config.js</code> on GitHub, then open the GitHub Pages link on every device.</div>`}`;
+  m.innerHTML=head+'<section class="card muted">Loading users…</section>';
+  let users=[];
+  try{users=await Store.listUsers()}catch(e){if(tab==='admin')m.innerHTML=head+`<section class="card"><div class="err">Could not load users: ${esc(Store.friendly?Store.friendly(e):e.message)}</div></section>`;return}
   if(tab!=='admin')return;
-  m.innerHTML=`<h2>Admin</h2>
-  <div class="card"><h3>Users (${users.length})</h3><div class="muted" style="margin-bottom:8px">Open a user's data to view, edit or delete any activity, task or entry. Everything you change is saved to their account.</div>
-  ${users.length?`<div style="overflow-x:auto"><table><tr><th>Username</th><th>Created</th><th>Tasks</th><th>Status</th><th></th></tr>
-  ${users.sort((a,b)=>a.username.localeCompare(b.username)).map(u=>`<tr><td><b>${esc(u.username)}</b></td><td>${u.created?new Date(u.created).toLocaleDateString():''}</td><td>${u.tasks}</td><td>${u.disabled?'<span class="st st5">Disabled</span>':'<span class="st st1">Active</span>'}</td>
-  <td><div class="row"><button class="btn sm" onclick="viewUser('${u.id}','${esc(u.username)}')">Open data</button>
-  ${Store.canResetPasswords?`<button class="btn sm light" onclick="adminReset('${u.id}','${esc(u.username)}')">Reset password</button>`:''}
-  <button class="btn sm light" onclick="adminDisable('${u.id}',${!u.disabled})">${u.disabled?'Enable':'Disable'}</button>
-  <button class="btn sm danger" onclick="adminDelete('${u.id}','${esc(u.username)}')">Delete</button></div></td></tr>`).join('')}</table></div>`:'<div class="muted">No users have created accounts yet.</div>'}</div>
-  ${Store.mode==='cloud'?'<div class="card muted">Cloud mode: deleting a user removes their data. To remove their login completely or reset a password, use Firebase console → Authentication → Users.</div>':''}`;
+  ui.adminUsers=users.sort((a,b)=>a.username.localeCompare(b.username));
+  m.innerHTML=head+`<section class="card"><h2>All users (${users.length})</h2><p class="muted small">Open a user's data to view, edit or delete anything in it. Changes save to their account.</p>
+  ${users.length?`<div class="table-wrap"><table class="simple"><tr><th>Username</th><th>Created</th>${Store.mode==='cloud'?'<th>Last saved</th>':''}<th>Tasks</th><th>Status</th><th></th></tr>
+  ${ui.adminUsers.map((u,i)=>`<tr><td><b>${esc(u.username)}</b></td><td>${u.created?new Date(u.created).toLocaleDateString():''}</td>${Store.mode==='cloud'?`<td>${u.updated?new Date(u.updated).toLocaleString():'—'}</td>`:''}<td>${u.tasks}</td>
+  <td>${u.disabled?'<span class="pill bad">Disabled</span>':'<span class="pill good">Active</span>'}</td>
+  <td><div class="row" style="gap:.3rem;flex-wrap:nowrap"><button class="btn sm primary" onclick="adminAct('open',${i})">Open data</button>
+  ${Store.canResetPasswords?`<button class="btn sm" onclick="adminAct('reset',${i})">Reset password</button>`:''}
+  <button class="btn sm" onclick="adminAct('toggle',${i})">${u.disabled?'Enable':'Disable'}</button>
+  <button class="btn sm danger" onclick="adminAct('delete',${i})">Delete</button></div></td></tr>`).join('')}</table></div>`:'<p class="muted">No users found yet.</p>'}</section>
+  ${Store.mode==='cloud'?'<p class="muted small">Deleting a user removes their data. To remove their login completely or reset a password, use Firebase console → Authentication → Users.</p>':''}`;
 }
-async function viewUser(id,name){try{await flushSave()}catch(e){}viewing={id,username:name};D=await Store.load(id);tab='today';render();toast('Now viewing '+name)}
-async function stopViewing(){try{await flushSave()}catch(e){}viewing=null;D=await Store.load(S.id);tab='admin';render()}
-async function adminReset(id,name){const p=prompt(`New password for ${name} (min 4 characters):`);if(!p)return;if(p.length<4){toast('Too short');return}await Store.resetPassword(id,p);toast('Password reset for '+name)}
-async function adminDisable(id,v){await Store.setDisabled(id,v);toast(v?'User disabled':'User enabled');render()}
-async function adminDelete(id,name){if(!confirm(`Delete user "${name}" and ALL their data? This cannot be undone.`))return;await Store.deleteUser(id);toast('User deleted');render()}
+async function adminAct(what,i){
+  const u=ui.adminUsers[i];if(!u)return;
+  try{
+    if(what==='open'){await flushSave();viewing={id:u.id,username:u.username};normalisedChanged=false;D=await Store.load(u.id);if(normalisedChanged)save();tab='today';render();toast('Now viewing '+u.username);return}
+    if(what==='reset'){const p=prompt(`New password for ${u.username} (min 4 characters):`);if(!p)return;if(p.length<4){toast('Too short');return}await Store.resetPassword(u.id,p);toast('Password reset for '+u.username)}
+    if(what==='toggle'){await Store.setDisabled(u.id,!u.disabled);toast(u.disabled?'User enabled':'User disabled')}
+    if(what==='delete'){if(!confirm(`Delete user "${u.username}" and ALL their data? This cannot be undone.`))return;await Store.deleteUser(u.id);toast('User deleted')}
+  }catch(e){toast(Store.friendly?Store.friendly(e):e.message)}
+  render();
+}
+async function stopViewing(){await flushSave();viewing=null;normalisedChanged=false;D=await Store.load(S.id);tab='admin';render()}
 
 /* =====================================================================
    START
    ===================================================================== */
 (async function start(){
   const pill=document.getElementById('modePill');
-  const cfg=window.VIANA_FIREBASE_CONFIG;
-  if(cfg&&cfg.apiKey&&!/PASTE|YOUR_/i.test(cfg.apiKey)){
+  const cfg=await findConfig();
+  if(cfg){
     try{
-      const v='10.12.2',b=`https://www.gstatic.com/firebasejs/${v}/`;
+      const b='https://www.gstatic.com/firebasejs/10.12.2/';
       await loadScript(b+'firebase-app-compat.js');await loadScript(b+'firebase-auth-compat.js');await loadScript(b+'firebase-firestore-compat.js');
       Store=CloudStore;
-      const s=await Store.init();
-      pill.textContent='☁ Cloud mode — sign in from any device';
-      if(s){S=s;await enterApp();}
+      const s=await Store.init(cfg);
+      pill.textContent='☁ Synced with Firebase — sign in from any device';
+      if(s){S=s;await enterApp()}
       return;
     }catch(e){
       console.error(e);Store=LocalStore;
-      pill.innerHTML='<span style="color:var(--bad)">Could not connect to Firebase ('+esc(e.message||e)+'). Using this browser only.</span>';
+      pill.innerHTML='<span style="color:var(--danger)">Could not connect to Firebase ('+esc(e.message||e)+'). Using this device only.</span>';
     }
-  }else pill.textContent='Local mode — data is saved in this browser only';
+  }else pill.textContent='📱 Local mode — accounts and data stay on this device';
   const s=await LocalStore.init();if(s){S=s;await enterApp()}
 })();
 </script>
