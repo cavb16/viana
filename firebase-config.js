@@ -14,4 +14,12 @@
 //   appId: "1:1234567890:web:abc123"
 // };
 // ============================================================
-window.VIANA_FIREBASE_CONFIG = null;
+window.VIANA_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCXt-apIQo5-zxZB6s4zYKQlKwb00bc-cI",
+  authDomain: "viana-8e66b.firebaseapp.com",
+  projectId: "viana-8e66b",
+  storageBucket: "viana-8e66b.firebasestorage.app",
+  messagingSenderId: "1027415252790",
+  appId: "1:1027415252790:web:9dbce4566235ebc8e05d97",
+  measurementId: "G-B1Q4K8GHZV"
+};
