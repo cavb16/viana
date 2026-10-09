@@ -1,0 +1,11 @@
+{
+  "name": "viana-reminders",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Sends Viana WhatsApp reminders through Whapi. Run by GitHub Actions.",
+  "main": "send-reminders.js",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}
