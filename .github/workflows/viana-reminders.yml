@@ -1,0 +1,55 @@
+# Viana – WhatsApp reminders (version 2.2)
+# Runs every 15 minutes and sends any reminders that have fallen due.
+name: Viana reminders
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview only – show the messages in the log without sending them'
+        type: boolean
+        default: true
+      test_to:
+        description: 'Optional: send one test message to this WhatsApp number (with country code, e.g. 919876543210)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  actions: write   # lets the keep-alive step stop GitHub switching the schedule off after 60 quiet days
+
+concurrency:
+  group: viana-reminders
+  cancel-in-progress: false
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install
+        working-directory: reminders
+        run: npm install --omit=dev --no-audit --no-fund --loglevel=error
+
+      - name: Send reminders
+        working-directory: reminders
+        env:
+          WHAPI_TOKEN: ${{ secrets.WHAPI_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          VIANA_TIMEZONE: ${{ vars.VIANA_TIMEZONE }}
+          VIANA_APP_URL: ${{ vars.VIANA_APP_URL }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+          TEST_TO: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to || '' }}
+        run: node send-reminders.js
+
+      - name: Keep the schedule switched on
+        if: github.event_name == 'schedule'
+        uses: liskin/gh-workflow-keepalive@v1
