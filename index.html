@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Viana — how I want to spend my time</title>
-<meta name="viana-version" content="2.1">
+<meta name="viana-version" content="2.2">
 <meta name="theme-color" content="#5b7f6a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%235b7f6a'/%3E%3Cpath d='M20 22l12 22 12-22' stroke='%23fff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
@@ -25,11 +25,11 @@
 html,body{margin:0}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
 body.modal-open{overflow:hidden}
-a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+a{color:var(--accent);text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}
 h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
 h1{font-size:1.9rem;line-height:1.2}h2{font-size:1.25rem}h3{font-size:1.05rem}
 input,select,textarea,button{font:inherit;color:inherit}
-input[type=text],input[type=date],input[type=number],input[type=password],input[type=search],select,textarea{
+input[type=text],input[type=date],input[type=number],input[type=password],input[type=search],input[type=time],input[type=datetime-local],input[type=email],input[type=tel],select,textarea{
   width:100%;padding:.55rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);outline:none;transition:border-color .15s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 input:disabled{opacity:.5}
@@ -40,6 +40,8 @@ textarea{resize:vertical;min-height:2.6rem}
 .spacer{flex:1}
 .err{color:var(--danger);font-size:.88rem;min-height:1.2em;margin-top:.5rem}
 .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.check{display:flex;gap:.55rem;align-items:flex-start;font-size:.92rem;margin:.35rem 0;cursor:pointer}
+.check input{accent-color:var(--accent);width:16px;height:16px;flex:none;margin-top:.2rem}
 
 /* ============ Login ============ */
 #auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
@@ -56,28 +58,33 @@ textarea{resize:vertical;min-height:2.6rem}
 
 /* ============ Layout ============ */
 .topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-.topbar-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.7rem 1.2rem .3rem}
+.topbar-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.7rem 1.2rem .3rem}
 .brand{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.brand:hover{text-decoration:none}
 .brand-dot{width:22px;height:22px;border-radius:50%;background:var(--accent);display:inline-grid;place-items:center;flex:none}
 .brand-dot svg{width:12px;height:12px;stroke:var(--accent-ink);stroke-width:3;fill:none}
 .who{margin-left:auto;display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--muted)}
 .mode{font-size:.75rem;padding:.12rem .55rem;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
 .mode.local{background:var(--mid-soft);color:var(--mid)}
 .adminb{font-size:.7rem;font-weight:700;padding:.12rem .5rem;border-radius:999px;background:var(--accent);color:var(--accent-ink)}
-nav.nav{max-width:1040px;margin:0 auto;display:flex;gap:.25rem;padding:.2rem 1rem .55rem;overflow-x:auto;scrollbar-width:none}
-nav.nav a{display:flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border-radius:999px;color:var(--muted);font-weight:500;cursor:pointer;white-space:nowrap}
+nav.nav{max-width:1080px;margin:0 auto;display:flex;gap:.2rem;padding:.2rem 1rem .55rem;overflow-x:auto;scrollbar-width:none}
+nav.nav a{display:flex;align-items:center;gap:.4rem;padding:.45rem .75rem;border-radius:999px;color:var(--muted);font-weight:500;cursor:pointer;white-space:nowrap}
 nav.nav a:hover{text-decoration:none;color:var(--text);background:var(--surface)}
 nav.nav a.active{color:var(--accent);background:var(--accent-soft)}
 nav.nav svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #botnav{display:none}
 .viewas{background:var(--mid-soft);color:var(--mid);padding:.55rem 1rem;font-size:.88rem;display:flex;gap:.6rem;align-items:center;justify-content:center;flex-wrap:wrap}
-main{max-width:1040px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
+main{max-width:1080px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
+.morelist{display:flex;flex-direction:column;gap:.4rem}
+.morelist a{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;border-radius:12px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:500}
+.morelist a.active{border-color:var(--accent);color:var(--accent)}
+.morelist svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media (max-width:760px){
   .topbar{backdrop-filter:none;background:var(--bg)}
   .topbar-in{padding:.6rem 1rem}
   #topnav{display:none}
-  #botnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--border);justify-content:space-around;padding:.3rem .1rem calc(.3rem + env(safe-area-inset-bottom));overflow:visible}
-  #botnav a{flex-direction:column;gap:.1rem;font-size:.62rem;padding:.35rem .2rem;border-radius:10px;flex:1;min-width:0}
+  #botnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--border);justify-content:space-around;padding:.3rem .2rem calc(.3rem + env(safe-area-inset-bottom));overflow:visible}
+  #botnav a{flex-direction:column;gap:.1rem;font-size:.68rem;padding:.35rem .2rem;border-radius:10px;flex:1;min-width:0}
   main{padding:1.1rem .9rem 6.5rem}
   h1{font-size:1.55rem}
   .who .uname,.mode .mtx{display:none}
@@ -137,6 +144,7 @@ main{max-width:1040px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
 .trow.s-info .dot{background:var(--info);border-color:var(--info)}
 .trow.s-low .dot{background:var(--low);border-color:var(--low)}
 .trow.s-bad .dot{background:var(--danger);border-color:var(--danger)}
+.trow.wish .dot{border-color:var(--accent-2);background:var(--accent-2-soft)}
 .tmain{flex:1;min-width:0}
 .tname{font-weight:600}
 .tsub{color:var(--muted);font-size:.9rem}
@@ -162,6 +170,7 @@ main{max-width:1040px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
 .chip.cm{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
 .chip.cp{color:var(--muted);text-decoration:line-through}
 .chip.cx{background:var(--mid-soft);border-color:transparent;color:var(--mid)}
+.chip .x{margin-left:.35rem;color:var(--danger);cursor:pointer;font-weight:700}
 .scale{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
 .scale button{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-weight:600;font-variant-numeric:tabular-nums}
 .scale button:hover{border-color:var(--accent)}
@@ -178,6 +187,23 @@ main{max-width:1040px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
 .status-row .sbtn{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.32rem .8rem;font-size:.85rem;cursor:pointer}
 .status-row .sbtn:hover{border-color:var(--sc)}
 .status-row .sbtn.on{background:var(--sc);color:#fff;border-color:var(--sc)}
+.postpone{background:var(--mid-soft);padding:.7rem .9rem;border-radius:10px;margin-bottom:1rem;font-size:.92rem}
+.postpone input[type=date]{width:auto;padding:.3rem .5rem;margin-left:.3rem}
+.remsec{border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;background:var(--surface-2)}
+.remnote{font-size:.82rem;color:var(--mid);margin-bottom:.3rem}
+
+/* Calendar (multi-date) */
+.cal{border:1px solid var(--border);border-radius:12px;padding:.6rem;background:var(--surface);max-width:340px}
+.cal.off{opacity:.4;pointer-events:none}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-grid .wd{font-size:.7rem;color:var(--muted);text-align:center;padding:.15rem 0}
+.cal-grid button{aspect-ratio:1;border:1px solid transparent;border-radius:9px;background:transparent;cursor:pointer;font-size:.85rem;padding:0}
+.cal-grid button:hover{border-color:var(--accent)}
+.cal-grid button.past{color:var(--muted)}
+.cal-grid button.today{font-weight:700;color:var(--accent);border-color:var(--accent-soft)}
+.cal-grid button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.calsel{margin-top:.45rem;display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;font-size:.85rem}
 
 /* Activity picker (version 1 style) */
 .picker{border:1px solid var(--border);border-radius:12px;padding:.6rem;background:var(--surface-2)}
@@ -234,6 +260,7 @@ table.simple tr:last-child td{border-bottom:none}
 .filters .f{display:flex;flex-direction:column}
 .filters .f>label{font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.3rem}
 .filters input[type=date]{width:auto;padding:.4rem .6rem}
+.filters select{width:auto;padding:.4rem .6rem}
 .seg{display:inline-flex;gap:.25rem;flex-wrap:wrap}
 .seg button{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.32rem .75rem;font-size:.82rem;cursor:pointer}
 .seg button:hover{border-color:var(--accent)}
@@ -245,7 +272,7 @@ table.simple tr:last-child td{border-bottom:none}
 .mspanel label:hover{background:var(--accent-soft)}
 .mspanel input{accent-color:var(--accent);width:16px;height:16px}
 .mspanel .all{border-bottom:1px solid var(--border);font-weight:600;margin-bottom:.2rem;padding-bottom:.55rem}
-@media (max-width:760px){.filters .f,.filters .ms{flex:1 1 140px}.filters input[type=date],.msbtn{width:100%;min-width:0}}
+@media (max-width:760px){.filters .f,.filters .ms{flex:1 1 140px}.filters input[type=date],.filters select,.msbtn{width:100%;min-width:0}}
 
 /* Activities */
 .lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.8rem}
@@ -264,6 +291,7 @@ table.simple tr:last-child td{border-bottom:none}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 @media (max-width:760px){#toast{bottom:84px}}
 details summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--accent)}
+ul.plain{margin:.3rem 0 0;padding-left:1.2rem}ul.plain li{margin:.2rem 0}
 </style>
 <!-- Firebase settings (optional). If this file is missing or empty, Viana runs in local mode. -->
 <script src="firebase-config.js" onerror="window.__vianaCfgMissing=true"></script>
@@ -289,7 +317,7 @@ details summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--acce
       </form>
     </div>
     <div class="modepill" id="modePill">Loading…</div>
-    <div class="ver">Viana version 2.1</div>
+    <div class="ver">Viana version 2.2</div>
   </div>
 </section>
 
@@ -297,7 +325,7 @@ details summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--acce
 <section id="app" class="hidden">
   <header class="topbar">
     <div class="topbar-in">
-      <a class="brand" onclick="go('today')" style="cursor:pointer"><span class="brand-dot"><svg viewBox="0 0 24 24"><path d="M6 7l6 11 6-11" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Viana</a>
+      <a class="brand" onclick="go('today')"><span class="brand-dot"><svg viewBox="0 0 24 24"><path d="M6 7l6 11 6-11" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Viana</a>
       <div class="who">
         <span id="modeTag" class="mode"></span>
         <span id="adminTag" class="adminb hidden">ADMIN</span>
@@ -320,7 +348,7 @@ details summary{cursor:pointer;font-size:.85rem;font-weight:600;color:var(--acce
 /* =====================================================================
    CONSTANTS
    ===================================================================== */
-const VERSION='2.1';
+const VERSION='2.2';
 const ADMIN_USER='ADMIN', ADMIN_PASS='2409';
 const STATUSES=[
   {k:'',            t:'Not recorded',          tone:'',    col:'#cfcac0'},
@@ -333,6 +361,7 @@ const STATUSES=[
 ];
 const DONE_KEYS=['asplanned','differently','partial'];
 const NOT_DONE=['postponed','skipped','cancelled'];
+const DEFAULT_REMINDER_TIMES=['06:00','10:00','14:00','18:00','22:00'];
 /* Rating meanings (same wording as version 1) */
 const SCALES={
   importance:  {label:'Priority',             d:['Very low','Low','Medium','High','Very high']},
@@ -365,14 +394,18 @@ const LISTS_VERSION=4;
 
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const nowISO=()=>new Date().toISOString();
-const dstr=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const pad=n=>String(n).padStart(2,'0');
+const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const today=()=>dstr(new Date());
 const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return dstr(d)};
 const dayDiff=s=>Math.round((new Date(s+'T00:00:00')-new Date(today()+'T00:00:00'))/864e5);
 const relLabel=s=>{const d=dayDiff(s);return d===0?'Today':d===1?'Tomorrow':d===-1?'Yesterday':d>1?`In ${d} days`:`${-d} days ago`};
 const fmtLong=s=>new Date(s+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 const nice=s=>new Date(s+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+const fmtTime=s=>{const [h,m]=s.split(':').map(Number);const ap=h<12?'am':'pm',h12=h%12||12;return m?`${h12}:${pad(m)} ${ap}`:`${h12} ${ap}`};
+const fmtAt=a=>`${nice(a.slice(0,10))}, ${fmtTime(a.slice(11,16))}`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone=o=>JSON.parse(JSON.stringify(o));
 function fmtMin(m){if(m===null||m===undefined||m===''||isNaN(+m))return '—';m=Math.round(+m);const neg=m<0;m=Math.abs(m);const h=Math.floor(m/60),r=m%60;return (neg?'-':'')+(h?(r?`${h}h ${r}m`:`${h}h`):`${r}m`)}
 /* Accepts "90", "1:30", "1h", "1h 30m", "1.5h", "45m". Returns minutes, null if blank, NaN if not understood. */
 function parseDuration(s){
@@ -390,18 +423,20 @@ const stInfo=k=>STATUSES.find(s=>s.k===(k||''))||STATUSES[0];
 const stIdx=k=>Math.max(0,STATUSES.findIndex(s=>s.k===(k||'')));
 const stLabel=t=>t.unplanned&&t.actual.status==='asplanned'?'Done':stInfo(t.actual.status).t;
 const scaleTxt=(kind,v)=>v?`${v} · ${SCALES[kind].d[v-1]}`:'—';
+const defRem=()=>({def:true,times:[],weekly:true,at:[]});
 
 function makeActivities(){
   const t=nowISO();
   return DEF_ACTS.map(a=>({id:uid(),name:a[0],description:a[1],importance:a[2],minutes:a[3],effort:a[4],resistance:a[5],motives:a[6].slice(),outcomes:a[7].slice(),active:true,created:t,history:[]}));
 }
 function defaultData(){
-  return {version:2,listsVersion:LISTS_VERSION,created:nowISO(),activities:makeActivities(),tasks:[],motives:DEF_MOTIVES.slice(),outcomes:DEF_OUTCOMES.slice(),settings:{hoursPerDay:''}};
+  return {version:2,listsVersion:LISTS_VERSION,created:nowISO(),activities:makeActivities(),tasks:[],motives:DEF_MOTIVES.slice(),outcomes:DEF_OUTCOMES.slice(),settings:{hoursPerDay:''},profile:{phone:'',email:'',remindersOn:true}};
 }
 let normalisedChanged=false;
 function normalise(d){
   d=d&&typeof d==='object'?d:defaultData();
   d.activities=d.activities||[];d.tasks=d.tasks||[];d.motives=d.motives||[];d.outcomes=d.outcomes||[];d.settings=d.settings||{};
+  d.profile=Object.assign({phone:'',email:'',remindersOn:true},d.profile||{});
   if((d.listsVersion||0)<LISTS_VERSION){
     /* One-time upgrade: add every version-1 motive, outcome and activity that is missing. Nothing the user made is removed. */
     DEF_MOTIVES.forEach(m=>{if(!d.motives.includes(m))d.motives.push(m)});
@@ -411,7 +446,11 @@ function normalise(d){
     d.listsVersion=LISTS_VERSION;normalisedChanged=true;
   }
   d.activities.forEach(a=>{a.history=a.history||[];a.motives=a.motives||[];a.outcomes=a.outcomes||[];if(a.active===undefined)a.active=true;if(a.description==null)a.description=a.notes||''});
-  d.tasks.forEach(t=>{t.plan=t.plan||{};t.actual=t.actual||{};t.plan.motives=t.plan.motives||[];t.plan.outcomes=t.plan.outcomes||[];t.actual.motives=t.actual.motives||[];t.actual.outcomes=t.actual.outcomes||[]});
+  d.tasks.forEach(t=>{
+    if(!t.date)t.date=null;
+    t.plan=t.plan||{};t.actual=t.actual||{};t.plan.motives=t.plan.motives||[];t.plan.outcomes=t.plan.outcomes||[];t.actual.motives=t.actual.motives||[];t.actual.outcomes=t.actual.outcomes||[];
+    t.rem=Object.assign(defRem(),t.rem||{});t.rem.times=t.rem.times||[];t.rem.at=t.rem.at||[];
+  });
   return d;
 }
 
@@ -423,6 +462,7 @@ async function hashPw(salt,pw){
   if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
   let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return 'f'+(h>>>0).toString(16);
 }
+function phoneOf(dataJson){try{const d=typeof dataJson==='string'?JSON.parse(dataJson):dataJson;return (d&&d.profile&&d.profile.phone)||''}catch(e){return ''}}
 
 /* =====================================================================
    LOCAL STORE — this browser only
@@ -457,8 +497,8 @@ const LocalStore={
   async save(id,data){localStorage.setItem('viana2_data_'+id,JSON.stringify(data))},
   async listUsers(){
     const u=this.users();
-    return Object.keys(u).map(k=>{let n=0;try{n=(JSON.parse(localStorage.getItem('viana2_data_'+k))||{tasks:[]}).tasks.length}catch(e){}
-      return {id:k,username:u[k].username,created:u[k].created,disabled:!!u[k].disabled,tasks:n}});
+    return Object.keys(u).map(k=>{let n=0,ph='';try{const d=JSON.parse(localStorage.getItem('viana2_data_'+k))||{tasks:[]};n=d.tasks.length;ph=phoneOf(d)}catch(e){}
+      return {id:k,username:u[k].username,created:u[k].created,disabled:!!u[k].disabled,tasks:n,phone:ph}});
   },
   async setDisabled(id,v){const u=this.users();if(u[id]){u[id].disabled=v;this.putUsers(u)}},
   async deleteUser(id){const u=this.users();delete u[id];this.putUsers(u);localStorage.removeItem('viana2_data_'+id)},
@@ -543,7 +583,7 @@ const CloudStore={
   async listUsers(){
     const q=await this.db.collection('users').get();const out=[];
     q.forEach(doc=>{const d=doc.data();if(d.isAdmin)return;let n=0;try{n=JSON.parse(d.data).tasks.length}catch(e){}
-      out.push({id:doc.id,username:d.username,created:d.created,updated:d.updated,disabled:!!d.disabled,tasks:n})});
+      out.push({id:doc.id,username:d.username,created:d.created,updated:d.updated,disabled:!!d.disabled,tasks:n,phone:phoneOf(d.data)})});
     return out;
   },
   async setDisabled(id,v){await this.db.collection('users').doc(id).set({disabled:v},{merge:true})},
@@ -565,7 +605,6 @@ async function findConfig(){
   try{if(!c&&typeof firebaseConfig!=='undefined')c=ok(firebaseConfig)}catch(e){}
   try{if(!c&&typeof FIREBASE_CONFIG!=='undefined')c=ok(FIREBASE_CONFIG)}catch(e){}
   if(c)return c;
-  /* Last resort: read the file text (handles the "import …" snippet copied from the Firebase console) */
   if(window.__vianaCfgMissing||location.protocol==='file:')return null;
   try{
     const r=await fetch('firebase-config.js',{cache:'no-store'});if(!r.ok)return null;
@@ -582,7 +621,8 @@ async function findConfig(){
 let S=null,D=null,viewing=null,tab='today';
 let saveTimer=null,pending=null;
 const ui={planDate:null,reviewDate:null,reviewSort:'status',cmpFrom:null,cmpTo:null,cmpActs:null,msOpen:false,
-  anFrom:null,anTo:null,anAll:false,adminUsers:[],libQ:'',libStatus:'active'};
+  anFrom:null,anTo:null,anAll:false,adminUsers:[],libQ:'',libStatus:'active',
+  wf:{q:'',act:'',imp:'',eff:'',res:'',sort:'priority'}};
 const dataOwner=()=>viewing?viewing.id:S.id;
 function save(){
   pending={owner:dataOwner(),data:D};
@@ -595,7 +635,7 @@ async function flushSave(){
   try{await Store.save(p.owner,p.data)}catch(e){toast('Could not save: '+(Store.friendly?Store.friendly(e):e.message))}
 }
 let toastTimer;
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2000)}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200)}
 window.addEventListener('pagehide',()=>{flushSave()});
 /* Cloud mode: pick up changes made on another device when you return to this tab */
 document.addEventListener('visibilitychange',async()=>{
@@ -664,30 +704,41 @@ async function signOut(){
 const IC={
   today:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   plan:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  wishes:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
   review:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
   compare:'<path d="M6 20V10M12 20V4M18 20v-7"/>',
   analysis:'<path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/>',
   activities:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
   settings:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
-  admin:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'
+  admin:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
 };
-const TABS=[['today','Today'],['plan','Plan'],['review','Review'],['compare','Compare'],['analysis','Analysis'],['activities','Activities'],['settings','Settings']];
+const TABS=[['today','Today'],['plan','Plan'],['wishes','Wishes'],['review','Review'],['compare','Compare'],['analysis','Analysis'],['activities','Activities'],['profile','Profile'],['settings','Settings']];
+const MOBILE_MAIN=['today','plan','wishes','review'];
+const allTabs=()=>{const t=TABS.slice();if(S&&S.isAdmin)t.push(['admin','Admin']);return t};
+const navLink=(k,t,cls,click)=>`<a class="${cls}" onclick="${click||`go('${k}')`}"><svg viewBox="0 0 24 24">${IC[k]}</svg><span>${t}</span></a>`;
 function render(){
   if(!S)return;
-  const tabs=TABS.slice();if(S.isAdmin)tabs.push(['admin','Admin']);
-  const nav=tabs.map(([k,t])=>`<a class="${tab===k?'active':''}" onclick="go('${k}')"><svg viewBox="0 0 24 24">${IC[k]}</svg><span>${t}</span></a>`).join('');
-  document.getElementById('topnav').innerHTML=nav;document.getElementById('botnav').innerHTML=nav;
+  const tabs=allTabs();
+  document.getElementById('topnav').innerHTML=tabs.map(([k,t])=>navLink(k,t,tab===k?'active':'')).join('');
+  document.getElementById('botnav').innerHTML=tabs.filter(([k])=>MOBILE_MAIN.includes(k)).map(([k,t])=>navLink(k,t,tab===k?'active':'')).join('')+
+    navLink('more','More',MOBILE_MAIN.includes(tab)?'':'active','openMore()');
   const va=document.getElementById('viewAs');
   if(viewing){va.classList.remove('hidden');va.innerHTML=`Admin: you are viewing and editing <b>${esc(viewing.username)}</b>'s data <button class="btn sm" onclick="stopViewing()">Back to my data</button>`}
   else va.classList.add('hidden');
   const m=document.getElementById('main');
-  ({today:vToday,plan:vPlan,review:vReview,compare:vCompare,analysis:vAnalysis,activities:vActivities,settings:vSettings,admin:vAdmin}[tab]||vToday)(m);
+  ({today:vToday,plan:vPlan,wishes:vWishes,review:vReview,compare:vCompare,analysis:vAnalysis,activities:vActivities,profile:vProfile,settings:vSettings,admin:vAdmin}[tab]||vToday)(m);
+}
+function openMore(){
+  openModal('<h2>More</h2>','',`<div class="morelist">${allTabs().filter(([k])=>!MOBILE_MAIN.includes(k)).map(([k,t])=>`<a class="${tab===k?'active':''}" onclick="closeModal();go('${k}')"><svg viewBox="0 0 24 24">${IC[k]}</svg>${t}</a>`).join('')}</div>`,'');
 }
 function go(t){tab=t;ui.msOpen=false;render();window.scrollTo(0,0)}
 const actById=id=>D.activities.find(a=>a.id===id);
 const actName=id=>(actById(id)||{}).name||'(deleted activity)';
 const taskName=t=>t.name||actName(t.activityId);
 const tasksOn=d=>D.tasks.filter(t=>t.date===d);
+const wishes=()=>D.tasks.filter(t=>!t.date);
 function sortTasks(list,mode){
   const imp=t=>+t.plan.importance||0;
   const by={
@@ -698,16 +749,23 @@ function sortTasks(list,mode){
   };
   return list.slice().sort(by[mode]||by.status);
 }
-const badge=(letter,v,title)=>`<span class="badge" title="${esc(title)}${v?': '+esc(v+' – '+(SCALES[letter==='P'?'importance':letter==='M'?'effort':'resistance'].d[v-1])):': not set'}">${letter}<b>${v??'–'}</b></span>`;
+const SK={P:'importance',M:'effort',R:'resistance'};
+const badge=(letter,v,title)=>`<span class="badge" title="${esc(title)}${v?': '+esc(v+' – '+SCALES[SK[letter]].d[v-1]):': not set'}">${letter}<b>${v??'–'}</b></span>`;
 const stPill=t=>{const s=stInfo(t.actual.status);return `<span class="pill ${s.tone}">${esc(stLabel(t))}</span>`};
+function remIcons(t){
+  if(!t.date)return (t.rem.at.length?' · ⏰ '+t.rem.at.length:'')+(t.rem.weekly===false?' · weekly reminder off':'');
+  return (t.rem.def===false?' · default reminders off':'')+(t.rem.times.length?' · ⏰ '+t.rem.times.map(fmtTime).join(', '):'');
+}
 function taskRow(t,click){
   const s=stInfo(t.actual.status);
   const meta=[`<span class="apill">${esc(actName(t.activityId))}</span>`];
   if(t.unplanned)meta.push('<span class="tag-unpl">Unplanned</span>');else meta.push('Plan '+fmtMin(t.plan.minutes));
   if(DONE_KEYS.includes(t.actual.status)&&t.actual.minutes!=null)meta.push('Actual '+fmtMin(t.actual.minutes));
   if(!t.unplanned&&t.plan.importance)meta.push(`Priority: ${esc(SCALES.importance.d[t.plan.importance-1])}`);
+  if(t.carried&&t.carriedTo)meta.push(t.carriedTo==='wish'?'moved to Wishes':'moved to '+nice(t.carriedTo));
+  const ri=!t.actual.status&&!t.unplanned?remIcons(t):'';
   return `<div class="trow s-${s.tone}" onclick="${click}('${t.id}')"><span class="dot"></span><div class="tmain"><div class="tname">${esc(taskName(t))}</div>
-    <div class="tmeta">${meta.join('<span>·</span>')}</div></div>${stPill(t)}</div>`;
+    <div class="tmeta">${meta.join('<span>·</span>')}${ri?`<span>${esc(ri)}</span>`:''}</div></div>${stPill(t)}</div>`;
 }
 function totals(list){let p=0,a=0;list.forEach(t=>{if(!t.unplanned)p+=+t.plan.minutes||0;if(DONE_KEYS.includes(t.actual.status))a+=+t.actual.minutes||0});return {p,a}}
 const stat=(label,value,sub='')=>`<div class="stat"><div class="label">${label}</div><div class="value">${value}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;
@@ -724,14 +782,15 @@ function vToday(m){
   const d=today(),list=sortTasks(tasksOn(d),'status'),tt=totals(list);
   const done=list.filter(t=>DONE_KEYS.includes(t.actual.status)).length,left=list.filter(t=>!t.actual.status).length;
   const h=new Date().getHours(),greet=h<5?'Late night':h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  const tm=tasksOn(addDays(d,1));
+  const tm=tasksOn(addDays(d,1)),w=wishes().length;
   m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Today</div><h1>${fmtLong(d)}</h1><p class="lede">${greet}, ${esc((viewing||S).username)}. How would you like to spend today?</p></div>
     <div class="head-actions"><button class="btn" onclick="openUnplanned('${d}')">+ Something unplanned</button><button class="btn primary" onclick="ui.reviewDate=today();go('review')">Review the day</button></div></section>
   <div class="stats">${stat('Planned time',fmtMin(tt.p),`${list.filter(t=>!t.unplanned).length} planned task(s)`)}${stat('Actual time',tt.a?fmtMin(tt.a):'—','where recorded')}
     ${stat('Completed',`${done}<span class="muted" style="font-size:1rem"> / ${list.length}</span>`)}${stat('Not yet recorded',left)}</div>
   <section class="card"><div class="card-head"><h2>Today's tasks</h2><button class="btn sm ghost" onclick="openPlan(null,today())">+ Plan a task</button></div>
     ${list.length?`<div class="tlist">${list.map(t=>taskRow(t,'openActual')).join('')}</div>`:emptyBox('Nothing planned for today.','That\'s fine too. You can plan a little, or record what you do as you go.',`<button class="btn" onclick="openPlan(null,today())">Plan today</button><button class="btn" onclick="openUnplanned(today())">Record something I did</button>`)}</section>
-  <section class="card soft"><div class="card-head" style="margin:0"><div><div class="eyebrow">Tomorrow</div><div>${tm.length?`${tm.length} task(s) · ${fmtMin(totals(tm).p)} planned`:'<span class="muted">Not planned yet</span>'}</div></div>
+  <section class="card soft"><div class="card-head" style="margin:0"><div><div class="eyebrow">Tomorrow</div><div>${tm.length?`${tm.length} task(s) · ${fmtMin(totals(tm).p)} planned`:'<span class="muted">Not planned yet</span>'}</div>
+      ${w?`<div class="small muted">${w} wish${w>1?'es':''} waiting for a date · <a onclick="go('wishes')">view</a></div>`:''}</div>
     <button class="btn primary" onclick="ui.planDate=addDays(today(),1);go('plan')">Plan tomorrow →</button></div></section>`;
 }
 
@@ -741,13 +800,59 @@ function vPlan(m){
   const cap=(+D.settings.hoursPerDay||0)*60;
   const fav=D.activities.filter(a=>a.active).map(a=>({a,n:D.tasks.filter(t=>t.activityId===a.id).length})).sort((x,y)=>y.n-x.n||(y.a.importance||0)-(x.a.importance||0)||x.a.name.localeCompare(y.a.name)).slice(0,8).map(x=>x.a);
   m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Plan · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1><p class="lede">How do I want to spend this day?</p></div>${dateNav('planDate',d)}</section>
-  <section class="card"><div class="card-head"><h2>Planned</h2><button class="btn primary" onclick="openPlan(null,ui.planDate)">+ Add a task</button></div>
+  <section class="card"><div class="card-head"><h2>Planned</h2><div class="head-actions"><button class="btn" onclick="openPlan(null,null,null,{asWish:true})">+ Add a wish</button><button class="btn primary" onclick="openPlan(null,ui.planDate)">+ Add a task</button></div></div>
     ${list.length?`<div class="tlist">${list.map(t=>taskRow(t,'openPlan')).join('')}</div>`:emptyBox('An open day.','Add a few things you would like to give time to.')}
     ${fav.length?`<div style="margin-top:.9rem"><div class="field-label">Quick add</div><div class="chips">${fav.map(a=>`<button class="chip" onclick="openPlan(null,ui.planDate,'${a.id}')">+ ${esc(a.name)}</button>`).join('')}</div></div>`:''}</section>
   ${list.length?`<section class="card"><h2 style="margin-bottom:.6rem">Time allocation</h2>
     ${list.map(t=>`<div class="row" style="justify-content:space-between;color:var(--muted);padding:.15rem 0"><span>${esc(taskName(t))} <span class="small">· ${esc(actName(t.activityId))}</span></span><span>${fmtMin(t.plan.minutes)}</span></div>`).join('')}
     <div class="row" style="justify-content:space-between;border-top:1px solid var(--border);margin-top:.4rem;padding-top:.5rem;font-weight:600"><span>Total planned</span><span>${fmtMin(tt.p)}</span></div>
     ${cap?`<div class="row muted" style="justify-content:space-between"><span>Of ${fmtMin(cap)} available</span><span>${tt.p<=cap?fmtMin(cap-tt.p)+' unallocated':fmtMin(tt.p-cap)+' over'}</span></div>`:''}</section>`:''}`;
+}
+
+/* ---------- WISHES ---------- */
+function scaleOpts(kind,val){return `<option value="">Any</option>`+[1,2,3,4,5].map(n=>`<option value="${n}" ${String(val)===String(n)?'selected':''}>${n} · ${esc(SCALES[kind].d[n-1])}</option>`).join('')}
+function vWishes(m){
+  const f=ui.wf,q=f.q.trim().toLowerCase();
+  const all=wishes();
+  let list=all.filter(t=>(!q||taskName(t).toLowerCase().includes(q)||(t.plan.note||'').toLowerCase().includes(q))
+    &&(!f.act||t.activityId===f.act)&&(!f.imp||+t.plan.importance===+f.imp)&&(!f.eff||+t.plan.effort===+f.eff)&&(!f.res||+t.plan.resistance===+f.res));
+  const n=(t,k)=>+t.plan[k]||0,nm=(a,b)=>taskName(a).localeCompare(taskName(b));
+  const SORTS={
+    priority:['Priority (high → low)',(a,b)=>n(b,'importance')-n(a,'importance')||nm(a,b)],
+    effortLow:['Mental effort (low → high)',(a,b)=>(n(a,'effort')||9)-(n(b,'effort')||9)||nm(a,b)],
+    effortHigh:['Mental effort (high → low)',(a,b)=>n(b,'effort')-n(a,'effort')||nm(a,b)],
+    resLow:['Emotional resistance (low → high)',(a,b)=>(n(a,'resistance')||9)-(n(b,'resistance')||9)||nm(a,b)],
+    resHigh:['Emotional resistance (high → low)',(a,b)=>n(b,'resistance')-n(a,'resistance')||nm(a,b)],
+    time:['Planned time (short → long)',(a,b)=>(+a.plan.minutes||0)-(+b.plan.minutes||0)||nm(a,b)],
+    activity:['Activity',(a,b)=>actName(a.activityId).localeCompare(actName(b.activityId))||n(b,'importance')-n(a,'importance')],
+    name:['Name',nm],
+    newest:['Newest first',(a,b)=>String(b.created||'').localeCompare(String(a.created||''))]
+  };
+  list.sort((SORTS[f.sort]||SORTS.priority)[1]);
+  const usedActs=[...new Set(all.map(t=>t.activityId))].map(actById).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));
+  const filtered=f.q||f.act||f.imp||f.eff||f.res;
+  const sel=(key,opts)=>`<select onchange="ui.wf.${key}=this.value;render()">${opts}</select>`;
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Wishes</div><h1>Things I'd like to do</h1><p class="lede">No date yet. When you're ready, plan a wish on one or more dates.</p></div>
+    <div class="head-actions"><button class="btn primary" onclick="openPlan(null,null,null,{asWish:true})">+ Add a wish</button></div></section>
+  <section class="card"><div class="filters">
+    <div class="f" style="flex:1 1 180px"><label>Search</label><input type="search" id="wq" value="${esc(f.q)}" placeholder="Name or note…" oninput="ui.wf.q=this.value;clearTimeout(window._wq);window._wq=setTimeout(()=>{render();const s=document.getElementById('wq');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
+    <div class="f"><label>Activity</label>${sel('act',`<option value="">All</option>`+usedActs.map(a=>`<option value="${a.id}" ${f.act===a.id?'selected':''}>${esc(a.name)}</option>`).join(''))}</div>
+    <div class="f"><label>Priority</label>${sel('imp',scaleOpts('importance',f.imp))}</div>
+    <div class="f"><label>Mental effort</label>${sel('eff',scaleOpts('effort',f.eff))}</div>
+    <div class="f"><label>Resistance</label>${sel('res',scaleOpts('resistance',f.res))}</div>
+    <div class="f"><label>Sort by</label>${sel('sort',Object.entries(SORTS).map(([k,[l]])=>`<option value="${k}" ${f.sort===k?'selected':''}>${l}</option>`).join(''))}</div>
+    ${filtered?`<div class="f"><label>&nbsp;</label><button class="btn sm ghost" onclick="ui.wf=Object.assign(ui.wf,{q:'',act:'',imp:'',eff:'',res:''});render()">Clear filters</button></div>`:''}
+  </div></section>
+  <section class="card"><div class="card-head"><h2>${filtered?`${list.length} of ${all.length} wishes`:`${all.length} wish${all.length===1?'':'es'}`}</h2><span class="muted small">${fmtMin(list.reduce((s,t)=>s+(+t.plan.minutes||0),0))} in total</span></div>
+    ${list.length?`<div class="tlist">${list.map(wishRow).join('')}</div>`:emptyBox(all.length?'No wishes match.':'No wishes yet.',all.length?'Try clearing the filters.':'Add something you would like to do some day — you can give it a date later. Postponed tasks without a date also land here.')}</section>`;
+}
+function wishRow(t){
+  const p=t.plan,lab=(k,v)=>v?esc(SCALES[k].d[v-1]):'—';
+  return `<div class="trow wish" onclick="openPlan('${t.id}')"><span class="dot"></span><div class="tmain"><div class="tname">${esc(taskName(t))}</div>
+    <div class="tmeta"><span class="apill">${esc(actName(t.activityId))}</span><span>·</span><span>${fmtMin(p.minutes)}</span><span>·</span>
+      <span title="Priority">P: ${lab('importance',p.importance)}</span><span>·</span><span title="Mental effort">Effort: ${lab('effort',p.effort)}</span><span>·</span><span title="Emotional resistance">Resistance: ${lab('resistance',p.resistance)}</span>
+      ${t.carriedFrom?'<span>· postponed</span>':''}${remIcons(t)?`<span>${esc(remIcons(t))}</span>`:''}</div></div>
+    <button class="btn sm primary" onclick="event.stopPropagation();openPlan('${t.id}',null,null,{planWish:true})">Plan it</button></div>`;
 }
 
 /* ---------- form helpers ---------- */
@@ -805,26 +910,92 @@ function renderPicker(open){
 function filterPicker(q){q=q.trim().toLowerCase();document.querySelectorAll('#pkList .picker-item').forEach(b=>b.classList.toggle('hidden',!!q&&!b.dataset.q.includes(q)))}
 function pickAct(id){pk.id=id;renderPicker(false);if(pk.onPick)pk.onPick(actById(id))}
 
-/* ---------- plan task (new + edit) ---------- */
-function openPlan(id,date,presetAct){
+/* ---------- multi-date calendar ---------- */
+let cal={month:'',sel:[]};
+function renderCal(){
+  const box=document.getElementById('calBox');if(!box)return;
+  const wish=document.getElementById('tWish').checked;
+  const [y,m]=cal.month.split('-').map(Number);
+  const startDow=(new Date(y,m-1,1).getDay()+6)%7,days=new Date(y,m,0).getDate(),td=today();
+  let cells=['Mo','Tu','We','Th','Fr','Sa','Su'].map(w=>`<div class="wd">${w}</div>`).join('');
+  for(let i=0;i<startDow;i++)cells+='<div></div>';
+  for(let d=1;d<=days;d++){const ds=`${y}-${pad(m)}-${pad(d)}`;
+    cells+=`<button type="button" class="${cal.sel.includes(ds)?'on ':''}${ds===td?'today ':''}${ds<td?'past':''}" onclick="calPick('${ds}')" aria-label="${ds}">${d}</button>`}
+  const label=new Date(y,m-1,1).toLocaleDateString(undefined,{month:'long',year:'numeric'});
+  box.innerHTML=`<div class="cal ${wish?'off':''}"><div class="cal-head"><button type="button" class="icon-btn" onclick="calMove(-1)" aria-label="Previous month">‹</button><b>${label}</b><button type="button" class="icon-btn" onclick="calMove(1)" aria-label="Next month">›</button></div><div class="cal-grid">${cells}</div></div>
+  <div class="calsel">${wish?'<span class="muted">Saved as a wish — no date.</span>':cal.sel.length?`<span class="muted">${cal.sel.length===1?'Date':cal.sel.length+' dates'}:</span>`+cal.sel.map(ds=>`<span class="chip static">${nice(ds)}<span class="x" onclick="calPick('${ds}')">×</span></span>`).join(''):'<span class="muted">Tap one or more dates.</span>'}</div>`;
+}
+function calPick(ds){const i=cal.sel.indexOf(ds);if(i>=0)cal.sel.splice(i,1);else cal.sel.push(ds);cal.sel.sort();renderCal()}
+function calMove(n){const [y,m]=cal.month.split('-').map(Number);const d=new Date(y,m-1+n,1);cal.month=`${d.getFullYear()}-${pad(d.getMonth()+1)}`;renderCal()}
+function onWishToggle(){renderCal();const w=document.getElementById('tWish').checked;document.getElementById('remDated').classList.toggle('hidden',w);document.getElementById('remWish').classList.toggle('hidden',!w)}
+
+/* ---------- reminder settings inside a task ---------- */
+let remState={times:[],at:[]};
+function remNote(){
+  if(Store.mode!=='cloud')return '<div class="remnote">Reminders are sent only when Viana is synced with Firebase.</div>';
+  if(!D.profile.phone)return `<div class="remnote">Add a WhatsApp number in <a onclick="closeModal();go('profile')">Profile</a> to receive these.</div>`;
+  if(D.profile.remindersOn===false)return `<div class="remnote">WhatsApp reminders are turned off in <a onclick="closeModal();go('profile')">Profile</a>.</div>`;
+  return '';
+}
+function remBlock(r){
+  return `<div class="field"><span>WhatsApp reminders</span><div class="remsec">${remNote()}
+   <div id="remDated">
+    <label class="check"><input type="checkbox" id="rDef" ${r.def!==false?'checked':''}><span>Default reminders at 6 am, 10 am, 2 pm, 6 pm and 10 pm while actuals aren't recorded</span></label>
+    <div class="small muted" style="margin:.5rem 0 .3rem">Extra reminder times on the day</div>
+    <div class="row"><input type="time" id="rTime" style="width:auto"><button type="button" class="btn sm" onclick="addRemTime()">Add time</button></div>
+    <div class="chips" id="rTimes" style="margin-top:.4rem"></div>
+   </div>
+   <div id="remWish">
+    <label class="check"><input type="checkbox" id="rWeekly" ${r.weekly!==false?'checked':''}><span>Include in the Friday 6 pm wishes reminder</span></label>
+    <div class="small muted" style="margin:.5rem 0 .3rem">Remind me on a specific date and time</div>
+    <div class="row"><input type="datetime-local" id="rAt" style="width:auto"><button type="button" class="btn sm" onclick="addRemAt()">Add</button></div>
+    <div class="chips" id="rAts" style="margin-top:.4rem"></div>
+   </div></div></div>`;
+}
+function renderRemChips(){
+  document.getElementById('rTimes').innerHTML=remState.times.map((t,i)=>`<span class="chip static">${fmtTime(t)}<span class="x" onclick="rmRem('times',${i})">×</span></span>`).join('');
+  document.getElementById('rAts').innerHTML=remState.at.map((a,i)=>`<span class="chip static">${fmtAt(a)}<span class="x" onclick="rmRem('at',${i})">×</span></span>`).join('');
+}
+function addRemTime(){const v=document.getElementById('rTime').value;if(!/^\d{2}:\d{2}$/.test(v)){toast('Choose a time first');return}if(!remState.times.includes(v)){remState.times.push(v);remState.times.sort()}document.getElementById('rTime').value='';renderRemChips()}
+function addRemAt(){const v=(document.getElementById('rAt').value||'').slice(0,16);if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v)){toast('Choose a date and time first');return}
+  if(new Date(v)<new Date()){toast('That time has already passed');return}
+  if(!remState.at.includes(v)){remState.at.push(v);remState.at.sort()}document.getElementById('rAt').value='';renderRemChips()}
+function rmRem(k,i){remState[k].splice(i,1);renderRemChips()}
+
+/* ---------- plan a task / wish (new, edit, duplicate) ---------- */
+function newTaskFrom(base,date,extra){
+  return Object.assign({id:uid(),name:base.name,date:date||null,activityId:base.activityId,unplanned:false,created:nowISO(),plan:clone(base.plan),rem:clone(base.rem),actual:{motives:[],outcomes:[]}},extra||{});
+}
+function openPlan(id,date,presetAct,opts){
+  opts=opts||{};
   const t=id?D.tasks.find(x=>x.id===id):null;if(id&&!t)return;
-  const p=t?t.plan:{motives:[],outcomes:[]};
-  pk={id:t?t.activityId:(presetAct||null),onPick:t?null:fillDefaults};
-  openModal(`<h2>${t?'Planned task':'Add to plan'}</h2>`,t?fmtLong(t.date):'Name the task and pick the activity it belongs to',
-  `${field('Task name <span class="req">*</span>',`<input type="text" id="tName" maxlength="80" placeholder="e.g. Finish chapter 3, Evening walk by the beach" value="${esc(t?t.name||'':'')}" oninput="this.classList.remove('invalid')">`)}
+  const src=t||(opts.copyFrom?D.tasks.find(x=>x.id===opts.copyFrom):null);
+  const p=src?src.plan:{motives:[],outcomes:[]};
+  const isWish=t?(!t.date&&!opts.planWish):!!opts.asWish;
+  pk={id:src?src.activityId:(presetAct||null),onPick:src?null:fillDefaults};
+  cal.sel=t&&t.date?[t.date]:(!src&&date?[date]:[]);
+  cal.month=(cal.sel[0]||(opts.copyFrom&&src&&src.date)||today()).slice(0,7);
+  remState={times:src?src.rem.times.slice():[],at:src?src.rem.at.filter(a=>new Date(a)>new Date()):[]};
+  const title=t?(t.date?'Planned task':(opts.planWish?'Plan this wish':'Wish')):(opts.copyFrom?'Duplicate task':(isWish?'Add a wish':'Add to plan'));
+  const sub=t&&t.date?fmtLong(t.date):opts.planWish?'Pick the date(s) you want to do this. You can change anything else too.':opts.copyFrom?'Pick the date(s) for the copy and change anything you like.':'';
+  openModal(`<h2>${title}</h2>`,sub,
+  `${field('Task name <span class="req">*</span>',`<input type="text" id="tName" maxlength="80" placeholder="e.g. Finish chapter 3, Evening walk by the beach" value="${esc(src?src.name||'':'')}" oninput="this.classList.remove('invalid')">`)}
    ${field('Activity <span class="req">*</span>','<div id="pkBox"></div>')}
-   <p class="hint">${t?'Changes here affect this task only — the activity itself won’t change.':'Pre-filled from the activity’s defaults. Change anything for this particular day.'}</p>
-   <div class="grid2">${field('Date',`<input type="date" id="tDate" value="${t?t.date:date}">`)}${field('Planned time',dur('tMin',p.minutes))}</div>
+   ${field(t&&t.date?'Date <em>— pick more dates to also plan copies on them</em>':'Date(s) <em>— tap one or more</em>',`<label class="check"><input type="checkbox" id="tWish" ${isWish?'checked':''} onchange="onWishToggle()"><span>No date yet — keep it as a wish</span></label><div id="calBox"></div>`)}
+   <p class="hint">${src?'Changes here affect only the task(s) you save — the activity itself won’t change.':'Pre-filled from the activity’s defaults. Change anything for this particular task.'}</p>
+   ${field('Planned time',dur('tMin',p.minutes))}
    ${field('Why this, this time? <em>— motives</em>',chips('pMot',D.motives,p.motives))}
    ${field('What I hope to get from it <em>— outcomes</em>',chips('pOut',D.outcomes,p.outcomes))}
-   ${field('Priority of this, today',scale('pImp','importance',p.importance))}
+   ${field('Priority',scale('pImp','importance',p.importance))}
    <div class="grid2">${field('Planned mental effort',scale('pEff','effort',p.effort))}${field('Expected emotional resistance',scale('pRes','resistance',p.resistance))}</div>
    ${field('Notes',`<textarea id="tNote" rows="2" placeholder="Anything about the plan">${esc(p.note||'')}</textarea>`)}
+   ${remBlock(src?src.rem:defRem())}
    <div class="err" id="tErr"></div>`,
-  `${t?`<button class="btn ghost danger" onclick="delTask('${id}')">Remove from plan</button>`:''}<span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="savePlan(${t?`'${id}'`:'null'})">${t?'Save':'Add to plan'}</button>`);
+  `${t?`<button class="btn ghost danger" onclick="delTask('${id}')">${t.date?'Remove':'Delete wish'}</button><button class="btn ghost" onclick="openPlan(null,null,null,{copyFrom:'${id}'})">Duplicate</button>`:''}<span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="savePlan(${t?`'${id}'`:'null'})">${t?'Save':'Add'}</button>`);
   renderPicker(!pk.id);
-  if(!t&&pk.id)fillDefaults(actById(pk.id));
-  if(window.innerWidth>760)document.getElementById('tName').focus();
+  if(!src&&pk.id)fillDefaults(actById(pk.id));
+  onWishToggle();renderRemChips();
+  if(window.innerWidth>760&&!src)document.getElementById('tName').focus();
 }
 function fillDefaults(a){
   if(!a)return;
@@ -835,23 +1006,34 @@ function savePlan(id){
   const nameEl=document.getElementById('tName'),name=nameEl.value.trim(),err=document.getElementById('tErr');
   if(!name){nameEl.classList.add('invalid');err.textContent='Please give the task a name.';nameEl.focus();return}
   if(!pk.id){document.querySelector('#pkBox .picker').classList.add('invalid');err.textContent='Please choose an activity.';return}
+  const wish=document.getElementById('tWish').checked;
+  if(!wish&&!cal.sel.length){err.textContent='Pick at least one date, or tick "No date yet".';return}
   const mins=readDur('tMin');if(Number.isNaN(mins)){err.textContent='Planned time not understood — try 90, 1:30 or 1h 30m.';return}
-  const plan={minutes:mins||0,motives:readChips('pMot'),outcomes:readChips('pOut'),importance:readSeg('pImp'),effort:readSeg('pEff'),resistance:readSeg('pRes'),note:document.getElementById('tNote').value.trim()};
-  const date=document.getElementById('tDate').value||today();
-  if(id){const t=D.tasks.find(x=>x.id===id);Object.assign(t,{name,date,activityId:pk.id,updated:nowISO()});Object.assign(t.plan,plan)}
-  else D.tasks.push({id:uid(),name,date,activityId:pk.id,unplanned:false,created:nowISO(),plan,actual:{motives:[],outcomes:[]}});
-  save();closeModal();render();toast(id?'Saved':'Added to plan');
+  const base={name,activityId:pk.id,
+    plan:{minutes:mins||0,motives:readChips('pMot'),outcomes:readChips('pOut'),importance:readSeg('pImp'),effort:readSeg('pEff'),resistance:readSeg('pRes'),note:document.getElementById('tNote').value.trim()},
+    rem:{def:document.getElementById('rDef').checked,times:remState.times.slice(),weekly:document.getElementById('rWeekly').checked,at:remState.at.slice()}};
+  const dates=wish?[null]:cal.sel.slice();
+  let rest=dates;
+  if(id){
+    const t=D.tasks.find(x=>x.id===id);
+    Object.assign(t,{name,activityId:pk.id,date:dates[0],rem:base.rem,updated:nowISO()});Object.assign(t.plan,base.plan);
+    rest=dates.slice(1);
+  }
+  rest.forEach(d=>D.tasks.push(newTaskFrom(base,d)));
+  save();closeModal();render();
+  toast(wish?(id?'Wish saved':'Saved as a wish'):dates.length>1?`Planned on ${dates.length} dates`:(id?'Saved':'Added to plan'));
 }
-function delTask(id){if(!confirm('Remove this task? The activity stays in your library.'))return;D.tasks=D.tasks.filter(x=>x.id!==id);save();closeModal();render();toast('Removed')}
+function delTask(id){if(!confirm('Delete this? The activity stays in your library.'))return;D.tasks=D.tasks.filter(x=>x.id!==id);save();closeModal();render();toast('Deleted')}
 
 /* ---------- REVIEW ---------- */
+const REVIEW_SORTS=[['status','Status, then priority'],['priority','Priority, then status'],['activity','Activity'],['name','Task name']];
 function vReview(m){
   const d=ui.reviewDate||(ui.reviewDate=today()),all=tasksOn(d),list=sortTasks(all,ui.reviewSort);
   const tt=totals(all),pend=all.filter(t=>!t.actual.status).length,post=all.filter(t=>t.actual.status==='postponed'&&!t.carried).length,unpl=all.filter(t=>t.unplanned);
   m.innerHTML=`<section class="page-head"><div><div class="eyebrow">End-of-day review · ${relLabel(d)}</div><h1>${fmtLong(d)}</h1><p class="lede">What actually happened? Tap a task to record it.</p></div>${dateNav('reviewDate',d)}</section>
   <div class="stats">${stat('Planned',fmtMin(tt.p))}${stat('Actually spent',tt.a?fmtMin(tt.a):'—')}${stat('Reviewed',`${all.length-pend}<span class="muted" style="font-size:1rem"> / ${all.length}</span>`)}${stat('Unplanned',unpl.length)}</div>
   <section class="card"><div class="card-head"><h2>Tasks</h2><div class="toolbar"><span class="muted small">Sort by</span>
-    <select onchange="ui.reviewSort=this.value;render()">${[['status','Status, then priority'],['priority','Priority'],['activity','Activity'],['name','Task name']].map(([v,t])=>`<option value="${v}" ${ui.reviewSort===v?'selected':''}>${t}</option>`).join('')}</select>
+    <select onchange="ui.reviewSort=this.value;render()">${REVIEW_SORTS.map(([v,t])=>`<option value="${v}" ${ui.reviewSort===v?'selected':''}>${t}</option>`).join('')}</select>
     ${post?`<button class="btn sm" onclick="carryPostponed('${d}')">Move ${post} postponed to next day</button>`:''}</div></div>
     ${list.length?`<div class="tlist">${list.map(t=>taskRow(t,'openActual')).join('')}</div>`:emptyBox('Nothing was planned for this day.','Record anything you did — unplanned time counts too.')}</section>
   <div class="card soft row" style="justify-content:space-between"><div><b>Did something that wasn't planned?</b><div class="muted small">Spontaneous activities are part of real life, not failures.</div></div>
@@ -869,26 +1051,33 @@ function createUnplanned(date){
   const el=document.getElementById('uName'),name=el.value.trim(),err=document.getElementById('uErr');
   if(!name){el.classList.add('invalid');err.textContent='Please give the task a name.';return}
   if(!pk.id){document.querySelector('#pkBox .picker').classList.add('invalid');err.textContent='Please choose an activity.';return}
-  const t={id:uid(),name,date,activityId:pk.id,unplanned:true,created:nowISO(),plan:{motives:[],outcomes:[]},actual:{motives:[],outcomes:[]}};
+  const t={id:uid(),name,date,activityId:pk.id,unplanned:true,created:nowISO(),plan:{motives:[],outcomes:[]},actual:{motives:[],outcomes:[]},rem:Object.assign(defRem(),{def:false})};
   D.tasks.push(t);save();render();openActual(t.id);
 }
 const HINTS={
   asplanned:'Filled in from your plan. Change anything that turned out different.',
   differently:'Plan details cleared — enter what actually happened.',
   partial:'Your planned motives are kept. Enter the time you spent and what you got.',
-  postponed:'Time set to 0. You can still note how resistant you felt.',
+  postponed:'Time set to 0. Choose below when to do it instead.',
   skipped:'Time set to 0. You can still note how resistant you felt.',
   cancelled:'Time set to 0. Add a note on why, if you like.',
   unplanned:'Enter what you did.'
 };
 let actTask=null;
 function openActual(id){
-  const t=D.tasks.find(x=>x.id===id);if(!t)return;actTask=t;const a=t.actual;
+  const t=D.tasks.find(x=>x.id===id);if(!t)return;
+  if(!t.date){openPlan(id);return}
+  actTask=t;const a=t.actual;
   const sts=t.unplanned?[['asplanned','Done'],['partial','Partly']]:STATUSES.slice(1).map(s=>[s.k,s.t]);
+  const postBox=t.carried?`<div class="postpone">Already moved to <b>${t.carriedTo==='wish'?'Wishes':esc(fmtLong(t.carriedTo))}</b>.</div>`:
+    `<div class="postpone"><div style="font-weight:600;margin-bottom:.3rem">When will you do it instead?</div>
+      <label class="check"><input type="radio" name="pp" value="date" checked><span>On <input type="date" id="ppDate" value="${addDays(t.date,1)}" onclick="this.closest('label').querySelector('input[type=radio]').checked=true"></span></label>
+      <label class="check"><input type="radio" name="pp" value="wish"><span>No date yet — move it to Wishes</span></label></div>`;
   openModal(`<div class="eyebrow">${esc(actName(t.activityId))}${t.unplanned?' · unplanned':''}</div><h2>${esc(taskName(t))}</h2>`,
    `${fmtLong(t.date)}${t.unplanned?'':` · Plan ${fmtMin(t.plan.minutes)}`}`,
    `${field('How did it go?',`<div class="status-row" id="aSt">${sts.map(([k,l])=>`<button type="button" class="sbtn ${a.status===k?'on':''}" data-k="${k}" style="--sc:${stInfo(k).col}" onclick="pickStatus(this)">${l}</button>`).join('')}</div>`)}
     <p class="hint hidden" id="aHint"></p>
+    <div id="fPost" class="hidden">${postBox}</div>
     <div id="fTime">${field('Actual time',dur('aMin',a.minutes))}</div>
     <div id="fMot">${field('Why I actually did it <em>— motives</em>',chips('aMot',D.motives,a.motives))}</div>
     <div id="fOut">${field('What I actually got from it <em>— outcomes</em>',chips('aOut',D.outcomes,a.outcomes))}</div>
@@ -903,8 +1092,9 @@ function openActual(id){
 function showFields(k,withHint){
   const off=NOT_DONE.includes(k);
   ['fTime','fMot','fOut','fEff','fSat'].forEach(f=>document.getElementById(f).classList.toggle('hidden',off));
+  document.getElementById('fPost').classList.toggle('hidden',!(k==='postponed'&&!actTask.unplanned));
   const h=document.getElementById('aHint');
-  if(withHint&&k){h.textContent=actTask.unplanned?HINTS.unplanned:HINTS[k];h.classList.remove('hidden')}else h.classList.add('hidden');
+  if(withHint&&k){h.textContent=actTask.unplanned?HINTS.unplanned:(k==='postponed'&&actTask.carried?'Time set to 0.':HINTS[k]);h.classList.remove('hidden')}else h.classList.add('hidden');
 }
 /* Every status choice resets the actual fields to suit that status */
 function pickStatus(b){
@@ -925,15 +1115,25 @@ function saveActual(id){
   if(!b){err.textContent='Choose how it went first.';return}
   const k=b.dataset.k,off=NOT_DONE.includes(k);
   let mins=off?0:readDur('aMin');if(Number.isNaN(mins)){err.textContent='Time not understood — try 90, 1:30 or 1h 30m.';return}
+  let moveTo=null,doMove=false;
+  if(k==='postponed'&&!t.unplanned&&!t.carried){
+    const mode=(document.querySelector('input[name=pp]:checked')||{}).value;
+    if(mode==='date'){moveTo=document.getElementById('ppDate').value;if(!moveTo){err.textContent='Choose the new date, or pick "No date yet".';return}if(moveTo===t.date){err.textContent='Choose a different date from this one.';return}}
+    doMove=true;
+  }
   t.actual={status:k,minutes:mins,motives:off?[]:readChips('aMot'),outcomes:off?[]:readChips('aOut'),
     effort:off?null:readSeg('aEff'),resistance:readSeg('aRes'),satisfaction:off?null:readSeg('aSat'),note:document.getElementById('aNote').value.trim(),recorded:nowISO()};
-  save();closeModal();render();toast('Saved');
+  if(doMove){
+    D.tasks.push(newTaskFrom({name:t.name||actName(t.activityId),activityId:t.activityId,plan:t.plan,rem:t.rem},moveTo,{carriedFrom:t.id}));
+    t.carried=true;t.carriedTo=moveTo||'wish';
+  }
+  save();closeModal();render();toast(doMove?(moveTo?'Postponed to '+nice(moveTo):'Postponed — moved to Wishes'):'Saved');
 }
 function clearActual(id){const t=D.tasks.find(x=>x.id===id);t.actual={motives:[],outcomes:[]};save();closeModal();render();toast('Cleared')}
 function carryPostponed(d){
   const nd=addDays(d,1);let n=0;
   D.tasks.filter(t=>t.date===d&&t.actual.status==='postponed'&&!t.carried).forEach(t=>{
-    D.tasks.push({id:uid(),name:t.name,date:nd,activityId:t.activityId,unplanned:false,created:nowISO(),carriedFrom:t.id,plan:JSON.parse(JSON.stringify(t.plan)),actual:{motives:[],outcomes:[]}});t.carried=true;n++});
+    D.tasks.push(newTaskFrom({name:t.name||actName(t.activityId),activityId:t.activityId,plan:t.plan,rem:t.rem},nd,{carriedFrom:t.id}));t.carried=true;t.carriedTo=nd;n++});
   save();render();toast(n+' task(s) moved to '+nice(nd));
 }
 
@@ -961,7 +1161,7 @@ function presets(fk,tk,isAn){
   return `<div class="f"><label>Quick range</label><div class="seg">${ps.map(([l,f,to])=>`<button class="${!allOn&&ui[fk]===f&&ui[tk]===to?'on':''}" onclick="ui.${fk}='${f}';ui.${tk}='${to}';${isAn?'ui.anAll=false;':''}render()">${l}</button>`).join('')}
   <button class="${allOn?'on':''}" onclick="${isAn?'ui.anAll=true;render()':'setAllTimeCmp()'}">All time</button></div></div>`;
 }
-function setAllTimeCmp(){const ds=D.tasks.map(t=>t.date).sort();ui.cmpFrom=ds[0]||today();ui.cmpTo=ds.length&&ds[ds.length-1]>today()?ds[ds.length-1]:today();render()}
+function setAllTimeCmp(){const ds=D.tasks.filter(t=>t.date).map(t=>t.date).sort();ui.cmpFrom=ds[0]||today();ui.cmpTo=ds.length&&ds[ds.length-1]>today()?ds[ds.length-1]:today();render()}
 
 /* ---------- COMPARE ---------- */
 function actMulti(){
@@ -980,7 +1180,7 @@ document.addEventListener('mousedown',e=>{if(ui.msOpen&&!e.target.closest('#msWr
 function vCompare(m){
   ui.cmpFrom=ui.cmpFrom||today();ui.cmpTo=ui.cmpTo||today();
   if(ui.cmpActs)ui.cmpActs=ui.cmpActs.filter(id=>actById(id));
-  const list=sortTasks(D.tasks.filter(t=>t.date>=ui.cmpFrom&&t.date<=ui.cmpTo&&(!ui.cmpActs||ui.cmpActs.includes(t.activityId))),'status').sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
+  const list=sortTasks(D.tasks.filter(t=>t.date&&t.date>=ui.cmpFrom&&t.date<=ui.cmpTo&&(!ui.cmpActs||ui.cmpActs.includes(t.activityId))),'status').sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
   const rec=list.filter(t=>t.actual.status),done=list.filter(t=>DONE_KEYS.includes(t.actual.status)),planned=list.filter(t=>!t.unplanned);
   const tt=totals(list),cnt={};list.forEach(t=>{const k=t.actual.status||'';cnt[k]=(cnt[k]||0)+1});
   const eff=done.filter(t=>!t.unplanned&&t.plan.effort&&t.actual.effort),res=rec.filter(t=>!t.unplanned&&t.plan.resistance&&t.actual.resistance),sat=done.filter(t=>!t.unplanned&&t.plan.importance&&t.actual.satisfaction);
@@ -1012,7 +1212,7 @@ function cmpCard(t){
   const mx=Math.max(1,+p.minutes||0,+a.minutes||0);
   const chipsCmp=(P,A)=>{const all=[...new Set([...P,...A])];return all.length?`<div class="chips">${all.map(x=>`<span class="chip static ${P.includes(x)&&A.includes(x)?'cm':P.includes(x)?'cp':'cx'}">${esc(x)}</span>`).join('')}</div>`:'<div class="muted small">—</div>'};
   return `<section class="card"><div class="card-head"><div style="min-width:0"><div class="tname">${esc(taskName(t))}</div><div class="tmeta"><span class="apill">${esc(actName(t.activityId))}</span><span>${nice(t.date)}</span>${t.unplanned?'<span class="tag-unpl">Unplanned</span>':''}</div></div>${stPill(t)}</div>
-  ${!a.status?`<div class="muted small">No actuals recorded yet. <a href="#" onclick="openActual('${t.id}');return false">Record now</a></div>`:`
+  ${!a.status?`<div class="muted small">No actuals recorded yet. <a onclick="openActual('${t.id}')">Record now</a></div>`:`
   <div class="tc"><div>${LEG}
    ${pairRow('Time',t.unplanned?null:+p.minutes||0,a.minutes==null?null:+a.minutes,mx,fmtMin)}
    ${pairRow('Mental effort',p.effort||null,a.effort||null,5,sc('effort'))}
@@ -1026,7 +1226,7 @@ function cmpCard(t){
 function vAnalysis(m){
   ui.anTo=ui.anTo||today();ui.anFrom=ui.anFrom||addDays(ui.anTo,-29);
   const from=ui.anAll?'0000-00-00':ui.anFrom,to=ui.anAll?'9999-12-31':ui.anTo,now=today();
-  const T=D.tasks.filter(t=>t.date>=from&&t.date<=to),R=T.filter(t=>t.actual.status),Done=R.filter(t=>DONE_KEYS.includes(t.actual.status));
+  const T=D.tasks.filter(t=>t.date&&t.date>=from&&t.date<=to),R=T.filter(t=>t.actual.status),Done=R.filter(t=>DONE_KEYS.includes(t.actual.status));
   const sec=(n,title,body,note)=>`<section class="card"><h2 style="margin-bottom:${note?'.2rem':'.7rem'}">${n}. ${title}</h2>${note?`<p class="muted small" style="margin:0 0 .7rem">${note}</p>`:''}${body}</section>`;
   const tbl=(head,rows)=>rows.length?`<div class="table-wrap"><table class="simple"><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="muted small">Not enough data yet.</div>';
   const twoBars=(a,b,max)=>`<div class="bars"><div class="bar" style="width:${max?Math.round(a/max*100):0}%"></div><div class="bar b2" style="width:${max?Math.round(b/max*100):0}%"></div></div>`;
@@ -1066,7 +1266,7 @@ function vAnalysis(m){
   out.push(sec(15,'Expected outcomes achieved',tbl(['Activity','Tasks','Achieved'],Object.keys(g15).map(id=>{let e=0,h=0;g15[id].forEach(t=>{e+=t.plan.outcomes.length;h+=t.plan.outcomes.filter(o=>t.actual.outcomes.includes(o)).length});return [esc(actName(id)),g15[id].length,pct(e?h/e:null)]})),'Share of planned outcomes that were also recorded as actual outcomes.'));
   const g16=byAct(Done.filter(t=>!t.unplanned&&t.plan.motives.length&&t.actual.motives.length));
   out.push(sec(16,'Did the reason stay the same?',tbl(['Activity','Tasks','Same','Some overlap','Different'],Object.keys(g16).map(id=>{let s=0,o=0,d=0;g16[id].forEach(t=>{const P=t.plan.motives,A=t.actual.motives,ov=P.filter(x=>A.includes(x)).length;if(ov===P.length&&ov===A.length)s++;else if(ov)o++;else d++});return [esc(actName(id)),g16[id].length,s,o,d]})),'Compares planned motives with the motives recorded afterwards.'));
-  const last={};D.tasks.filter(t=>DONE_KEYS.includes(t.actual.status)).forEach(t=>{if(!last[t.activityId]||t.date>last[t.activityId])last[t.activityId]=t.date});
+  const last={};D.tasks.filter(t=>t.date&&DONE_KEYS.includes(t.actual.status)).forEach(t=>{if(!last[t.activityId]||t.date>last[t.activityId])last[t.activityId]=t.date});
   const nrows=D.activities.filter(a=>a.active).map(a=>{const l=last[a.id];return [a.name,l,l?Math.round((new Date(now)-new Date(l))/864e5):null]}).sort((x,y)=>(y[2]??1e9)-(x[2]??1e9));
   out.push(sec(17,'Activities you have not done lately',tbl(['Activity','Last done','Days ago'],nrows.map(x=>[esc(x[0]),x[1]?nice(x[1]):'Never',x[2]??'—'])),'Uses all your data, not just the selected period.'));
   const range=ui.anAll?'All time':ui.anFrom===ui.anTo?fmtLong(ui.anFrom):`${nice(ui.anFrom)} – ${nice(ui.anTo)}`;
@@ -1081,7 +1281,7 @@ function vActivities(m){
   const acts=D.activities.filter(a=>(ui.libStatus==='all'||(ui.libStatus==='active'?a.active:!a.active))&&(!q||a.name.toLowerCase().includes(q)||(a.description||'').toLowerCase().includes(q))).sort((a,b)=>a.name.localeCompare(b.name));
   m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Library</div><h1>Activities</h1><p class="lede">The things I generally want to do. Your list is yours alone.</p></div>
     <div class="head-actions"><button class="btn primary" onclick="editAct()">+ New activity</button></div></section>
-  <div class="row" style="margin-bottom:1rem"><input type="search" placeholder="Search…" value="${esc(ui.libQ)}" style="flex:2;min-width:180px" oninput="ui.libQ=this.value;clearTimeout(window._lq);window._lq=setTimeout(()=>{render();const s=document.querySelector('main input[type=search]');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)">
+  <div class="row" style="margin-bottom:1rem"><input type="search" id="lq" placeholder="Search…" value="${esc(ui.libQ)}" style="flex:2;min-width:180px" oninput="ui.libQ=this.value;clearTimeout(window._lq);window._lq=setTimeout(()=>{render();const s=document.getElementById('lq');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)">
     <select style="flex:1;min-width:130px" onchange="ui.libStatus=this.value;render()">${[['active','Active'],['inactive','Inactive'],['all','All']].map(([v,t])=>`<option value="${v}" ${ui.libStatus===v?'selected':''}>${t}</option>`).join('')}</select></div>
   <div class="lib-grid">${acts.length?acts.map(a=>{const n=D.tasks.filter(t=>t.activityId===a.id);const dn=n.filter(t=>DONE_KEYS.includes(t.actual.status));
     return `<div class="acard ${a.active?'':'inactive'}" onclick="editAct('${a.id}')"><h3><span>${esc(a.name)}</span>${badge('P',a.importance,'Priority')}</h3>
@@ -1100,7 +1300,7 @@ function editAct(id){
     ${field('General outcomes <em>— what I usually get from it</em>',chips('acOut',D.outcomes,a.outcomes))}
     <div class="grid2">${field('Usual time',dur('acMin',a.minutes))}${field('General priority',scale('acImp','importance',a.importance))}</div>
     <div class="grid2">${field('Mental effort',scale('acEff','effort',a.effort))}${field('Emotional resistance',scale('acRes','resistance',a.resistance))}</div>
-    ${id?`<label class="field" style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" id="acActive" ${a.active?'checked':''} style="accent-color:var(--accent);width:16px;height:16px"> Active (inactive activities are hidden from planning but keep their history)</label>
+    ${id?`<label class="check"><input type="checkbox" id="acActive" ${a.active?'checked':''}><span>Active (inactive activities are hidden from planning but keep their history)</span></label>
     ${field('Change note <em>optional — why did this change?</em>','<input type="text" id="acWhy">')}`:''}
     ${hist.length?`<details><summary>Change history (${a.history.length})</summary><div class="table-wrap" style="margin-top:.5rem"><table class="simple"><tr><th>When</th><th>Field</th><th>Old</th><th>New</th><th>Note</th></tr>${hist.map(x=>`<tr><td>${new Date(x.at).toLocaleString()}</td><td>${esc(x.field)}</td><td>${esc(x.old)}</td><td>${esc(x.new)}</td><td>${esc(x.note||'')}</td></tr>`).join('')}</table></div></details>`:''}
     <div class="err" id="acErr"></div>`,
@@ -1121,9 +1321,54 @@ function saveAct(id){
 }
 function delAct(id){
   const n=D.tasks.filter(t=>t.activityId===id).length;
-  if(!confirm(`Delete "${actName(id)}"${n?` and its ${n} task(s)`:''}? This only affects ${viewing?viewing.username+"'s":'your'} account and cannot be undone.`))return;
+  if(!confirm(`Delete "${actName(id)}"${n?` and its ${n} task(s) and wish(es)`:''}? This only affects ${viewing?viewing.username+"'s":'your'} account and cannot be undone.`))return;
   D.activities=D.activities.filter(a=>a.id!==id);D.tasks=D.tasks.filter(t=>t.activityId!==id);save();closeModal();render();toast('Activity deleted');
 }
+
+/* ---------- PROFILE ---------- */
+function vProfile(m){
+  const p=D.profile,who=(viewing||S).username;
+  const status=Store.mode!=='cloud'?'<div class="notice warn">This device is in local mode. WhatsApp reminders work only when Viana is synced with Firebase.</div>':
+    !p.phone?'<div class="notice warn">Add your WhatsApp number to start getting reminders.</div>':
+    p.remindersOn===false?'<div class="notice warn">WhatsApp reminders are turned off.</div>':
+    `<div class="notice ok">✓ Reminders go to <b>+${esc(p.phone)}</b>.</div>`;
+  m.innerHTML=`<section class="page-head"><div><div class="eyebrow">Profile</div><h1>${esc(who)}</h1><p class="lede">Your contact details and reminder preferences.</p></div></section>
+  ${status}
+  <section class="card"><h2 style="margin-bottom:.8rem">Contact details</h2>
+    <div class="grid2">
+      ${field('Username','<input type="text" value="'+esc(who)+'" disabled>')}
+      ${field('WhatsApp number',`<input type="tel" id="pPhone" value="${p.phone?'+'+esc(p.phone):''}" placeholder="+91 98765 43210" oninput="this.classList.remove('invalid')"><div class="muted small" style="margin-top:.3rem">Include the country code (91 for India). Spaces, dashes and + are fine.</div>`)}
+      ${field('Email <em>optional</em>',`<input type="email" id="pEmail" value="${esc(p.email||'')}" placeholder="name@example.com" oninput="this.classList.remove('invalid')">`)}
+    </div>
+    <label class="check"><input type="checkbox" id="pOn" ${p.remindersOn!==false?'checked':''}><span>Send me WhatsApp reminders</span></label>
+    <div class="err" id="pErr"></div>
+    <button class="btn primary" onclick="saveProfile()">Save</button></section>
+  <section class="card"><h2>When reminders are sent</h2>
+    <ul class="plain small">
+      <li><b>Default reminders</b> at 6 am, 10 am, 2 pm, 6 pm and 10 pm for each of the day's tasks that has no actuals recorded. You can turn these off for any task when planning it.</li>
+      <li><b>Extra reminder times</b> you add to a task, on that task's day.</li>
+      <li><b>Wishes</b>: every Friday at 6 pm, a list of wishes without a date (you can leave any wish out), plus any date and time you set on a wish.</li>
+      <li>Each message lists tasks by priority, with their activity, motives and expected outcomes.</li>
+      <li>If nothing is pending, no message is sent. Tasks you've marked as done, partly done, postponed, skipped or cancelled aren't included.</li>
+      <li>Messages can arrive up to about 15–20 minutes after the set time.</li>
+    </ul></section>
+  ${viewing?'':`<section class="card"><h2>Change password</h2>${S.isAdmin?'<p class="muted small">The admin password is fixed.</p>':`
+    <div class="grid2" style="margin-top:.6rem">${field('Current password','<input type="password" id="cpOld">')}${field('New password','<input type="password" id="cpNew">')}</div>
+    <button class="btn" onclick="changePw()">Update password</button>`}</section>`}`;
+}
+function saveProfile(){
+  const ph=document.getElementById('pPhone'),em=document.getElementById('pEmail'),err=document.getElementById('pErr');
+  const raw=ph.value.trim(),digits=raw.replace(/[^\d]/g,'').replace(/^00/,''),email=em.value.trim();
+  err.textContent='';
+  if(raw&&/[^\d\s+\-().]/.test(raw)){ph.classList.add('invalid');err.textContent='The number can only contain digits, spaces, dashes and +.';return}
+  if(digits&&digits.length===10){ph.classList.add('invalid');err.textContent='Add your country code in front, e.g. +91 for India.';return}
+  if(digits&&(digits.length<11||digits.length>15)){ph.classList.add('invalid');err.textContent='That doesn\'t look like a full number with country code.';return}
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){em.classList.add('invalid');err.textContent='That email address doesn\'t look right.';return}
+  D.profile={phone:digits,email,remindersOn:document.getElementById('pOn').checked};
+  save();render();toast('Profile saved');
+}
+async function changePw(){const o=document.getElementById('cpOld').value,n=document.getElementById('cpNew').value;if(n.length<4){toast('New password must be at least 4 characters');return}
+  try{await Store.changePassword(S.id,o,n);toast('Password updated');render()}catch(e){toast(e.message)}}
 
 /* ---------- SETTINGS ---------- */
 function vSettings(m){
@@ -1136,10 +1381,7 @@ function vSettings(m){
     ${Object.values(SCALES).map(s=>`<tr><td><b>${s.label}</b></td>${s.d.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</table></div></section>
   <section class="card"><h2>Your data</h2><div class="head-actions" style="margin-top:.6rem"><button class="btn primary" onclick="exportJSON()">Download backup (.json)</button>
     <label class="btn" style="cursor:pointer">Restore from backup…<input type="file" accept=".json" class="hidden" onchange="importJSON(this)"></label><button class="btn" onclick="exportCSV()">Export tasks (.csv)</button></div>
-    <p class="muted small" style="margin-top:.8rem">${D.activities.length} activities · ${D.tasks.length} tasks</p></section>
-  ${viewing?'':`<section class="card"><h2>Change password</h2>${S.isAdmin?'<p class="muted small">The admin password is fixed.</p>':`
-    <div class="grid2" style="margin-top:.6rem">${field('Current password','<input type="password" id="cpOld">')}${field('New password','<input type="password" id="cpNew">')}</div>
-    <button class="btn" onclick="changePw()">Update password</button>`}</section>`}
+    <p class="muted small" style="margin-top:.8rem">${D.activities.length} activities · ${D.tasks.filter(t=>t.date).length} tasks · ${wishes().length} wishes</p></section>
   <p class="muted small" style="text-align:center">Storage: <b>${Store.mode==='cloud'?'☁ Cloud (Firebase) — same login on any device':'📱 This browser only (local mode)'}</b> · Viana version ${VERSION}</p>`;
 }
 function listEditor(k){
@@ -1153,13 +1395,11 @@ function addItem(k){const v=document.getElementById('new_'+k).value.trim();if(!v
 function renameItem(k,i){const o=D[k][i],n=(prompt('Rename',o)||'').trim();if(!n||n===o)return;if(D[k].includes(n)){toast('Already in the list');return}D[k][i]=n;
   D.activities.forEach(a=>a[k]=a[k].map(x=>x===o?n:x));D.tasks.forEach(t=>{t.plan[k]=t.plan[k].map(x=>x===o?n:x);t.actual[k]=t.actual[k].map(x=>x===o?n:x)});save();render();toast('Renamed')}
 function removeItem(k,i){if(!confirm(`Remove "${D[k][i]}" from the list? Past tasks keep it.`))return;D[k].splice(i,1);save();render()}
-async function changePw(){const o=document.getElementById('cpOld').value,n=document.getElementById('cpNew').value;if(n.length<4){toast('New password must be at least 4 characters');return}
-  try{await Store.changePassword(S.id,o,n);toast('Password updated');render()}catch(e){toast(e.message)}}
 function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function exportCSV(){
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const h=['Date','Task','Activity','Unplanned','Planned min','Planned motives','Planned outcomes','Priority','Planned effort','Planned resistance','Plan note','Status','Actual min','Actual motives','Actual outcomes','Actual effort','Actual resistance','Satisfaction','Actual note'];
-  const rows=D.tasks.slice().sort((a,b)=>a.date<b.date?-1:1).map(t=>[t.date,taskName(t),actName(t.activityId),t.unplanned?'Yes':'',t.plan.minutes,t.plan.motives.join('; '),t.plan.outcomes.join('; '),t.plan.importance,t.plan.effort,t.plan.resistance,t.plan.note,stLabel(t),t.actual.minutes,t.actual.motives.join('; '),t.actual.outcomes.join('; '),t.actual.effort,t.actual.resistance,t.actual.satisfaction,t.actual.note]);
+  const h=['Date','Wish','Task','Activity','Unplanned','Planned min','Planned motives','Planned outcomes','Priority','Planned effort','Planned resistance','Plan note','Status','Actual min','Actual motives','Actual outcomes','Actual effort','Actual resistance','Satisfaction','Actual note'];
+  const rows=D.tasks.slice().sort((a,b)=>(a.date||'~')<(b.date||'~')?-1:1).map(t=>[t.date||'',t.date?'':'Yes',taskName(t),actName(t.activityId),t.unplanned?'Yes':'',t.plan.minutes,t.plan.motives.join('; '),t.plan.outcomes.join('; '),t.plan.importance,t.plan.effort,t.plan.resistance,t.plan.note,t.date?stLabel(t):'',t.actual.minutes,t.actual.motives.join('; '),t.actual.outcomes.join('; '),t.actual.effort,t.actual.resistance,t.actual.satisfaction,t.actual.note]);
   download(`viana-tasks-${(viewing||S).username}-${today()}.csv`,'\ufeff'+[h,...rows].map(r=>r.map(q).join(',')).join('\n'),'text/csv');
 }
 function exportJSON(){download(`viana-backup-${(viewing||S).username}-${today()}.json`,JSON.stringify(D,null,1),'application/json');toast('Backup downloaded')}
@@ -1179,9 +1419,9 @@ async function vAdmin(m){
   if(tab!=='admin')return;
   ui.adminUsers=users.sort((a,b)=>a.username.localeCompare(b.username));
   m.innerHTML=head+`<section class="card"><h2>All users (${users.length})</h2><p class="muted small">Open a user's data to view, edit or delete anything in it. Changes save to their account.</p>
-  ${users.length?`<div class="table-wrap"><table class="simple"><tr><th>Username</th><th>Created</th>${Store.mode==='cloud'?'<th>Last saved</th>':''}<th>Tasks</th><th>Status</th><th></th></tr>
+  ${users.length?`<div class="table-wrap"><table class="simple"><tr><th>Username</th><th>Created</th>${Store.mode==='cloud'?'<th>Last saved</th>':''}<th>Tasks</th><th>WhatsApp</th><th>Status</th><th></th></tr>
   ${ui.adminUsers.map((u,i)=>`<tr><td><b>${esc(u.username)}</b></td><td>${u.created?new Date(u.created).toLocaleDateString():''}</td>${Store.mode==='cloud'?`<td>${u.updated?new Date(u.updated).toLocaleString():'—'}</td>`:''}<td>${u.tasks}</td>
-  <td>${u.disabled?'<span class="pill bad">Disabled</span>':'<span class="pill good">Active</span>'}</td>
+  <td>${u.phone?'✓':'—'}</td><td>${u.disabled?'<span class="pill bad">Disabled</span>':'<span class="pill good">Active</span>'}</td>
   <td><div class="row" style="gap:.3rem;flex-wrap:nowrap"><button class="btn sm primary" onclick="adminAct('open',${i})">Open data</button>
   ${Store.canResetPasswords?`<button class="btn sm" onclick="adminAct('reset',${i})">Reset password</button>`:''}
   <button class="btn sm" onclick="adminAct('toggle',${i})">${u.disabled?'Enable':'Disable'}</button>
